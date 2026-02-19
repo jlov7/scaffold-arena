@@ -1,0 +1,150 @@
+// --- Meta types ---
+
+export interface ModelMeta {
+  id: string
+  label: string
+  input_per_mtok: number
+  output_per_mtok: number
+}
+
+export interface TaskMeta {
+  id: string
+  name: string
+  subtitle: string
+  type: string
+  synthetic_sources?: boolean
+}
+
+export interface ScaffoldMeta {
+  id: string
+  name: string
+  subtitle: string
+}
+
+export interface AppMeta {
+  models: ModelMeta[]
+  tasks: TaskMeta[]
+  scaffolds: ScaffoldMeta[]
+  features: { llm_judge: boolean; pdf_export: boolean }
+}
+
+// --- Run types ---
+
+export interface RunMetrics {
+  input_tokens: number
+  output_tokens: number
+  cost_usd: number
+  wall_time_ms: number
+  num_api_calls: number
+}
+
+export interface EvalBreakdown {
+  [metric: string]: number
+}
+
+export interface EvalResult {
+  total_score: number
+  breakdown: EvalBreakdown
+  weights: Record<string, { weight: number; type: string }>
+  notes: string[]
+  judge?: { scores: Record<string, number>; explanation: string; model_id: string } | null
+}
+
+export interface ScaffoldResult {
+  output: string
+  metrics: RunMetrics
+  evaluation: EvalResult
+  error?: string
+}
+
+export type RunResults = Record<string, ScaffoldResult>
+
+// --- SSE event payloads ---
+
+export interface RunStartedEvent {
+  run_id: string
+  ts_ms: number
+  task_id: string
+  scaffold_ids: string[]
+}
+
+export interface ScaffoldPhaseEvent {
+  run_id: string
+  ts_ms: number
+  scaffold_id: string
+  phase: string
+}
+
+export interface ScaffoldDeltaEvent {
+  run_id: string
+  ts_ms: number
+  scaffold_id: string
+  delta: string
+}
+
+export interface ScaffoldCompletedEvent {
+  run_id: string
+  ts_ms: number
+  scaffold_id: string
+  output: string
+  metrics: RunMetrics
+}
+
+export interface EvaluationCompletedEvent {
+  run_id: string
+  ts_ms: number
+  scaffold_id: string
+  total_score: number
+  breakdown: EvalBreakdown
+  weights: Record<string, { weight: number; type: string }>
+  notes: string[]
+  judge?: { scores: Record<string, number>; explanation: string; model_id: string } | null
+}
+
+export interface RunCompleteEvent {
+  run_id: string
+  ts_ms: number
+  winner_scaffold_id: string | null
+  results: RunResults
+}
+
+// --- Panel state ---
+
+export type PanelStatus = 'idle' | 'running' | 'completed' | 'failed' | 'winner' | 'loser'
+
+export interface PanelState {
+  scaffoldId: string
+  scaffoldName: string
+  status: PanelStatus
+  phase: string
+  streamedText: string
+  output: string
+  metrics: RunMetrics | null
+  evaluation: EvalResult | null
+  error: string | null
+}
+
+// --- Comparison types ---
+
+export interface ComparisonCase {
+  case_id: string
+  model_id: string
+  scaffold_id: string
+  metrics?: RunMetrics
+  evaluation?: EvalResult
+}
+
+// --- Autopsy types ---
+
+export interface AutopsyFailure {
+  type: string
+  description: string
+  severity: string
+  evidence: string
+}
+
+export interface AutopsyResult {
+  failures: AutopsyFailure[]
+  patch: Record<string, unknown>
+  summary: string
+}
