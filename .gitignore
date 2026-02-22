@@ -8,6 +8,7 @@ dist/
 build/
 .venv/
 venv/
+*.db
 
 # Node
 node_modules/
@@ -31,6 +32,10 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+coverage/
+playwright-report/
+test-results/
+output/
 
 # Build artifacts
 *.pdf
@@ -47,3 +52,18 @@ Planning/
 
 # Cursor
 .cursorindexingignore
+
+# Local agent/tooling state
+.codex/
+.playwright-cli/
+.rodney/
+
+# Frontend generated artifacts
+frontend/coverage/
+frontend/lighthouse-reports/
+frontend/playwright-report/
+frontend/test-results/
+frontend/.lighthouseci/
+
+# Runtime storage
+backend/data/*.db

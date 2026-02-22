@@ -1,0 +1,11 @@
+/* Injected by Playwright's stylePath option before visual screenshots.
+   Freezes all CSS animations and transitions for deterministic captures. */
+*,
+*::before,
+*::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  scroll-behavior: auto !important;
+}

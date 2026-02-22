@@ -179,7 +179,7 @@ async def analyze_failures(
                     )
                 )
 
-        elif task_type == "risk_analysis":
+        elif task_type == "risk":
             must_flag_hit_rate = breakdown.get("must_flag_hit_rate", 100)
             false_positive_rate = breakdown.get("false_positive_rate", 100)
             if must_flag_hit_rate < 70:
@@ -197,7 +197,7 @@ async def analyze_failures(
                     )
                 )
 
-        elif task_type == "research_synthesis":
+        elif task_type == "research":
             citation_coverage = breakdown.get("citation_coverage", 100)
             required_findings_coverage = breakdown.get("required_findings_coverage", 100)
             if citation_coverage < 70:

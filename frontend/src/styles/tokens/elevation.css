@@ -1,0 +1,11 @@
+:root {
+  --elevation-1: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --elevation-2: 0 8px 24px rgba(0, 0, 0, 0.25);
+  --elevation-focus: 0 0 0 2px rgba(99, 102, 241, 0.35);
+}
+
+:root[data-theme='light'] {
+  --elevation-1: 0 1px 2px rgba(17, 24, 39, 0.08);
+  --elevation-2: 0 10px 26px rgba(17, 24, 39, 0.12);
+  --elevation-focus: 0 0 0 2px rgba(54, 89, 200, 0.25);
+}

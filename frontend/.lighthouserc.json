@@ -1,0 +1,29 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "pnpm preview --host 127.0.0.1 --port 4318",
+      "startServerReadyPattern": "Local",
+      "url": [
+        "http://127.0.0.1:4318/arena",
+        "http://127.0.0.1:4318/settings"
+      ],
+      "numberOfRuns": 1,
+      "settings": {
+        "preset": "desktop"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.9 }],
+        "categories:accessibility": ["warn", { "minScore": 0.95 }],
+        "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
+        "interactive": ["warn", { "maxNumericValue": 3000 }],
+        "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.05 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": "./lighthouse-reports"
+    }
+  }
+}

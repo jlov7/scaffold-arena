@@ -2,6 +2,13 @@
 
 > How Scaffold Arena is built, and why.
 
+Related docs:
+- Docs portal: [`README.md`](README.md)
+- Technical explainer: [`explainers/technical.md`](explainers/technical.md)
+- Frontend module boundaries: [`architecture/frontend-module-boundaries.md`](architecture/frontend-module-boundaries.md)
+
+![System Map](assets/illustrations/system-map.svg)
+
 ## System Overview
 
 Scaffold Arena is a monorepo with two services — a Python backend and a React frontend — communicating via REST + SSE.
@@ -19,13 +26,13 @@ graph LR
     end
 
     subgraph External["External"]
-        Anthropic["Anthropic API"]
+        Providers["LLM Providers (Anthropic/OpenAI/Gemini/OpenRouter)"]
     end
 
     React -->|"POST /api/runs"| FastAPI
     React -->|"GET /api/runs/{id}/events"| FastAPI
     FastAPI --> Engine
-    Engine -->|"async generators"| Anthropic
+    Engine -->|"provider calls"| Providers
     Engine --> Eval
     FastAPI -.->|"SSE stream"| React
 ```
@@ -69,7 +76,7 @@ sequenceDiagram
     participant FastAPI
     participant Engine
     participant Scaffold
-    participant Anthropic
+    participant Provider
     participant Evaluation
 
     Browser->>FastAPI: POST /api/runs {task_id, model_id}
@@ -80,8 +87,8 @@ sequenceDiagram
     par 4 scaffolds concurrently
         Engine->>Scaffold: scaffold.run()
         loop Each API call
-            Scaffold->>Anthropic: messages.create() or stream()
-            Anthropic-->>Scaffold: response / deltas
+            Scaffold->>Provider: complete() or stream_text()
+            Provider-->>Scaffold: response / deltas
             Scaffold-->>Engine: yield ("scaffold_delta", ...)
         end
         Scaffold-->>Engine: yield ("final_output", ...)
@@ -155,7 +162,7 @@ class BaseScaffold(ABC):
         run_id: str,
         task: BaseTask,
         model_id: str,
-        provider: AnthropicProvider,
+        provider: LLMProvider,
         options: RunOptions,
         config_override: dict | None = None,
         cancelled_check: Callable[[], bool] | None = None,
@@ -187,7 +194,9 @@ class BaseTask(ABC):
 
 ### Provider Abstraction
 
-`AnthropicProvider` wraps the Anthropic SDK with two modes:
+The provider layer uses a model-to-provider factory (`get_provider(model_id)`) and routes each run to the correct SDK implementation. Today, Scaffold Arena supports Anthropic, OpenAI, Gemini, and OpenRouter.
+
+All providers expose two modes through the shared `LLMProvider` contract:
 
 - **`complete()`** — non-streaming, returns full response (used for planning, critique)
 - **`stream_text()`** — async generator yielding text deltas (used for final output generation)
@@ -202,14 +211,20 @@ Both track token usage for cost computation.
 
 ```
 App.tsx (orchestration)
-├── TaskSelector (task cards + model dropdown + run button)
-├── ArenaGrid (responsive 4-panel layout)
-│   └── ArenaPanel × 4
-│       └── StreamingText (direct DOM rendering)
-├── ScoreDashboard (ranked results + tooltips)
-├── ProofComparison (3-case table + QPD)
-├── AutopsyModal (failure analysis + patch)
-└── ReportModal (markdown preview + download)
+├── App shell (Arena / Results / History / Leaderboard / Settings)
+├── Arena workspace
+│   ├── Arena lanes: Onboarding / Configure / Live run
+│   ├── TaskSelector (task cards + model dropdown + run button)
+│   └── ArenaGrid (responsive 4-panel layout)
+│       └── ArenaPanel × 4
+│           └── StreamingText (direct DOM rendering)
+├── Results workspace
+│   ├── Results lanes: Summary / Diagnostics
+│   ├── ScoreDashboard (ranked results + tooltips)
+│   └── DiffView + ProofComparison (evidence workflows)
+├── HistoryWorkspace / LeaderboardWorkspace
+├── HelpCenterModal + onboarding helpers
+└── AutopsyModal / ReportModal
 ```
 
 ### State Management

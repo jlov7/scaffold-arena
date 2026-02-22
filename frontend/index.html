@@ -2,12 +2,63 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' ws: wss:; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+    <meta
+      name="description"
+      content="Evaluate LLM scaffold architectures side-by-side with scoring, autopsy analysis, proof comparisons, and audit exports."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Scaffold Arena" />
+    <meta
+      property="og:description"
+      content="Benchmark scaffold strategies, diagnose failures, and prove orchestration wins with live arena runs."
+    />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:url" content="https://scaffold-arena.example" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Scaffold Arena" />
+    <meta
+      name="twitter:description"
+      content="Benchmark scaffold strategies, diagnose failures, and prove orchestration wins with live arena runs."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
+    <script>
+      (() => {
+        try {
+          const stored = localStorage.getItem('scaffold_arena_theme')
+          if (stored === 'dark' || stored === 'light') {
+            document.documentElement.setAttribute('data-theme', stored)
+            return
+          }
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
+        } catch {
+          document.documentElement.setAttribute('data-theme', 'dark')
+        }
+      })()
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <title>Scaffold Arena</title>
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+    <title>Scaffold Arena | LLM Scaffold Evaluation Workbench</title>
   </head>
   <body>
     <div id="root"></div>

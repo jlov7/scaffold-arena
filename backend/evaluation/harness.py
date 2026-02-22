@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from core.provider import AnthropicProvider
+from core.provider import LLMProvider
 from config.settings import settings
 from tasks.base import BaseTask
 from evaluation.deterministic import (
@@ -24,14 +24,14 @@ WEIGHT_TABLES = {
         "completeness": {"weight": 0.15, "type": "judge"},
         "reasoning_clarity": {"weight": 0.10, "type": "judge"},
     },
-    "risk_analysis": {
+    "risk": {
         "must_flag_hit_rate": {"weight": 0.45, "type": "deterministic"},
         "risk_level_accuracy": {"weight": 0.20, "type": "deterministic"},
         "false_positive_rate": {"weight": 0.10, "type": "deterministic"},
         "structure_compliance": {"weight": 0.10, "type": "deterministic"},
         "recommendation_quality": {"weight": 0.15, "type": "judge"},
     },
-    "research_synthesis": {
+    "research": {
         "citation_coverage": {"weight": 0.35, "type": "deterministic"},
         "required_findings_coverage": {"weight": 0.25, "type": "deterministic"},
         "schema_validity": {"weight": 0.15, "type": "deterministic"},
@@ -39,64 +39,81 @@ WEIGHT_TABLES = {
         "synthesis_quality": {"weight": 0.10, "type": "judge"},
         "recommendation_quality": {"weight": 0.05, "type": "judge"},
     },
+    "custom": {
+        "schema_validity": {"weight": 0.70, "type": "deterministic"},
+        "output_presence": {"weight": 0.30, "type": "deterministic"},
+    },
 }
 
 
 async def evaluate(
     task: BaseTask,
     raw_output: str,
-    provider: AnthropicProvider,
+    provider: LLMProvider,
     model_id: str,
 ) -> dict:
+    if task.task_type not in WEIGHT_TABLES:
+        raise ValueError(f"Unknown task type: {task.task_type}")
+
     weights = WEIGHT_TABLES[task.task_type]
     breakdown: dict[str, float] = {}
     notes: list[str] = []
 
     # --- Deterministic metrics ---
     if task.task_type == "extraction":
-        sv_score, sv_notes = schema_validity(raw_output, task.get_schema())
-        breakdown["schema_validity"] = sv_score
-        notes.extend(sv_notes)
+        sv_result = schema_validity(raw_output, task.get_schema())
+        breakdown["schema_validity"] = sv_result.score
+        notes.extend(sv_result.notes)
 
-        fa_score, fa_notes = field_accuracy(raw_output, task.get_gold())
-        breakdown["field_accuracy"] = fa_score
-        notes.extend(fa_notes)
+        fa_result = field_accuracy(raw_output, task.get_gold())
+        breakdown["field_accuracy"] = fa_result.score
+        notes.extend(fa_result.notes)
 
-    elif task.task_type == "risk_analysis":
-        mf_score, mf_notes = must_flag_hit_rate(raw_output, task.get_gold())
-        breakdown["must_flag_hit_rate"] = mf_score
-        notes.extend(mf_notes)
+    elif task.task_type == "risk":
+        mf_result = must_flag_hit_rate(raw_output, task.get_gold())
+        breakdown["must_flag_hit_rate"] = mf_result.score
+        notes.extend(mf_result.notes)
 
-        fp_score, fp_notes = false_positive_rate(raw_output)
-        breakdown["false_positive_rate"] = fp_score
-        notes.extend(fp_notes)
+        fp_result = false_positive_rate(raw_output)
+        breakdown["false_positive_rate"] = fp_result.score
+        notes.extend(fp_result.notes)
 
-        rl_score, rl_notes = risk_level_accuracy(raw_output, task.get_gold())
-        breakdown["risk_level_accuracy"] = rl_score
-        notes.extend(rl_notes)
+        rl_result = risk_level_accuracy(raw_output, task.get_gold())
+        breakdown["risk_level_accuracy"] = rl_result.score
+        notes.extend(rl_result.notes)
 
-        sc_score, sc_notes = structure_compliance(raw_output, task.get_schema())
-        breakdown["structure_compliance"] = sc_score
-        notes.extend(sc_notes)
+        sc_result = structure_compliance(raw_output, task.get_schema())
+        breakdown["structure_compliance"] = sc_result.score
+        notes.extend(sc_result.notes)
 
-    elif task.task_type == "research_synthesis":
+    elif task.task_type == "research":
         gold = task.get_gold()
 
-        cc_score, cc_notes = citation_coverage(raw_output, gold.get("required_sources", []))
-        breakdown["citation_coverage"] = cc_score
-        notes.extend(cc_notes)
+        cc_result = citation_coverage(raw_output, gold.get("required_sources", []))
+        breakdown["citation_coverage"] = cc_result.score
+        notes.extend(cc_result.notes)
 
-        rf_score, rf_notes = required_findings_coverage(raw_output, gold.get("required_findings", []))
-        breakdown["required_findings_coverage"] = rf_score
-        notes.extend(rf_notes)
+        rf_result = required_findings_coverage(raw_output, gold.get("required_findings", []))
+        breakdown["required_findings_coverage"] = rf_result.score
+        notes.extend(rf_result.notes)
 
-        sv_score, sv_notes = schema_validity(raw_output, task.get_schema())
-        breakdown["schema_validity"] = sv_score
-        notes.extend(sv_notes)
+        sv_result = schema_validity(raw_output, task.get_schema())
+        breakdown["schema_validity"] = sv_result.score
+        notes.extend(sv_result.notes)
 
-        wc_score, wc_notes = word_count_compliance(raw_output)
-        breakdown["word_count_compliance"] = wc_score
-        notes.extend(wc_notes)
+        wc_result = word_count_compliance(raw_output)
+        breakdown["word_count_compliance"] = wc_result.score
+        notes.extend(wc_result.notes)
+
+    elif task.task_type == "custom":
+        sv_result = schema_validity(raw_output, task.get_schema())
+        breakdown["schema_validity"] = sv_result.score
+        notes.extend(sv_result.notes)
+
+        output_presence = 100.0 if raw_output.strip() else 0.0
+        breakdown["output_presence"] = output_presence
+        if output_presence == 0:
+            notes.append("Output was empty")
 
     # --- LLM judge ---
     judge_result = None
@@ -107,10 +124,11 @@ async def evaluate(
         except (ImportError, Exception):
             pass
 
+    judge_scores = judge_result.get("scores", {}) if judge_result is not None else {}
     if judge_result is not None:
         for metric, entry in weights.items():
-            if entry["type"] == "judge" and metric in judge_result:
-                breakdown[metric] = judge_result[metric]
+            if entry["type"] == "judge" and metric in judge_scores:
+                breakdown[metric] = judge_scores[metric]
 
     # --- Score combination ---
     use_judge = judge_result is not None

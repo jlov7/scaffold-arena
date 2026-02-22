@@ -1,44 +1,55 @@
 from __future__ import annotations
 
 import asyncio
+import logging
+import time
+from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException
+from pathlib import Path
+
+from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel, Field
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from slowapi.util import get_remote_address
 from sse_starlette.sse import EventSourceResponse
 
 load_dotenv()
 
 from config.settings import settings  # noqa: E402
 from config.models import all_models_meta  # noqa: E402
+from core.auth import verify_token  # noqa: E402
+from core.budget import DailyBudgetExceededError, budget_tracker  # noqa: E402
+from core.logging_setup import setup_logging  # noqa: E402
 from core.registry import all_tasks_meta, all_scaffolds_meta  # noqa: E402
+from core.stats import compute_stats  # noqa: E402
 from core.run_engine import (  # noqa: E402
+    _runs,
+    RunEvictedError,
     RunKind,
+    cancel_active_runs,
     create_run,
     get_run,
     cancel_run,
     start_arena_run,
     start_patch_rerun,
     get_event_stream,
+    wait_for_run_completion,
 )
+from core.storage import get_run_record, init_db, list_runs, persist_run  # noqa: E402
 
-app = FastAPI(title="Scaffold Arena", version="0.1.0")
-
-# CORS
-origins = settings.cors_origins.split(",")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+logger = logging.getLogger(__name__)
 
 
-# --- Register tasks and scaffolds on startup ---
-@app.on_event("startup")
-async def _register_all():
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    setup_logging()
+    init_db()
     from core.registry import register_task, register_scaffold
     from tasks.extraction import ExtractionTask
     from tasks.risk_analysis import RiskAnalysisTask
@@ -56,6 +67,120 @@ async def _register_all():
     register_scaffold(PlanExecuteVerifyScaffold())
     register_scaffold(ToolErrorRecoveryScaffold())
     register_scaffold(MemoryCritiqueScaffold())
+    logger.info("startup_complete")
+    try:
+        yield
+    finally:
+        cancelled = cancel_active_runs()
+        drained = await wait_for_run_completion(timeout_s=10.0)
+        logger.info(
+            "shutdown_complete",
+            extra={"cancelled_runs": cancelled, "drained": drained},
+        )
+
+
+app = FastAPI(title="Scaffold Arena", version="0.1.0", lifespan=lifespan)
+limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
+app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
+
+
+@app.exception_handler(RateLimitExceeded)
+async def _custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    response = _rate_limit_exceeded_handler(request, exc)
+    response.headers.setdefault("Retry-After", "60")
+    return response
+
+# CORS
+origins = [origin.strip() for origin in settings.cors_origins.split(",") if origin.strip()]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-LLM-API-Key"],
+)
+
+
+@app.middleware("http")
+async def enforce_request_size_limits(request: Request, call_next):
+    if request.method in {"POST", "PUT", "PATCH"}:
+        content_length = request.headers.get("content-length")
+        if content_length:
+            try:
+                if int(content_length) > settings.max_request_size_bytes:
+                    return JSONResponse(
+                        status_code=413,
+                        content={"detail": f"Request body too large (> {settings.max_request_size_bytes} bytes)"},
+                    )
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Invalid Content-Length header")
+
+        body = await request.body()
+        if len(body) > settings.max_request_size_bytes:
+            return JSONResponse(
+                status_code=413,
+                content={"detail": f"Request body too large (> {settings.max_request_size_bytes} bytes)"},
+            )
+
+        async def receive():
+            return {"type": "http.request", "body": body, "more_body": False}
+
+        request = Request(request.scope, receive)
+
+    return await call_next(request)
+
+
+def _extract_llm_api_key(request: Request) -> str | None:
+    raw = request.headers.get("x-llm-api-key")
+    if raw and raw.strip():
+        return raw.strip()
+    return None
+
+
+def _available_task_ids() -> list[str]:
+    return sorted(t["id"] for t in all_tasks_meta())
+
+
+def _available_model_ids() -> list[str]:
+    return sorted(m["id"] for m in all_models_meta())
+
+
+def _available_scaffold_ids() -> list[str]:
+    return sorted(s["id"] for s in all_scaffolds_meta())
+
+
+def _validate_task_id(task_id: str) -> None:
+    if task_id not in _available_task_ids():
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown task: {task_id}. Available: {_available_task_ids()}",
+        )
+
+
+def _validate_model_id(model_id: str) -> None:
+    if model_id not in _available_model_ids():
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown model: {model_id}. Available: {_available_model_ids()}",
+        )
+
+
+def _validate_scaffold_ids(scaffold_ids: list[str]) -> None:
+    valid = set(_available_scaffold_ids())
+    for scaffold_id in scaffold_ids:
+        if scaffold_id not in valid:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unknown scaffold: {scaffold_id}. Available: {_available_scaffold_ids()}",
+            )
+
+
+def _validate_budget_for_new_run() -> None:
+    try:
+        budget_tracker.check_new_run_allowed(daily_budget_usd=settings.daily_budget_usd)
+    except DailyBudgetExceededError as exc:
+        raise HTTPException(status_code=429, detail=str(exc)) from exc
 
 
 # --- Health ---
@@ -75,31 +200,112 @@ async def meta():
             "llm_judge": settings.enable_llm_judge,
             "pdf_export": settings.enable_pdf_export,
         },
+        "budget": {
+            **budget_tracker.snapshot(daily_budget_usd=settings.daily_budget_usd),
+            "max_cost_per_run_usd": settings.max_cost_per_run_usd,
+        },
+    }
+
+
+def _live_run_payload(run) -> dict:  # noqa: ANN001
+    return {
+        "run_id": run.run_id,
+        "kind": run.kind.value,
+        "task_id": run.task_id,
+        "model_id": run.model_id,
+        "scaffold_ids": run.scaffold_ids,
+        "options": run.options.__dict__,
+        "created_at": run.created_at,
+        "completed_at": run.completed_at,
+        "status": "completed" if run._done else "running",
+        "results": run.results,
     }
 
 
 # --- Arena runs ---
 class CreateRunRequest(BaseModel):
-    task_id: str
-    model_id: str = "claude-sonnet-4-6"
-    scaffold_ids: list[str] = [
-        "bare",
-        "plan_execute_verify",
-        "tool_error_recovery",
-        "memory_critique",
-    ]
+    task_id: str = Field(min_length=1, max_length=128)
+    model_id: str = Field(default="claude-sonnet-4-6", min_length=1, max_length=128)
+    scaffold_ids: list[str] = Field(
+        default_factory=lambda: [
+            "bare",
+            "plan_execute_verify",
+            "tool_error_recovery",
+            "memory_critique",
+        ]
+    )
     options: dict | None = None
+    custom_task: dict | None = None
+
+
+@app.get("/api/runs")
+async def get_runs(limit: int = 50):
+    clamped_limit = max(1, min(limit, 500))
+    stored = list_runs(limit=clamped_limit)
+    live = []
+    for run in list(_runs.values()):
+        if not run._done:
+            live.append(_live_run_payload(run))
+    combined = live + stored
+    combined.sort(
+        key=lambda run: float(run.get("completed_at") or run.get("created_at") or 0),
+        reverse=True,
+    )
+    return {"runs": combined}
+
+
+@app.get("/api/stats")
+async def get_stats(limit: int = 1000):
+    return compute_stats(limit=limit)
 
 
 @app.post("/api/runs")
-async def create_arena_run(req: CreateRunRequest):
-    run = create_run(
-        kind=RunKind.ARENA,
-        task_id=req.task_id,
-        model_id=req.model_id,
-        scaffold_ids=req.scaffold_ids,
-        options=req.options,
-    )
+@limiter.limit("5/minute")
+async def create_arena_run(
+    request: Request,
+    req: CreateRunRequest,
+    _auth: None = Depends(verify_token),
+):
+    _validate_model_id(req.model_id)
+    _validate_scaffold_ids(req.scaffold_ids)
+    _validate_budget_for_new_run()
+
+    task_id = req.task_id
+    if req.custom_task:
+        from core.registry import register_task
+        from tasks.custom import CustomPromptTask
+
+        custom_name = str(req.custom_task.get("name", "Custom Task"))
+        custom_prompt = str(req.custom_task.get("prompt", "")).strip()
+        custom_schema = req.custom_task.get("schema")
+        if not custom_prompt:
+            raise HTTPException(status_code=400, detail="custom_task.prompt is required")
+
+        task_id = f"custom_{int(time.time() * 1000)}"
+        register_task(
+            CustomPromptTask(
+                task_id=task_id,
+                name=custom_name,
+                prompt=custom_prompt,
+                schema=custom_schema if isinstance(custom_schema, dict) else None,
+            )
+        )
+    else:
+        _validate_task_id(req.task_id)
+
+    llm_api_key = _extract_llm_api_key(request)
+    try:
+        run = create_run(
+            kind=RunKind.ARENA,
+            task_id=task_id,
+            model_id=req.model_id,
+            scaffold_ids=req.scaffold_ids,
+            options=req.options,
+            llm_api_key=llm_api_key,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     # Start in background — don't await
     asyncio.create_task(start_arena_run(run))
     return {
@@ -109,10 +315,24 @@ async def create_arena_run(req: CreateRunRequest):
     }
 
 
+@app.get("/api/runs/{run_id}")
+async def get_run_details(run_id: str):
+    try:
+        run = get_run(run_id)
+        return _live_run_payload(run)
+    except (RunEvictedError, ValueError):
+        record = get_run_record(run_id)
+        if record:
+            return record
+        raise HTTPException(404, "Run not found")
+
+
 @app.get("/api/runs/{run_id}/events")
 async def stream_events(run_id: str):
     try:
         get_run(run_id)
+    except RunEvictedError:
+        raise HTTPException(410, "Run has been evicted")
     except ValueError:
         raise HTTPException(404, "Run not found")
 
@@ -129,9 +349,16 @@ async def _sse_generator(run_id: str):
 
 
 @app.post("/api/runs/{run_id}/cancel")
-async def cancel(run_id: str):
+@limiter.limit("10/minute")
+async def cancel(
+    request: Request,
+    run_id: str,
+    _auth: None = Depends(verify_token),
+):
     try:
         cancel_run(run_id)
+    except RunEvictedError:
+        raise HTTPException(410, "Run has been evicted")
     except ValueError:
         raise HTTPException(404, "Run not found")
     return {"status": "cancelled"}
@@ -139,22 +366,38 @@ async def cancel(run_id: str):
 
 # --- Proof comparison ---
 class ComparisonRequest(BaseModel):
-    task_id: str
-    expensive_model_id: str = "claude-sonnet-4-6"
-    cheap_model_id: str = "claude-haiku-4-5"
-    winning_scaffold_id: str
-    control_scaffold_id: str = "bare"
+    task_id: str = Field(min_length=1, max_length=128)
+    expensive_model_id: str = Field(default="claude-sonnet-4-6", min_length=1, max_length=128)
+    cheap_model_id: str = Field(default="claude-haiku-4-5", min_length=1, max_length=128)
+    winning_scaffold_id: str = Field(min_length=1, max_length=128)
+    control_scaffold_id: str = Field(default="bare", min_length=1, max_length=128)
     options: dict | None = None
 
 
 @app.post("/api/comparisons")
-async def create_comparison(req: ComparisonRequest):
+@limiter.limit("10/minute")
+async def create_comparison(
+    request: Request,
+    req: ComparisonRequest,
+    _auth: None = Depends(verify_token),
+):
     from core.run_engine import _run_single_scaffold, RunState, RunOptions, _gen_run_id
-    from core.provider import AnthropicProvider
+    from core.provider import get_provider
     from core import events as ev
 
+    _validate_task_id(req.task_id)
+    _validate_model_id(req.expensive_model_id)
+    _validate_model_id(req.cheap_model_id)
+    _validate_scaffold_ids([req.winning_scaffold_id, req.control_scaffold_id])
+    _validate_budget_for_new_run()
+
+    llm_api_key = _extract_llm_api_key(request)
     run_id = _gen_run_id("cmp")
-    opts = RunOptions(**(req.options or {}))
+    created_at = time.time()
+    try:
+        opts = RunOptions(**(req.options or {}))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     queue: asyncio.Queue = asyncio.Queue()
 
     # Three cases
@@ -165,7 +408,6 @@ async def create_comparison(req: ComparisonRequest):
     ]
 
     async def _run_comparison():
-        provider = AnthropicProvider()
         await queue.put(("comparison_started", ev.comparison_started(run_id, cases)))
 
         all_results = {}
@@ -188,6 +430,7 @@ async def create_comparison(req: ComparisonRequest):
             await queue.put(("case_started", ev.case_started(run_id, cid, mid, sid)))
 
             # Run the scaffold
+            provider = get_provider(mid, api_key_override=llm_api_key)
             await _run_single_scaffold(case_run, sid, provider)
 
             # Forward events as case events
@@ -207,6 +450,32 @@ async def create_comparison(req: ComparisonRequest):
             all_results[cid] = {"metrics": metrics, "evaluation": evaluation, "model_id": mid, "scaffold_id": sid}
 
         await queue.put(("comparison_complete", ev.comparison_complete(run_id, all_results)))
+        winner_id = None
+        best_score = -1.0
+        for cid, data in all_results.items():
+            score = data.get("evaluation", {}).get("total_score", 0.0)
+            if score > best_score:
+                best_score = score
+                winner_id = cid
+
+        completed_at = time.time()
+        persist_run(
+            run_id=run_id,
+            kind=RunKind.COMPARISON.value,
+            task_id=req.task_id,
+            model_id=req.expensive_model_id,
+            scaffold_ids=[req.winning_scaffold_id, req.control_scaffold_id],
+            options=opts.__dict__,
+            created_at=created_at,
+            completed_at=completed_at,
+            winner_id=winner_id,
+            status="completed",
+            results=all_results,
+        )
+        if run_id in _runs:
+            _runs[run_id]._done = True
+            _runs[run_id].completed_at = completed_at
+            _runs[run_id].results = all_results
 
     asyncio.create_task(_run_comparison())
 
@@ -229,18 +498,150 @@ async def create_comparison(req: ComparisonRequest):
     }
 
 
+class ModelComparisonRequest(BaseModel):
+    task_id: str = Field(min_length=1, max_length=128)
+    model_a_id: str = Field(min_length=1, max_length=128)
+    model_b_id: str = Field(min_length=1, max_length=128)
+    scaffold_id: str = Field(min_length=1, max_length=128)
+    options: dict | None = None
+
+
+@app.post("/api/model-comparisons")
+@limiter.limit("10/minute")
+async def create_model_comparison(
+    request: Request,
+    req: ModelComparisonRequest,
+    _auth: None = Depends(verify_token),
+):
+    from core.run_engine import _gen_run_id, _run_single_scaffold, RunOptions, RunState
+    from core.provider import get_provider
+    from core import events as ev
+
+    _validate_task_id(req.task_id)
+    _validate_model_id(req.model_a_id)
+    _validate_model_id(req.model_b_id)
+    _validate_scaffold_ids([req.scaffold_id])
+    _validate_budget_for_new_run()
+
+    llm_api_key = _extract_llm_api_key(request)
+    run_id = _gen_run_id("mcmp")
+    created_at = time.time()
+    try:
+        opts = RunOptions(**(req.options or {}))
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    queue: asyncio.Queue = asyncio.Queue()
+    cases = [
+        {"case_id": "model_a", "model_id": req.model_a_id, "scaffold_id": req.scaffold_id},
+        {"case_id": "model_b", "model_id": req.model_b_id, "scaffold_id": req.scaffold_id},
+    ]
+
+    async def _run_model_comparison():
+        await queue.put(("comparison_started", ev.comparison_started(run_id, cases)))
+
+        all_results = {}
+        for case in cases:
+            cid = case["case_id"]
+            mid = case["model_id"]
+            sid = case["scaffold_id"]
+
+            case_run = RunState(
+                run_id=run_id,
+                kind=RunKind.COMPARISON,
+                task_id=req.task_id,
+                model_id=mid,
+                scaffold_ids=[sid],
+                options=opts,
+                queue=asyncio.Queue(),
+            )
+            await queue.put(("case_started", ev.case_started(run_id, cid, mid, sid)))
+            provider = get_provider(mid, api_key_override=llm_api_key)
+            await _run_single_scaffold(case_run, sid, provider)
+
+            result = case_run.results.get(sid, {})
+            metrics = result.get("metrics", {})
+            evaluation = result.get("evaluation", {})
+            output = result.get("output", "")
+            await queue.put(("case_completed", ev.case_completed(run_id, cid, output, metrics)))
+            if evaluation:
+                await queue.put(
+                    (
+                        "case_evaluation_completed",
+                        ev.case_evaluation_completed(
+                            run_id,
+                            cid,
+                            evaluation.get("total_score", 0),
+                            evaluation.get("breakdown", {}),
+                        ),
+                    )
+                )
+            all_results[cid] = {
+                "metrics": metrics,
+                "evaluation": evaluation,
+                "model_id": mid,
+                "scaffold_id": sid,
+            }
+
+        await queue.put(("comparison_complete", ev.comparison_complete(run_id, all_results)))
+        completed_at = time.time()
+        winner_id = max(
+            all_results,
+            key=lambda cid: all_results[cid].get("evaluation", {}).get("total_score", 0),
+        )
+        persist_run(
+            run_id=run_id,
+            kind="model_comparison",
+            task_id=req.task_id,
+            model_id=req.model_a_id,
+            scaffold_ids=[req.scaffold_id],
+            options=opts.__dict__,
+            created_at=created_at,
+            completed_at=completed_at,
+            winner_id=winner_id,
+            status="completed",
+            results=all_results,
+        )
+        if run_id in _runs:
+            _runs[run_id]._done = True
+            _runs[run_id].completed_at = completed_at
+            _runs[run_id].results = all_results
+
+    asyncio.create_task(_run_model_comparison())
+
+    run = RunState(
+        run_id=run_id,
+        kind=RunKind.COMPARISON,
+        task_id=req.task_id,
+        model_id=req.model_a_id,
+        scaffold_ids=[req.scaffold_id],
+        options=opts,
+        queue=queue,
+    )
+    _runs[run_id] = run
+    return {"run_id": run_id, "stream_url": f"/api/runs/{run_id}/events"}
+
+
 # --- Autopsy ---
 class AutopsyRequest(BaseModel):
-    task_id: str
-    scaffold_id: str
-    output: str
+    task_id: str = Field(min_length=1, max_length=128)
+    scaffold_id: str = Field(min_length=1, max_length=128)
+    output: str = Field(min_length=1, max_length=200_000)
     evaluation: dict
     metrics: dict | None = None
 
 
 @app.post("/api/autopsy")
-async def autopsy(req: AutopsyRequest):
+@limiter.limit("10/minute")
+async def autopsy(
+    request: Request,
+    req: AutopsyRequest,
+    _auth: None = Depends(verify_token),
+):
     from autopsy.analyzer import analyze_failures
+
+    _validate_task_id(req.task_id)
+    _validate_scaffold_ids([req.scaffold_id])
 
     result = await analyze_failures(
         task_id=req.task_id,
@@ -254,15 +655,26 @@ async def autopsy(req: AutopsyRequest):
 
 # --- Patch rerun ---
 class PatchRerunRequest(BaseModel):
-    task_id: str
-    model_id: str = "claude-sonnet-4-6"
-    scaffold_id: str
-    base_config: dict = {}
-    patch: dict = {}
+    task_id: str = Field(min_length=1, max_length=128)
+    model_id: str = Field(default="claude-sonnet-4-6", min_length=1, max_length=128)
+    scaffold_id: str = Field(min_length=1, max_length=128)
+    base_config: dict = Field(default_factory=dict)
+    patch: dict = Field(default_factory=dict)
 
 
 @app.post("/api/patch-reruns")
-async def patch_rerun(req: PatchRerunRequest):
+@limiter.limit("10/minute")
+async def patch_rerun(
+    request: Request,
+    req: PatchRerunRequest,
+    _auth: None = Depends(verify_token),
+):
+    _validate_task_id(req.task_id)
+    _validate_model_id(req.model_id)
+    _validate_scaffold_ids([req.scaffold_id])
+    _validate_budget_for_new_run()
+
+    llm_api_key = _extract_llm_api_key(request)
     merged_config = {**req.base_config, **req.patch}
     run = create_run(
         kind=RunKind.PATCH_RERUN,
@@ -270,6 +682,7 @@ async def patch_rerun(req: PatchRerunRequest):
         model_id=req.model_id,
         scaffold_ids=[req.scaffold_id],
         options=None,
+        llm_api_key=llm_api_key,
     )
     asyncio.create_task(start_patch_rerun(run, config_override=merged_config))
     return {
@@ -280,8 +693,8 @@ async def patch_rerun(req: PatchRerunRequest):
 
 # --- Report ---
 class ReportRequest(BaseModel):
-    task_id: str
-    model_id: str
+    task_id: str = Field(min_length=1, max_length=128)
+    model_id: str = Field(min_length=1, max_length=128)
     results: dict
     comparison: dict | None = None
     autopsy: dict | None = None
@@ -289,8 +702,16 @@ class ReportRequest(BaseModel):
 
 
 @app.post("/api/reports")
-async def generate_report(req: ReportRequest):
+@limiter.limit("10/minute")
+async def generate_report(
+    request: Request,
+    req: ReportRequest,
+    _auth: None = Depends(verify_token),
+):
     from report.markdown import generate_markdown
+
+    _validate_task_id(req.task_id)
+    _validate_model_id(req.model_id)
 
     md = generate_markdown(
         task_id=req.task_id,
@@ -313,3 +734,18 @@ async def generate_report(req: ReportRequest):
         response["pdf_base64"] = None
 
     return response
+
+
+# --- Static frontend serving (production only) ---
+_STATIC_DIR = Path(__file__).resolve().parent / "static"
+
+if _STATIC_DIR.is_dir():
+    app.mount("/assets", StaticFiles(directory=_STATIC_DIR / "assets"), name="static-assets")
+
+    @app.get("/{full_path:path}")
+    async def _spa_fallback(full_path: str):
+        """Serve index.html for all non-API routes (SPA client-side routing)."""
+        file_path = _STATIC_DIR / full_path
+        if file_path.is_file() and ".." not in full_path:
+            return FileResponse(file_path)
+        return FileResponse(_STATIC_DIR / "index.html")

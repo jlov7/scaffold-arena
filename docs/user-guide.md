@@ -2,6 +2,8 @@
 
 > Everything you need to know to use Scaffold Arena effectively.
 
+For role-based docs, start at [`docs/README.md`](README.md).
+
 ## What Scaffold Arena Does
 
 Scaffold Arena answers one question: **Does the code around the AI model matter more than the model itself?**
@@ -12,20 +14,26 @@ It does this by running the same task through four different scaffold architectu
 
 ```mermaid
 graph LR
-    A["Select Task"] --> B["Run Arena"]
-    B --> C["Review Scores"]
-    C --> D["Run Proof Comparison"]
-    C --> E["Autopsy Failures"]
-    E --> F["Patch & Rerun"]
-    D --> G["Export Report"]
-    F --> G
+    A["Onboarding Lane"] --> B["Configure Lane"]
+    B --> C["Live Run Lane"]
+    C --> D["Results Summary Lane"]
+    D --> E["Diagnostics Lane"]
+    E --> F["Autopsy + Patch"]
+    E --> G["Proof Comparison"]
+    D --> H["Export Report"]
+    F --> H
+    G --> H
 ```
 
 Every step builds on the previous one. You can stop at any point — but the full workflow tells the complete story.
 
 ---
 
-## Step 1: Select a Task
+## Step 1: Onboarding Lane (Role + First Action)
+
+Start in the **Onboarding lane** and choose a role path (Evaluator, Operator, Analyst, or Executive). This sets the first recommended action and keeps early decisions focused.
+
+Then pick one task as your benchmark target:
 
 The task selector shows available tasks as clickable cards. Each task tests different AI capabilities:
 
@@ -55,9 +63,17 @@ The model receives synthetic research sources and must synthesize findings with 
 
 ---
 
-## Step 2: Run the Arena
+## Step 2: Configure Lane (Task, Model, Run)
 
-Click **"Run Arena"** to launch all four scaffold architectures simultaneously.
+Use the **Configure lane** to confirm task + model, check the cost estimate, and then click **"Run Arena"**.
+
+This launches all four scaffold architectures simultaneously.
+
+---
+
+## Step 3: Live Run Lane (Watch Execution)
+
+After starting the run, use the **Live run lane** to monitor scaffold progress and streaming output.
 
 ### What You'll See
 
@@ -86,9 +102,9 @@ Click **"Cancel"** to stop the arena run. All scaffolds will stop at their next 
 
 ---
 
-## Step 3: Review Scores
+## Step 4: Results Summary Lane (Decision First)
 
-After all scaffolds complete, the **Score Dashboard** appears showing ranked results.
+After all scaffolds complete, move to **Results Summary lane** to review ranked outcomes before deep diagnostics.
 
 ### Reading the Dashboard
 
@@ -113,7 +129,7 @@ All deterministic metrics are computed from the output alone — no LLM involved
 
 ---
 
-## Step 4: Run Proof Comparison
+## Step 5: Run Proof Comparison (Diagnostics Lane)
 
 This is the "aha moment." Click **"Run Proof Comparison"** to prove scaffold value with three head-to-head cases:
 
@@ -139,7 +155,7 @@ Case 1 (cheap + scaffolding) vs. Case 2 (expensive + bare) is the money shot:
 
 ---
 
-## Step 5: Diagnose Failures
+## Step 6: Diagnose Failures
 
 Click **"Autopsy"** on any losing scaffold to understand *why* it scored lower.
 
@@ -159,7 +175,7 @@ The autopsy generates a **patch** — a JSON object describing how to fix the sc
 
 ---
 
-## Step 6: Patch & Rerun
+## Step 7: Patch & Rerun
 
 Click **"Apply Patch & Rerun"** to test the autopsy's suggested fix.
 
@@ -167,7 +183,7 @@ This runs the same scaffold with the patch applied, so you can immediately see i
 
 ---
 
-## Step 7: Export Report
+## Step 8: Export Report
 
 Click **"Export Report"** to generate a comprehensive audit report.
 
@@ -189,13 +205,13 @@ The report includes:
 
 ## Understanding Costs
 
-Scaffold Arena tracks real costs using actual token counts from the Anthropic API. No estimates.
+Scaffold Arena tracks real costs using actual token counts returned by the active model provider API. No estimates.
 
 ### Cost Factors
 
 | Factor | Impact |
 |--------|--------|
-| **Model choice** | Sonnet 4.6: $3/$15 per MTok (input/output). Haiku 4.5: $1/$5 per MTok. |
+| **Model choice** | Example pricing: Sonnet 4.6 ($3/$15 per MTok), Haiku 4.5 ($1/$5), GPT-4.1 ($2/$8), GPT-4.1 mini ($0.4/$1.6), Gemini 2.5 Flash ($0.3/$2.5), OpenRouter GPT-4.1 mini ($0.5/$2.0). |
 | **Scaffold complexity** | Bare = 1 API call. Memory+Critique = 5-7 API calls. More calls = more tokens = more cost. |
 | **Task length** | Longer input documents use more input tokens per call. |
 | **LLM Judge** | If enabled, adds ~1 extra API call per scaffold for subjective scoring. |
@@ -216,6 +232,6 @@ A full arena run (4 scaffolds) on a medium-length task typically costs $0.10–0
 
 4. **Read the autopsy evidence** — The specific failures explain *why* scaffolding matters, not just *that* it matters.
 
-5. **Try both models** — Running the same task with Sonnet and Haiku shows how scaffolding compensates for model capability differences.
+5. **Try cross-provider comparisons** — Running the same task on Claude and GPT models shows how scaffolding can compensate for raw model differences.
 
 6. **Export for stakeholders** — The report tells the complete story in a format non-technical readers can follow.

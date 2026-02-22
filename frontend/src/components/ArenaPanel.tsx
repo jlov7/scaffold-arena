@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { memo } from 'react'
 import StreamingText from './StreamingText'
 import type { PanelState } from '../types'
+import { emitAppToast } from '../utils/toast'
 
 interface ArenaPanelProps {
   panel: PanelState
@@ -20,45 +21,6 @@ function formatTime(ms: number): string {
   if (ms >= 60000) return `${(ms / 60000).toFixed(1)}m`
   if (ms >= 1000) return `${(ms / 1000).toFixed(1)}s`
   return `${ms}ms`
-}
-
-function useAnimatedScore(target: number | null, status: PanelState['status']): number {
-  const [displayed, setDisplayed] = useState(0)
-  const rafRef = useRef<number | null>(null)
-  const startTimeRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    if (target === null || (status !== 'completed' && status !== 'winner' && status !== 'loser')) {
-      setDisplayed(0)
-      return
-    }
-
-    const delay = setTimeout(() => {
-      const duration = 800
-      startTimeRef.current = null
-
-      const tick = (now: number) => {
-        if (startTimeRef.current === null) startTimeRef.current = now
-        const elapsed = now - startTimeRef.current
-        const progress = Math.min(elapsed / duration, 1)
-        // ease-out cubic
-        const eased = 1 - Math.pow(1 - progress, 3)
-        setDisplayed(eased * target)
-        if (progress < 1) {
-          rafRef.current = requestAnimationFrame(tick)
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(tick)
-    }, 200)
-
-    return () => {
-      clearTimeout(delay)
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
-    }
-  }, [target, status])
-
-  return displayed
 }
 
 const SCAFFOLD_INFO: Record<string, { strategy: string; description: string; calls: string; strength: string }> = {
@@ -97,24 +59,73 @@ const STATUS_BORDER: Record<PanelState['status'], string> = {
   failed: 'border-red-500',
 }
 
-export default function ArenaPanel({ panel }: ArenaPanelProps) {
+function ArenaPanelComponent({ panel }: ArenaPanelProps) {
   const { scaffoldId, scaffoldName, status, phase, streamedText, metrics, evaluation, error } = panel
   const info = SCAFFOLD_INFO[scaffoldId]
 
   const scoreTarget = evaluation?.total_score ?? null
-  const animatedScore = useAnimatedScore(scoreTarget, status)
+  const animatedScore = scoreTarget ?? 0
 
   const isRunning = status === 'running'
   const showMetrics = metrics !== null && status !== 'idle' && status !== 'running'
   const showScore = evaluation !== null && status !== 'idle' && status !== 'running'
+  const copyableText = panel.output || streamedText
+  const hasOutput = copyableText.trim().length > 0
+  const showNoOutputState = status !== 'idle' && !isRunning && !hasOutput
+  const noOutputMessage =
+    status === 'failed'
+      ? 'Run failed before output was generated. Open settings, verify credentials, then rerun.'
+      : 'No output was captured for this run. Review guidance and rerun for comparison-ready results.'
+
+  async function handleCopy(): Promise<void> {
+    if (!copyableText) return
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(copyableText)
+      } else {
+        const el = document.createElement('textarea')
+        el.value = copyableText
+        document.body.appendChild(el)
+        el.select()
+        document.execCommand('copy')
+        document.body.removeChild(el)
+      }
+      emitAppToast({ type: 'success', message: 'Copied to clipboard' })
+    } catch {
+      emitAppToast({ type: 'error', message: 'Copy failed' })
+    }
+  }
+
+  const statusLabel =
+    status === 'idle' ? `${scaffoldName} ready` :
+    status === 'running' ? `${scaffoldName} running` :
+    status === 'completed' ? `${scaffoldName} completed` :
+    status === 'winner' ? `${scaffoldName} won` :
+    status === 'loser' ? `${scaffoldName} lost` :
+    status === 'failed' ? `${scaffoldName} failed` : ''
 
   return (
     <div
+      role="region"
+      aria-label={scaffoldName}
       className={[
-        'flex flex-col bg-bg-secondary border rounded-lg p-4 min-h-[420px] transition-all duration-300',
+        'group relative flex flex-col bg-bg-secondary border rounded-lg p-4 min-h-[420px] transition-all duration-300',
         STATUS_BORDER[status],
       ].join(' ')}
     >
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {statusLabel}
+      </div>
+      {copyableText && status !== 'idle' && (
+        <button
+          type="button"
+          onClick={() => void handleCopy()}
+          className="absolute right-3 top-3 rounded border border-border bg-bg-primary px-2 py-1 text-[10px] font-mono text-text-secondary opacity-0 transition-opacity hover:border-accent-info hover:text-accent-info focus:opacity-100 group-hover:opacity-100"
+        >
+          Copy
+        </button>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2 min-w-0">
@@ -152,7 +163,7 @@ export default function ArenaPanel({ panel }: ArenaPanelProps) {
         {status === 'idle' ? (
           info ? (
             <div className="flex flex-col justify-center h-full px-1 py-2 space-y-3">
-              <div className="text-[10px] text-accent-info/70 uppercase tracking-widest font-mono font-bold">
+              <div className="text-[10px] text-accent-info uppercase tracking-widest font-mono font-bold">
                 {info.strategy}
               </div>
               <p className="text-xs text-text-secondary/80 leading-relaxed">
@@ -167,6 +178,10 @@ export default function ArenaPanel({ panel }: ArenaPanelProps) {
           ) : (
             <div className="text-text-secondary text-xs font-mono opacity-40 p-3">Ready</div>
           )
+        ) : showNoOutputState ? (
+          <div className="rounded border border-border/70 bg-bg-primary p-3 text-xs text-text-secondary leading-relaxed">
+            {noOutputMessage}
+          </div>
         ) : (
           <StreamingText text={streamedText} isStreaming={isRunning} />
         )}
@@ -221,3 +236,10 @@ export default function ArenaPanel({ panel }: ArenaPanelProps) {
     </div>
   )
 }
+
+const ArenaPanel = memo(
+  ArenaPanelComponent,
+  (prev, next) => prev.panel === next.panel,
+)
+
+export default ArenaPanel

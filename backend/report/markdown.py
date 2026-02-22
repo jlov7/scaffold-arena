@@ -19,11 +19,17 @@ def generate_markdown(
     """Generate a Markdown audit report following the PRD Appendix E template."""
     timestamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
-    task = get_task(task_id)
-    task_name = task.name if task else task_id
+    try:
+        task = get_task(task_id)
+        task_name = task.name
+    except ValueError:
+        task_name = task_id
 
-    model = get_model(model_id)
-    model_label = model.label if model else model_id
+    try:
+        model = get_model(model_id)
+        model_label = model.label
+    except ValueError:
+        model_label = model_id
 
     # --- Arena Results table ---
     rows = []
@@ -56,10 +62,14 @@ def generate_markdown(
     else:
         weights_str = "- (weights not available)"
 
-    judge_info = first_eval.get("judge", {})
-    judge_model = judge_info.get("model", "N/A")
-    judge_enabled = judge_info.get("enabled", False)
-    rubric = judge_info.get("rubric", "(no rubric provided)")
+    judge_info = first_eval.get("judge") or {}
+    judge_model = judge_info.get("model_id", "N/A")
+    judge_scores = judge_info.get("scores", {})
+    judge_explanation = judge_info.get("explanation", "(no explanation provided)")
+    if judge_scores:
+        judge_scores_str = "\n".join(f"- {k}: {v}" for k, v in judge_scores.items())
+    else:
+        judge_scores_str = "- (no judge scores)"
 
     # --- Per-scaffold notes ---
     per_scaffold_sections = []
@@ -134,8 +144,10 @@ def generate_markdown(
 {weights_str}
 
 **LLM Judge**
-{judge_model} (enabled={str(judge_enabled).lower()})
-{rubric}
+Model: {judge_model}
+Scores:
+{judge_scores_str}
+Notes: {judge_explanation}
 
 ## Per-Scaffold Notes
 {per_scaffold_notes}

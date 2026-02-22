@@ -1,0 +1,148 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install backend dependencies
+        run: uv sync --extra dev
+
+      - name: Run backend tests
+        run: uv run pytest -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint frontend
+        run: pnpm lint
+
+      - name: Run frontend tests
+        run: pnpm test
+
+      - name: Run UX writing content lint checks
+        run: pnpm test:content
+
+      - name: Enforce frontend coverage thresholds
+        run: pnpm exec vitest run --coverage
+
+      - name: Check frontend layering
+        run: pnpm arch:layers
+
+      - name: Build frontend
+        run: pnpm build
+
+      - name: Check frontend performance budgets
+        run: pnpm perf:budget
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run Playwright E2E journeys
+        run: pnpm test:e2e
+
+      - name: Run accessibility smoke checks
+        run: pnpm test:a11y
+
+      - name: Upload accessibility regression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-a11y-report
+          path: frontend/playwright-report
+          if-no-files-found: warn
+
+      - name: Run visual regression snapshots
+        run: pnpm test:visual
+
+      - name: Run Lighthouse CI checks
+        run: pnpm perf:lighthouse
+
+      - name: Run mobile throttled Lighthouse checks
+        run: pnpm perf:lighthouse:mobile
+
+      - name: Generate weekly UX regression report
+        run: pnpm report:ux-weekly
+
+      - name: Enforce launch scorecard freshness
+        run: pnpm check:scorecard-freshness
+
+      - name: Upload weekly UX regression report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-ux-regression-report
+          path: output/weekly-ux-regression-report.md
+          if-no-files-found: warn
+
+      - name: Audit frontend dependencies
+        run: pnpm audit --prod --audit-level high
+
+  docker-build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs:
+      - backend
+      - frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: backend
+          file: backend/Dockerfile
+          target: prod
+          push: false
+
+      - name: Build frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: frontend
+          file: frontend/Dockerfile
+          target: prod
+          push: false

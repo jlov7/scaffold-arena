@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 import type { AutopsyResult } from '../types'
 
 interface AutopsyModalProps {
@@ -39,9 +41,24 @@ export default function AutopsyModal({
   onApplyPatch,
   scaffoldName,
 }: AutopsyModalProps) {
-  if (!isOpen) return null
-
   const hasPatch = autopsy?.patch && Object.keys(autopsy.patch).length > 0
+  const modalRef = useRef<HTMLDivElement>(null)
+  const prevFocusRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+    prevFocusRef.current = document.activeElement as HTMLElement | null
+    const first = modalRef.current?.querySelector<HTMLElement>(
+      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
+    )
+    first?.focus()
+
+    return () => {
+      prevFocusRef.current?.focus()
+    }
+  }, [isOpen])
+
+  if (!isOpen) return null
 
   function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === e.currentTarget) onClose()
@@ -51,26 +68,58 @@ export default function AutopsyModal({
     if (autopsy?.patch) onApplyPatch(autopsy.patch)
   }
 
+  function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    if (e.key === 'Escape') {
+      e.stopPropagation()
+      onClose()
+      return
+    }
+    if (e.key !== 'Tab') return
+
+    const focusables = modalRef.current?.querySelectorAll<HTMLElement>(
+      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
+    )
+    if (!focusables || focusables.length === 0) return
+
+    const first = focusables[0]
+    const last = focusables[focusables.length - 1]
+    const active = document.activeElement
+
+    if (e.shiftKey && active === first) {
+      e.preventDefault()
+      last.focus()
+    } else if (!e.shiftKey && active === last) {
+      e.preventDefault()
+      first.focus()
+    }
+  }
+
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      className="motion-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
       onClick={handleOverlayClick}
     >
       <div
-        className="bg-bg-secondary border border-border rounded-lg w-full max-w-2xl max-h-[85vh] flex flex-col font-mono shadow-2xl"
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="autopsy-modal-title"
+        className="motion-slide-up bg-bg-secondary border border-border rounded-lg w-full max-w-2xl max-h-[85vh] flex flex-col font-mono shadow-2xl"
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
           <div className="flex items-center gap-3">
             <span className="text-accent-loser text-xs tracking-widest font-bold">AUTOPSY</span>
             <span className="text-border">|</span>
-            <span className="text-text-primary text-sm">{scaffoldName}</span>
+            <span id="autopsy-modal-title" className="text-text-primary text-sm">{scaffoldName}</span>
           </div>
           <button
+            type="button"
+            aria-label="Close autopsy modal"
             onClick={onClose}
             className="text-text-secondary hover:text-text-primary transition-colors text-lg leading-none w-6 h-6 flex items-center justify-center rounded hover:bg-border/50"
-            aria-label="Close"
           >
             X
           </button>

@@ -98,122 +98,108 @@ export default function ProofComparison({ cases, isLoading }: ProofComparisonPro
   return (
     <div className="bg-bg-secondary border border-border rounded-lg p-6 font-mono">
       <div className="text-xs text-text-secondary mb-5 tracking-widest">PROOF COMPARISON</div>
+      <div className="overflow-x-auto rounded border border-border/40">
+        <div className="min-w-[860px] p-2">
+          {/* Column headers */}
+          <div className="grid grid-cols-[180px_1fr_1fr_80px_80px_90px_80px_80px_80px] gap-x-2 text-xs text-text-secondary/60 mb-2 tabular-nums">
+            <span>CASE</span>
+            <span>MODEL</span>
+            <span>SCAFFOLD</span>
+            <span className="text-right">SCORE</span>
+            <span className="text-right">COST</span>
+            <span className="text-right">QPD</span>
+            <span className="text-right">Δ SCORE</span>
+            <span className="text-right">Δ COST</span>
+            <span className="text-right">OUTCOME</span>
+          </div>
 
-      {/* Column headers */}
-      <div className="grid grid-cols-[180px_1fr_1fr_80px_80px_90px_80px_80px_80px] gap-x-2 text-xs text-text-secondary/60 mb-2 tabular-nums">
-        <span>CASE</span>
-        <span>MODEL</span>
-        <span>SCAFFOLD</span>
-        <span className="text-right">SCORE</span>
-        <span className="text-right">COST</span>
-        <span className="text-right">QPD</span>
-        <span className="text-right">Δ SCORE</span>
-        <span className="text-right">Δ COST</span>
-        <span className="text-right">OUTCOME</span>
-      </div>
+          <div className="border-t border-border/40 mb-1" />
 
-      <div className="border-t border-border/40 mb-1" />
-
-      {rows.map(({ case: c, qpd, isBest, scoreDelta, costDelta, outcome, index }) => (
-        <div
-          key={c.case_id}
-          className={[
-            'grid grid-cols-[180px_1fr_1fr_80px_80px_90px_80px_80px_80px] gap-x-2 items-center py-2 text-xs tabular-nums',
-            index < rows.length - 1 ? 'border-b border-border/20' : '',
-            isBest ? 'bg-accent-winner/5 rounded' : '',
-          ].join(' ')}
-        >
-          {/* Label */}
-          <span className={['truncate', isBest ? 'text-accent-winner' : 'text-text-primary'].join(' ')}>
-            {isBest && <span className="mr-1 text-accent-winner">*</span>}
-            {c.label}
-          </span>
-
-          {/* Model */}
-          <span className="text-text-secondary truncate">{c.model_id}</span>
-
-          {/* Scaffold */}
-          <span className="text-text-secondary truncate">{c.scaffold_id}</span>
-
-          {/* Score */}
-          <span
-            className={[
-              'text-right font-semibold',
-              c.score >= 80
-                ? 'text-accent-winner'
-                : c.score >= 50
-                  ? 'text-accent-warning'
-                  : 'text-accent-loser',
-            ].join(' ')}
-          >
-            {c.score.toFixed(1)}
-          </span>
-
-          {/* Cost */}
-          <span className="text-right text-text-primary">{formatCost(c.cost)}</span>
-
-          {/* Quality-per-dollar */}
-          <span
-            className={[
-              'text-right',
-              isBest ? 'text-accent-winner font-semibold' : 'text-text-secondary',
-            ].join(' ')}
-          >
-            {formatQPD(qpd)}
-          </span>
-
-          {/* Delta Score */}
-          <span
-            className={[
-              'text-right',
-              scoreDelta === null
-                ? 'text-text-secondary/30'
-                : scoreDelta > 0
-                  ? 'text-accent-winner'
-                  : scoreDelta < 0
-                    ? 'text-accent-loser'
-                    : 'text-text-secondary',
-            ].join(' ')}
-          >
-            {scoreDelta === null ? '—' : formatDelta(scoreDelta)}
-          </span>
-
-          {/* Delta Cost */}
-          <span
-            className={[
-              'text-right',
-              costDelta === null
-                ? 'text-text-secondary/30'
-                : costDelta > 0
-                  ? 'text-accent-loser'
-                  : costDelta < 0
-                    ? 'text-accent-winner'
-                    : 'text-text-secondary',
-            ].join(' ')}
-          >
-            {costDelta === null ? '—' : formatCostDelta(costDelta)}
-          </span>
-
-          {/* Outcome */}
-          <span
-            className={[
-              'text-right',
-              'inline-flex justify-end',
-            ].join(' ')}
-          >
-            <span
+          {rows.map(({ case: c, qpd, isBest, scoreDelta, costDelta, outcome, index }) => (
+            <div
+              key={c.case_id}
               className={[
-                'text-xs font-bold border rounded px-1.5 py-0.5',
-                outcome.cls,
+                'grid grid-cols-[180px_1fr_1fr_80px_80px_90px_80px_80px_80px] gap-x-2 items-center py-2 text-xs tabular-nums',
+                index < rows.length - 1 ? 'border-b border-border/20' : '',
+                isBest ? 'bg-accent-winner/5 rounded' : '',
               ].join(' ')}
             >
-              {outcome.text}
-            </span>
-          </span>
-        </div>
-      ))}
+              <span className={['truncate', isBest ? 'text-accent-winner' : 'text-text-primary'].join(' ')}>
+                {isBest && <span className="mr-1 text-accent-winner">*</span>}
+                {c.label}
+              </span>
 
-      {/* Legend */}
+              <span className="text-text-secondary truncate">{c.model_id}</span>
+              <span className="text-text-secondary truncate">{c.scaffold_id}</span>
+
+              <span
+                className={[
+                  'text-right font-semibold',
+                  c.score >= 80
+                    ? 'text-accent-winner'
+                    : c.score >= 50
+                      ? 'text-accent-warning'
+                      : 'text-accent-loser',
+                ].join(' ')}
+              >
+                {c.score.toFixed(1)}
+              </span>
+
+              <span className="text-right text-text-primary">{formatCost(c.cost)}</span>
+              <span
+                className={[
+                  'text-right',
+                  isBest ? 'text-accent-winner font-semibold' : 'text-text-secondary',
+                ].join(' ')}
+              >
+                {formatQPD(qpd)}
+              </span>
+
+              <span
+                className={[
+                  'text-right',
+                  scoreDelta === null
+                    ? 'text-text-secondary/30'
+                    : scoreDelta > 0
+                      ? 'text-accent-winner'
+                      : scoreDelta < 0
+                        ? 'text-accent-loser'
+                        : 'text-text-secondary',
+                ].join(' ')}
+              >
+                {scoreDelta === null ? '—' : formatDelta(scoreDelta)}
+              </span>
+
+              <span
+                className={[
+                  'text-right',
+                  costDelta === null
+                    ? 'text-text-secondary/30'
+                    : costDelta > 0
+                      ? 'text-accent-loser'
+                      : costDelta < 0
+                        ? 'text-accent-winner'
+                        : 'text-text-secondary',
+                ].join(' ')}
+              >
+                {costDelta === null ? '—' : formatCostDelta(costDelta)}
+              </span>
+
+              <span className="text-right inline-flex justify-end">
+                <span
+                  className={[
+                    'text-xs font-bold border rounded px-1.5 py-0.5',
+                    outcome.cls,
+                  ].join(' ')}
+                >
+                  {outcome.text}
+                </span>
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="mt-4 pt-3 border-t border-border/40 flex gap-4 text-xs text-text-secondary/50">
         <span><span className="text-accent-winner">*</span> best quality-per-dollar</span>
         <span>QPD = score / (cost × 1000)</span>

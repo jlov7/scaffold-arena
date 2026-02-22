@@ -7,7 +7,7 @@ import re
 from typing import Any, AsyncGenerator, Callable
 
 from core import events as ev
-from core.provider import AnthropicProvider
+from core.provider import LLMProvider
 from core.run_engine import RunOptions
 from scaffolds.base import BaseScaffold
 from tasks.base import BaseTask, OUTPUT_RULES
@@ -23,7 +23,7 @@ class MemoryCritiqueScaffold(BaseScaffold):
         run_id: str,
         task: BaseTask,
         model_id: str,
-        provider: AnthropicProvider,
+        provider: LLMProvider,
         options: RunOptions,
         config_override: dict | None = None,
         cancelled_check: Callable[[], bool] | None = None,

@@ -27,6 +27,7 @@ Verify the backend is running.
 ### `GET /api/meta`
 
 Returns available models, tasks, scaffolds, and feature flags. The frontend calls this once on load to populate the UI.
+Model entries include a `provider` field (`anthropic`, `openai`, `gemini`, or `openrouter`).
 
 **Response:**
 
@@ -36,14 +37,37 @@ Returns available models, tasks, scaffolds, and feature flags. The frontend call
         {
             "id": "claude-sonnet-4-6",
             "label": "Claude Sonnet 4.6",
-            "input_per_mtok": 3.0,
-            "output_per_mtok": 15.0
+            "provider": "anthropic",
+            "input_usd_per_mtok": 3.0,
+            "output_usd_per_mtok": 15.0
         },
         {
             "id": "claude-haiku-4-5",
             "label": "Claude Haiku 4.5",
-            "input_per_mtok": 1.0,
-            "output_per_mtok": 5.0
+            "provider": "anthropic",
+            "input_usd_per_mtok": 1.0,
+            "output_usd_per_mtok": 5.0
+        },
+        {
+            "id": "gpt-4.1-mini",
+            "label": "GPT-4.1 mini",
+            "provider": "openai",
+            "input_usd_per_mtok": 0.4,
+            "output_usd_per_mtok": 1.6
+        },
+        {
+            "id": "gemini-2.5-flash",
+            "label": "Gemini 2.5 Flash",
+            "provider": "gemini",
+            "input_usd_per_mtok": 0.3,
+            "output_usd_per_mtok": 2.5
+        },
+        {
+            "id": "openrouter/openai/gpt-4.1-mini",
+            "label": "OpenRouter • GPT-4.1 mini",
+            "provider": "openrouter",
+            "input_usd_per_mtok": 0.5,
+            "output_usd_per_mtok": 2.0
         }
     ],
     "tasks": [
@@ -63,7 +87,7 @@ Returns available models, tasks, scaffolds, and feature flags. The frontend call
         }
     ],
     "features": {
-        "llm_judge": false,
+        "llm_judge": true,
         "pdf_export": false
     }
 }
@@ -209,7 +233,7 @@ Emitted when a scaffold encounters an error.
     "run_id": "run_xxx",
     "ts_ms": 1708354230000,
     "scaffold_id": "bare",
-    "error": "Anthropic API error: rate limited"
+    "error": "Provider API error: rate limited"
 }
 ```
 
@@ -490,4 +514,4 @@ The backend accepts requests from origins listed in the `CORS_ORIGINS` environme
 
 ## Rate Limits
 
-Scaffold Arena respects Anthropic API rate limits. The `MAX_CONCURRENT_LLM_CALLS` setting (default: 8) controls how many simultaneous API calls can be in flight. If you hit Anthropic rate limits, reduce this value.
+Scaffold Arena respects provider API rate limits. The `MAX_CONCURRENT_LLM_CALLS` setting (default: 3) controls how many simultaneous API calls can be in flight. If you hit provider rate limits, reduce this value.

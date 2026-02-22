@@ -1,6 +1,12 @@
 import { useState, useCallback, useRef } from 'react'
-import { createArenaRun, cancelRun, getEventStreamUrl } from '../api/client'
+import {
+  createArenaRun,
+  cancelRun,
+  fetchRunDetails,
+  getEventStreamUrl,
+} from '../api/client'
 import { useSSE } from './useSSE'
+import { parseRunDetailsResponse } from '../lib/schema'
 import type {
   PanelState,
   RunResults,
@@ -35,6 +41,17 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
   const [winnerId, setWinnerId] = useState<string | null>(null)
   const [finalResults, setFinalResults] = useState<RunResults | null>(null)
   const [isRunning, setIsRunning] = useState(false)
+  const [isCachedResult, setIsCachedResult] = useState(false)
+  const [runError, setRunError] = useState<string | null>(null)
+  const [connectionState, setConnectionState] = useState<
+    'idle' | 'connected' | 'retrying' | 'failed'
+  >('idle')
+  const [connectionRetryCount, setConnectionRetryCount] = useState(0)
+  const startInFlightRef = useRef(false)
+  const lastStartRequestRef = useRef<{
+    key: string
+    startedAtMs: number
+  } | null>(null)
 
   // Use refs for streaming text to avoid re-renders per token
   const textBuffers = useRef<Record<string, string>>({})
@@ -77,6 +94,9 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
       switch (eventName) {
         case 'run_started':
           setIsRunning(true)
+          setIsCachedResult(false)
+          setConnectionState('connected')
+          setConnectionRetryCount(0)
           break
 
         case 'scaffold_started':
@@ -141,7 +161,10 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
           setWinnerId(e.winner_scaffold_id)
           setFinalResults(e.results)
           setIsRunning(false)
+          setIsCachedResult(false)
           setStreamUrl(null)
+          setConnectionState('idle')
+          setConnectionRetryCount(0)
 
           // Mark winner/loser
           setPanels((prev) =>
@@ -160,34 +183,168 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
     [updatePanel, scheduleFlush],
   )
 
-  useSSE(streamUrl, handleEvent)
+  const hydrateFromResults = useCallback(
+    (
+      results: RunResults,
+      hydratedWinnerId: string | null,
+      options?: { cached?: boolean },
+    ) => {
+      const cached = options?.cached ?? false
+      setFinalResults(results)
+      setWinnerId(hydratedWinnerId)
+      setIsCachedResult(cached)
+      setIsRunning(false)
+      setStreamUrl(null)
+      setPanels((prev) =>
+        prev.map((panel) => {
+          const result = results[panel.scaffoldId]
+          if (!result) return panel
+          const status =
+            panel.scaffoldId === hydratedWinnerId ? 'winner' : ('loser' as const)
+          return {
+            ...panel,
+            status,
+            output: result.output,
+            streamedText: result.output,
+            metrics: result.metrics,
+            evaluation: result.evaluation,
+            error: result.error ?? null,
+          }
+        }),
+      )
+    },
+    [],
+  )
+
+  const hydrateFromRecord = useCallback(async (): Promise<boolean> => {
+    if (!runId) return false
+    try {
+      const raw = await fetchRunDetails(runId)
+      const record = parseRunDetailsResponse(raw)
+      const results = (record.results ?? {}) as RunResults
+      const hasResults = Object.keys(results).length > 0
+      if (!hasResults) return false
+      const hydratedWinner = (record.winner_id as string | null) ?? null
+      hydrateFromResults(results, hydratedWinner, { cached: false })
+      setRunError(null)
+      setConnectionState('idle')
+      setConnectionRetryCount(0)
+      return true
+    } catch {
+      return false
+    }
+  }, [hydrateFromResults, runId])
+
+  useSSE(streamUrl, handleEvent, {
+    onConnected: () => {
+      setConnectionState('connected')
+      setConnectionRetryCount(0)
+    },
+    onRetrying: (attempt) => {
+      setConnectionState('retrying')
+      setConnectionRetryCount(attempt)
+      void hydrateFromRecord().then((recovered) => {
+        if (!recovered) return
+        setStreamUrl(null)
+        setConnectionState('idle')
+        setConnectionRetryCount(0)
+      })
+    },
+    onFailed: () => {
+      setStreamUrl(null)
+      void hydrateFromRecord().then((recovered) => {
+        if (recovered) return
+        setConnectionState('failed')
+        setIsRunning(false)
+        setRunError('Connection failed while streaming run events.')
+      })
+    },
+  })
 
   const startRun = useCallback(
-    async (taskId: string, modelId: string) => {
+    async (
+      taskId: string,
+      modelId: string,
+      options?: Record<string, unknown>,
+      customTask?: Record<string, unknown>,
+    ) => {
+      const requestKey = JSON.stringify({
+        taskId,
+        modelId,
+        options: options ?? null,
+        customTask: customTask ?? null,
+        scaffoldIds: scaffolds.map((s) => s.id),
+      })
+      const lastReq = lastStartRequestRef.current
+      if (
+        lastReq &&
+        lastReq.key === requestKey &&
+        Date.now() - lastReq.startedAtMs < 4000
+      ) {
+        return
+      }
+      if (startInFlightRef.current || isRunning) return
+      startInFlightRef.current = true
+      lastStartRequestRef.current = {
+        key: requestKey,
+        startedAtMs: Date.now(),
+      }
+
       // Reset state
       textBuffers.current = {}
+      setRunError(null)
+      setIsCachedResult(false)
+      setConnectionState('idle')
+      setConnectionRetryCount(0)
       setWinnerId(null)
       setFinalResults(null)
       setPanels(scaffolds.map(initPanel))
+      setIsRunning(true)
 
       const scaffoldIds = scaffolds.map((s) => s.id)
-      const result = await createArenaRun({
-        task_id: taskId,
-        model_id: modelId,
-        scaffold_ids: scaffoldIds,
-      })
+      try {
+        const result = await createArenaRun({
+          task_id: taskId,
+          model_id: modelId,
+          scaffold_ids: scaffoldIds,
+          options,
+          ...(customTask ? { custom_task: customTask } : {}),
+        })
 
-      setRunId(result.run_id)
-      setStreamUrl(getEventStreamUrl(result.run_id))
+        setRunId(result.run_id)
+        setStreamUrl(getEventStreamUrl(result.run_id))
+      } catch (err) {
+        setIsRunning(false)
+        setStreamUrl(null)
+        const message = err instanceof Error ? err.message : 'Failed to start run.'
+        setRunError(message)
+        throw err
+      } finally {
+        startInFlightRef.current = false
+      }
     },
-    [scaffolds],
+    [isRunning, scaffolds],
   )
 
   const cancel = useCallback(async () => {
     if (runId) {
       await cancelRun(runId)
       setIsRunning(false)
+      setStreamUrl(null)
+      setConnectionState('idle')
+      setConnectionRetryCount(0)
+      setRunError(null)
+      textBuffers.current = {}
+      setPanels(scaffolds.map(initPanel))
     }
+  }, [runId, scaffolds])
+
+  const retryConnection = useCallback(() => {
+    if (!runId) return
+    setConnectionState('idle')
+    setConnectionRetryCount(0)
+    setIsRunning(true)
+    setStreamUrl(getEventStreamUrl(runId))
   }, [runId])
 
   return {
@@ -196,8 +353,14 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
     winnerId,
     finalResults,
     isRunning,
+    isCachedResult,
+    runError,
+    connectionState,
+    connectionRetryCount,
     startRun,
     cancel,
+    retryConnection,
+    hydrateFromResults,
     updatePanel,
     setPanels,
   }

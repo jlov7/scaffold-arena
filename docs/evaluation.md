@@ -138,7 +138,7 @@ When enabled, the LLM judge evaluates subjective criteria using a task-specific 
 3. Returns scores (0-100) per subjective metric
 4. Provides a brief explanation for each score
 
-The judge uses the same model as the arena run (by default), ensuring consistent evaluation standards. Each metric has a defined rubric — the judge doesn't freelance.
+By default, the judge uses the configured cheap model (`DEFAULT_CHEAP_MODEL_ID`) through the matching provider implementation. Each metric has a defined rubric — the judge doesn't freelance.
 
 ### When to Enable the Judge
 

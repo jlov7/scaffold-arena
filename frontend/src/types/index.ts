@@ -3,8 +3,9 @@
 export interface ModelMeta {
   id: string
   label: string
-  input_per_mtok: number
-  output_per_mtok: number
+  provider: string
+  input_usd_per_mtok: number
+  output_usd_per_mtok: number
 }
 
 export interface TaskMeta {
@@ -147,4 +148,38 @@ export interface AutopsyResult {
   failures: AutopsyFailure[]
   patch: Record<string, unknown>
   summary: string
+}
+
+// --- Leaderboard / stats types ---
+
+export interface LeaderboardBin {
+  label: string
+  count: number
+}
+
+export interface LeaderboardDistribution {
+  scaffold_id: string
+  bins: LeaderboardBin[]
+}
+
+export interface LeaderboardScaffoldStat {
+  scaffold_id: string
+  wins: number
+  win_rate: number
+  avg_score: number
+  avg_cost: number
+  samples: number
+}
+
+export interface LeaderboardTaskStat {
+  scaffold_id: string
+  avg_score: number
+  samples: number
+}
+
+export interface LeaderboardStats {
+  run_count: number
+  scaffolds: LeaderboardScaffoldStat[]
+  by_task: Record<string, LeaderboardTaskStat[]>
+  distributions: LeaderboardDistribution[]
 }
