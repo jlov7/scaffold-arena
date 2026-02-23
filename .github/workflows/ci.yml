@@ -1,10 +1,11 @@
-name: CI
+name: CI (Manual)
 
 on:
-  pull_request:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+
+# Note:
+# This workflow is manual-only so the repo can stay green even when Actions billing is disabled.
+# Run local verification via ./scripts/verify-all.sh before making releases public.
 
 jobs:
   backend:

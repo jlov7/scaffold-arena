@@ -1,5 +1,13 @@
 # Scaffold Arena
 
+```text
+  ____   ____    _    _____ _____ ___  _     ____      _    ____  _____ _   _    _
+ / ___| / ___|  / \  |  ___|  ___/ _ \| |   |  _ \    / \  |  _ \| ____| \ | |  / \
+ \___ \| |     / _ \ | |_  | |_ | | | | |   | | | |  / _ \ | |_) |  _| |  \| | / _ \
+  ___) | |___ / ___ \|  _| |  _|| |_| | |___| |_| | / ___ \|  _ <| |___| |\  |/ ___ \
+ |____/ \____/_/   \_\_|   |_|   \___/|_____|____/ /_/   \_\_| \_\_____|_| \_/_/   \_\
+```
+
 **Same model. Different scaffolding. Wildly different outcomes.**
 
 Scaffold Arena is an evaluation workbench for a practical question:
@@ -9,6 +17,12 @@ Scaffold Arena is an evaluation workbench for a practical question:
 It runs the same benchmark input across multiple scaffold strategies, measures score/cost/time, explains failures with evidence, and supports one-click patch-and-rerun validation.
 
 ![Arena Workspace](docs/assets/screenshots/arena-desktop.png)
+
+## Live Deployment
+
+- Frontend: [https://scaffold-arena.vercel.app](https://scaffold-arena.vercel.app)
+- Backend API: [https://scaffold-arena-production.up.railway.app](https://scaffold-arena-production.up.railway.app)
+- API health: [https://scaffold-arena-production.up.railway.app/api/health](https://scaffold-arena-production.up.railway.app/api/health)
 
 ## Why This Repo Exists
 
@@ -177,6 +191,12 @@ docs/         Explainers, architecture, onboarding, ops playbooks, audits
 
 ## Quality Gates
 
+GitHub Actions are configured as manual-only in this repo. Run local verification before publishing:
+
+```bash
+./scripts/verify-all.sh
+```
+
 ### Frontend
 
 ```bash
@@ -196,6 +216,12 @@ pnpm arch:layers
 ```bash
 cd backend
 uv run pytest
+```
+
+### Secret Scan
+
+```bash
+./scripts/scan-secrets.sh
 ```
 
 ## Visual Gallery
@@ -234,6 +260,14 @@ uvx showboat verify docs/demos/production-live-verified.md
 - Support policy: [SUPPORT.md](SUPPORT.md)
 - Changelog: [CHANGELOG.md](CHANGELOG.md)
 - License: [MIT](LICENSE)
+
+## Public Release Checklist
+
+- [ ] `./scripts/verify-all.sh` passes locally.
+- [ ] `./scripts/scan-secrets.sh` passes with zero hits.
+- [ ] README links and screenshots render correctly on GitHub web + mobile.
+- [ ] Vercel frontend and Railway backend health endpoints are reachable.
+- [ ] No private/internal tokens, keys, or environment files are tracked.
 
 ---
 
