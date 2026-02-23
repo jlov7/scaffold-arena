@@ -208,6 +208,17 @@ uv run pytest
 |---|---|---|
 | ![Leaderboard](docs/assets/screenshots/leaderboard-desktop.png) | ![Settings](docs/assets/screenshots/settings-desktop.png) | ![Mobile](docs/assets/screenshots/arena-mobile.png) |
 
+## Executable Demos (Showboat + Rodney)
+
+- Demo index: [docs/demos/README.md](docs/demos/README.md)
+- Live production proof: [docs/demos/production-live-verified.md](docs/demos/production-live-verified.md)
+
+These documents are executable evidence artifacts. You can re-run and diff command output with:
+
+```bash
+uvx showboat verify docs/demos/production-live-verified.md
+```
+
 ## Security, Ops, and Review Docs
 
 - Security review: [docs/security/frontend-security-review.md](docs/security/frontend-security-review.md)
