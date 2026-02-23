@@ -301,7 +301,13 @@ export function ArenaWorkspace({
 
       <PrimaryCtaRail
         stage={journeyStage}
-        canRun={Boolean(selectedTaskId && selectedModelId && !isRunning && isOnline)}
+        canRun={Boolean(
+          arenaLane !== 'onboarding' &&
+            selectedTaskId &&
+            selectedModelId &&
+            !isRunning &&
+            isOnline,
+        )}
         hasResults={Boolean(finalResults)}
         runDisabledReason={isOnline ? undefined : COPY.errors.offlineRunBlocked}
         orderVariant={railOrderVariant}

@@ -12,21 +12,19 @@ describe('resolveHelpBlocker', () => {
       resolveHelpBlocker({
         isOnline: false,
         connectionState: 'failed',
-        hasApiToken: false,
         errorMessage: 'HTTP 401 unauthorized',
       }),
     ).toBe('offline')
   })
 
-  it('returns auth when token missing even if no explicit error', () => {
+  it('does not block when no explicit error is present', () => {
     expect(
       resolveHelpBlocker({
         isOnline: true,
         connectionState: 'connected',
-        hasApiToken: false,
         errorMessage: null,
       }),
-    ).toBe('auth')
+    ).toBe('none')
   })
 
   it('classifies explicit error messages', () => {
@@ -34,7 +32,6 @@ describe('resolveHelpBlocker', () => {
       resolveHelpBlocker({
         isOnline: true,
         connectionState: 'connected',
-        hasApiToken: true,
         errorMessage: 'HTTP 429 rate limit exceeded',
       }),
     ).toBe('rate_limit')

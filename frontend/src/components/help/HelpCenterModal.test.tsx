@@ -72,7 +72,7 @@ describe('HelpCenterModal', () => {
     expect(onRun).toHaveBeenCalledTimes(0)
   })
 
-  test('runs playbook primary action for auth blockers', () => {
+  test('runs playbook primary action for explicit auth errors', () => {
     const onClose = vi.fn()
     const onOpenSettings = vi.fn()
 
@@ -84,7 +84,7 @@ describe('HelpCenterModal', () => {
         hasApiToken={false}
         profile="evaluator"
         taskId="risk"
-        errorMessage={null}
+        errorMessage="HTTP 401 unauthorized"
         onClose={onClose}
         onOpenTour={() => {}}
         onOpenShortcuts={() => {}}

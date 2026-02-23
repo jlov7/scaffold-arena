@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import {
   getTaskPlaybook,
   playbookActionLabel,
@@ -7,6 +7,7 @@ import {
 } from '../../features/help/playbook'
 import { classifyApiError } from '../../errors/classify'
 import type { UserProfile } from '../journey/ExperienceModeCard'
+import { Modal } from '../primitives/Modal'
 
 interface HelpCenterModalProps {
   isOpen: boolean
@@ -39,21 +40,6 @@ export default function HelpCenterModal({
   onRetry,
   onRun,
 }: HelpCenterModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null)
-  const prevFocusRef = useRef<HTMLElement | null>(null)
-
-  useEffect(() => {
-    if (!isOpen) return
-    prevFocusRef.current = document.activeElement as HTMLElement | null
-    const first = modalRef.current?.querySelector<HTMLElement>(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
-    )
-    first?.focus()
-    return () => {
-      prevFocusRef.current?.focus()
-    }
-  }, [isOpen])
-
   const stuckMessage = useMemo(() => {
     if (!isOnline) {
       return 'You appear to be offline. Reconnect to the internet, then retry your run.'
@@ -75,10 +61,9 @@ export default function HelpCenterModal({
       resolveHelpBlocker({
         isOnline,
         connectionState,
-        hasApiToken,
         errorMessage,
       }),
-    [connectionState, errorMessage, hasApiToken, isOnline],
+    [connectionState, errorMessage, isOnline],
   )
   const playbook = useMemo(
     () => getTaskPlaybook(taskId, blocker),
@@ -171,57 +156,24 @@ export default function HelpCenterModal({
 
   if (!isOpen) return null
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.key === 'Escape') {
-      e.stopPropagation()
-      onClose()
-      return
-    }
-    if (e.key !== 'Tab') return
-    const focusables = modalRef.current?.querySelectorAll<HTMLElement>(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
-    )
-    if (!focusables || focusables.length === 0) return
-    const first = focusables[0]
-    const last = focusables[focusables.length - 1]
-    const active = document.activeElement
-    if (e.shiftKey && active === first) {
-      e.preventDefault()
-      last.focus()
-    } else if (!e.shiftKey && active === last) {
-      e.preventDefault()
-      first.focus()
-    }
-  }
-
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70" onClick={onClose}>
-      <div
-        ref={modalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="help-center-title"
-        tabIndex={-1}
-        className="w-full max-w-2xl rounded-lg border border-border bg-bg-secondary p-5 font-mono"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleKeyDown}
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Help Center"
+      closeLabel="Close help center"
+      className="max-h-[88vh] max-w-2xl font-mono"
+      contentClassName="max-h-[88vh] overflow-y-auto p-5"
+    >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div id="help-center-title" className="text-xs uppercase tracking-widest text-text-secondary">
+            <div className="text-xs uppercase tracking-widest text-text-secondary">
               Help Center
             </div>
             <p className="mt-2 text-sm text-text-primary">
               No guesswork. Follow this exact path to complete a run and resolve blockers.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded border border-border min-h-11 px-3 py-2 text-xs text-text-secondary hover:border-accent-info hover:text-accent-info sm:min-h-0 sm:px-2 sm:py-1 sm:text-[11px]"
-          >
-            Close
-          </button>
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -365,7 +317,6 @@ export default function HelpCenterModal({
             )}
           </div>
         </details>
-      </div>
-    </div>
+    </Modal>
   )
 }

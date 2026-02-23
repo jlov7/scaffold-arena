@@ -171,7 +171,7 @@ export function ResultsWorkspace({
               onClick={onNavigateToArena}
               className="rounded border border-accent-info px-3 py-1.5 text-xs font-mono text-accent-info hover:bg-accent-info/20"
             >
-              Open arena setup
+              Start a new arena run
             </button>
             <button
               type="button"

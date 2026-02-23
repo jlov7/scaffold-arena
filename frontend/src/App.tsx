@@ -29,6 +29,10 @@ import LoadingSkeletons from './components/LoadingSkeletons'
 import ToastStack, { type ToastItem } from './components/ToastStack'
 import ShortcutOverlay from './components/ShortcutOverlay'
 import LiveRegion from './components/LiveRegion'
+import GuidedTourModal from './components/GuidedTourModal'
+import { AppFooter } from './components/shell/AppFooter'
+import { AppShellHeader } from './components/shell/AppShellHeader'
+import { MobileNextActionBar } from './components/shell/MobileNextActionBar'
 import HelpCenterModal from './components/help/HelpCenterModal'
 import {
   getTaskPlaybook,
@@ -37,9 +41,7 @@ import {
 } from './features/help/playbook'
 import { COPY } from './content/copy'
 import {
-  APP_VIEWS,
   type AppView,
-  appViewLabel,
 } from './app/viewState'
 import { useViewNavigation } from './features/shell/useViewNavigation'
 import { useJourneyProgress } from './features/journey/useJourneyProgress'
@@ -400,8 +402,6 @@ export default function App() {
   const navHistoryRef = useRef<Array<{ view: AppView; ts: number }>>([])
   const navSignalRef = useRef<string | null>(null)
   const routeTimingRef = useRef<{ view: AppView; enteredAt: number } | null>(null)
-  const tourDialogRef = useRef<HTMLDivElement | null>(null)
-  const tourPrevFocusRef = useRef<HTMLElement | null>(null)
   const taskOptions = useMemo(
     () => [
       ...tasks,
@@ -736,18 +736,6 @@ export default function App() {
       target.classList.remove('tour-highlight')
     }
   }, [tourOpen, tourStep, prefersReducedMotion])
-
-  useEffect(() => {
-    if (!tourOpen) return
-    tourPrevFocusRef.current = document.activeElement as HTMLElement | null
-    const first = tourDialogRef.current?.querySelector<HTMLElement>(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
-    )
-    first?.focus()
-    return () => {
-      tourPrevFocusRef.current?.focus()
-    }
-  }, [tourOpen])
 
   useEffect(() => {
     if (!meta) return
@@ -1446,8 +1434,7 @@ export default function App() {
         hasBlocker:
           !isOnline ||
           connectionState === 'retrying' ||
-          connectionState === 'failed' ||
-          !hasConfiguredApiToken(),
+          connectionState === 'failed',
       }),
     [activeErrorMessage, connectionState, finalResults, isOnline, isRunning],
   )
@@ -1528,7 +1515,6 @@ export default function App() {
       resolveHelpBlocker({
         isOnline,
         connectionState,
-        hasApiToken: hasConfiguredApiToken(),
         errorMessage: activeErrorMessage,
       }),
     [activeErrorMessage, connectionState, isOnline],
@@ -1845,32 +1831,6 @@ export default function App() {
     }
   }, [])
 
-  const handleTourKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === 'Escape') {
-        e.stopPropagation()
-        closeTour()
-        return
-      }
-      if (e.key !== 'Tab') return
-      const focusables = tourDialogRef.current?.querySelectorAll<HTMLElement>(
-        'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
-      )
-      if (!focusables || focusables.length === 0) return
-      const first = focusables[0]
-      const last = focusables[focusables.length - 1]
-      const active = document.activeElement
-      if (e.shiftKey && active === first) {
-        e.preventDefault()
-        last.focus()
-      } else if (!e.shiftKey && active === last) {
-        e.preventDefault()
-        first.focus()
-      }
-    },
-    [closeTour],
-  )
-
   // --- Loading / Error states ---
   if (metaError) {
     return (
@@ -1889,11 +1849,7 @@ export default function App() {
     return <LoadingSkeletons />
   }
 
-  const mobilePrimaryViews: AppView[] = ['arena', 'results']
-  const mobileSecondaryViews = APP_VIEWS.filter(
-    (view) => !mobilePrimaryViews.includes(view),
-  )
-  const showTaskSelector = activeView === 'arena'
+  const showTaskSelector = activeView === 'arena' && arenaLane === 'configure'
   const personaGuidance = PERSONA_GUIDANCE[userProfile]
 
   // --- Main render ---
@@ -1902,113 +1858,18 @@ export default function App() {
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <header className="border-b border-border" role="banner">
-        <div className="flex items-center gap-3 px-4 py-2.5 sm:px-6">
-          <h1 className="font-mono text-sm font-bold tracking-tight text-text-primary shrink-0">
-            {COPY.app.title}
-          </h1>
-
-          <nav role="tablist" aria-label="Primary views" className="flex items-center gap-1 overflow-x-auto">
-            <div className="contents max-[360px]:hidden">
-              {APP_VIEWS.map((view) => (
-                <button
-                  key={view}
-                  id={view === 'settings' ? 'tour-settings-link' : undefined}
-                  type="button"
-                  role="tab"
-                  onClick={() => navigateToView(view)}
-                  disabled={isRunning && activeView !== view}
-                  aria-selected={activeView === view}
-                  aria-label={appViewLabel(view)}
-                  className={[
-                    'rounded border px-2.5 py-1 text-[11px] font-mono transition-colors disabled:cursor-not-allowed disabled:opacity-40',
-                    activeView === view
-                      ? 'border-accent-info bg-accent-info/10 text-accent-info'
-                      : 'border-transparent text-text-secondary hover:border-border hover:text-accent-info',
-                  ].join(' ')}
-                >
-                  {appViewLabel(view)}
-                </button>
-              ))}
-            </div>
-            <div className="hidden w-full items-center gap-1 max-[360px]:flex">
-              {mobilePrimaryViews.map((view) => (
-                <button
-                  key={view}
-                  type="button"
-                  role="tab"
-                  onClick={() => navigateToView(view)}
-                  disabled={isRunning && activeView !== view}
-                  aria-selected={activeView === view}
-                  aria-label={appViewLabel(view)}
-                  className={[
-                    'rounded border px-2.5 py-1 text-[11px] font-mono transition-colors disabled:cursor-not-allowed disabled:opacity-40',
-                    activeView === view
-                      ? 'border-accent-info bg-accent-info/10 text-accent-info'
-                      : 'border-transparent text-text-secondary hover:border-border hover:text-accent-info',
-                  ].join(' ')}
-                >
-                  {appViewLabel(view)}
-                </button>
-              ))}
-              <details className="relative">
-                <summary className="list-none rounded border border-transparent px-2.5 py-1 text-[11px] font-mono text-text-secondary hover:border-border hover:text-accent-info cursor-pointer">
-                  More
-                </summary>
-                <div className="absolute right-0 z-20 mt-1 w-40 rounded border border-border bg-bg-secondary p-1.5 shadow-lg">
-                  {mobileSecondaryViews.map((view) => (
-                    <button
-                      key={view}
-                      id={view === 'settings' ? 'tour-settings-link' : undefined}
-                      type="button"
-                      role="tab"
-                      onClick={() => navigateToView(view)}
-                      aria-selected={activeView === view}
-                      aria-label={appViewLabel(view)}
-                      className={[
-                        'mb-0.5 block w-full rounded px-2 py-1 text-left text-[11px] font-mono',
-                        activeView === view
-                          ? 'bg-accent-info/10 text-accent-info'
-                          : 'text-text-secondary hover:text-accent-info hover:bg-bg-tertiary',
-                      ].join(' ')}
-                    >
-                      {appViewLabel(view)}
-                    </button>
-                  ))}
-                </div>
-              </details>
-            </div>
-          </nav>
-
-          <div className="ml-auto flex items-center gap-1.5 shrink-0">
-            <span className="hidden rounded border border-accent-info/40 bg-accent-info/10 px-2 py-0.5 text-[10px] font-mono text-accent-info sm:inline-block">
-              {journey.stage}
-            </span>
-            <button
-              type="button"
-              onClick={() => openHelpCenter('header')}
-              className="rounded border border-transparent px-2 py-1 text-[11px] font-mono text-text-secondary hover:border-border hover:text-accent-info"
-            >
-              Help
-            </button>
-            <button
-              type="button"
-              onClick={() => setTourOpen(true)}
-              className="hidden rounded border border-transparent px-2 py-1 text-[11px] font-mono text-text-secondary hover:border-border hover:text-accent-info sm:inline-block"
-            >
-              Tour
-            </button>
-            <button
-              type="button"
-              onClick={() => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))}
-              className="rounded border border-transparent px-2 py-1 text-[11px] font-mono text-text-secondary hover:border-border hover:text-accent-info"
-              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
-            >
-              {theme === 'dark' ? '\u2600' : '\u263E'}
-            </button>
-          </div>
-        </div>
-      </header>
+      <AppShellHeader
+        activeView={activeView}
+        stageLabel={journey.stage}
+        theme={theme}
+        onOpenHelp={() => openHelpCenter('header')}
+        onExplainScreen={() => openHelpCenter('route')}
+        onOpenTour={() => setTourOpen(true)}
+        onToggleTheme={() =>
+          setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+        }
+        onNavigate={navigateToView}
+      />
 
       {showTaskSelector && (
         <div id="tour-task-selector">
@@ -2023,7 +1884,8 @@ export default function App() {
             onSelectModel={setSelectedModelId}
             onRun={handleRun}
             onCancel={cancel}
-            showMobileActionBar
+            showMobileActionBar={false}
+            showRunControls={false}
           />
         </div>
       )}
@@ -2260,55 +2122,15 @@ export default function App() {
         )}
       </main>
 
-      {activeView === 'arena' && (
-        <div className="sticky bottom-0 z-40 hidden border-t border-border bg-bg-secondary/95 px-6 py-2 backdrop-blur sm:flex sm:items-center sm:justify-between sm:gap-3">
-          <span className="text-[10px] uppercase tracking-widest text-text-muted font-mono">
-            {journey.stage}
-          </span>
-          <div className="flex items-center gap-2">
-            {finalResults && (
-              <button
-                type="button"
-                onClick={() => navigateToView('results')}
-                className="rounded border border-border px-3 py-1.5 text-xs font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
-              >
-                View results
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={isRunning ? cancel : runFromCurrentSelection}
-              disabled={!isRunning && (!selectedTaskId || !selectedModelId || !isOnline)}
-              className={[
-                'rounded border px-4 py-1.5 text-xs font-mono font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-40',
-                isRunning
-                  ? 'border-accent-loser bg-accent-loser/10 text-accent-loser hover:bg-accent-loser hover:text-white'
-                  : 'border-accent-info bg-accent-info/10 text-accent-info hover:bg-accent-info hover:text-white',
-              ].join(' ')}
-            >
-              {isRunning ? COPY.actions.cancelRun : finalResults ? 'Run again' : COPY.actions.runArena}
-            </button>
-          </div>
-        </div>
-      )}
-
       {activeView !== 'arena' && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-bg-secondary/95 px-3 py-2 backdrop-blur sm:hidden">
-          <button
-            type="button"
-            onClick={runNextAction}
-            disabled={nextActionKey === 'run_comparison' && !winnerId}
-            className="w-full rounded border border-accent-info bg-accent-info/10 py-3 text-xs font-mono font-semibold text-accent-info hover:bg-accent-info hover:text-white disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {nextActionCopy[nextActionKey].cta}
-          </button>
-        </div>
+        <MobileNextActionBar
+          ctaLabel={nextActionCopy[nextActionKey].cta}
+          disabled={nextActionKey === 'run_comparison' && !winnerId}
+          onClick={runNextAction}
+        />
       )}
 
-      <footer className="border-t border-border/60 px-6 py-3 text-[10px] text-text-muted font-mono flex items-center justify-between">
-        <span>Scaffold Arena v{__APP_VERSION__}</span>
-        <span>Built for Scaffold Engineering evaluation</span>
-      </footer>
+      <AppFooter version={__APP_VERSION__} />
 
       <LiveRegion
         message={liveAnnouncement?.message ?? null}
@@ -2332,50 +2154,19 @@ export default function App() {
         isLoading={reportLoading}
       />
 
-      {tourOpen && (
-        <div className="fixed inset-0 z-[65] flex items-center justify-center bg-black/70">
-          <div
-            ref={tourDialogRef}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="tour-title"
-            className="relative z-[80] w-full max-w-lg rounded-lg border border-border bg-bg-secondary p-5 font-mono"
-            onKeyDown={handleTourKeyDown}
-          >
-            <div id="tour-title" className="text-xs uppercase tracking-widest text-text-secondary">
-              Guided Tour
-            </div>
-            <div className="mt-3 text-sm text-text-primary">
-              {TOUR_STEPS[tourStep]?.title}
-            </div>
-            <div className="mt-2 text-xs text-text-secondary">
-              {TOUR_STEPS[tourStep]?.body}
-            </div>
-            <div className="mt-4 flex items-center justify-between">
-              <button
-                type="button"
-                onClick={closeTour}
-                className="rounded border border-border min-h-11 px-3.5 py-2 text-xs text-text-secondary sm:min-h-0 sm:px-3 sm:py-1"
-              >
-                Skip
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  if (tourStep >= TOUR_STEPS.length - 1) {
-                    closeTour()
-                  } else {
-                    setTourStep((prev) => prev + 1)
-                  }
-                }}
-                className="rounded border border-accent-info min-h-11 px-3.5 py-2 text-xs text-accent-info sm:min-h-0 sm:px-3 sm:py-1"
-              >
-                {tourStep >= TOUR_STEPS.length - 1 ? 'Done' : 'Next'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <GuidedTourModal
+        isOpen={tourOpen}
+        step={tourStep}
+        steps={TOUR_STEPS}
+        onClose={closeTour}
+        onNext={() => {
+          if (tourStep >= TOUR_STEPS.length - 1) {
+            closeTour()
+          } else {
+            setTourStep((prev) => prev + 1)
+          }
+        }}
+      />
 
       <ShortcutOverlay
         isOpen={shortcutsOpen}

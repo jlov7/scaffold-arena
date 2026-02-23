@@ -12,7 +12,28 @@ async function triggerRunStartFailure(
 ) {
   await setup()
   await page.goto('/arena')
-  await page.getByRole('button', { name: 'Run arena' }).first().click()
+  const configureLaneButtons = [
+    page.getByRole('button', { name: 'Start with configure lane' }),
+    page.getByRole('button', { name: 'Go to configure lane' }),
+    page.getByRole('button', { name: /configure lane/i }),
+  ]
+  for (const locator of configureLaneButtons) {
+    if (await locator.first().isVisible()) {
+      await locator.first().click()
+      break
+    }
+  }
+
+  const runButtons = [
+    page.getByRole('button', { name: 'Run from configure lane' }),
+    page.getByRole('button', { name: 'Run arena' }),
+  ]
+  for (const locator of runButtons) {
+    if (await locator.first().isVisible()) {
+      await locator.first().click()
+      break
+    }
+  }
   return page.getByRole('alert').filter({ hasText: /Failed to start run/i }).first()
 }
 
@@ -173,12 +194,19 @@ test('recovery class 11: unknown error still provides fallback retry guidance', 
 test('recovery class 12: missing token path points to settings recovery', async ({
   page,
 }) => {
-  await page.goto('/arena')
-
-  await expect(
-    page.getByText('Open settings and configure a valid API token.'),
-  ).toBeVisible()
+  await page.route('**/api/runs', async (route) => {
+    await route.fulfill({
+      status: 401,
+      contentType: 'text/plain',
+      body: 'unauthorized',
+    })
+  })
+  const toast = await triggerRunStartFailure(page, async () => {})
+  await expect(toast).toBeVisible()
   await page.getByRole('button', { name: /^Help$/ }).click()
   const helpDialog = page.getByRole('dialog', { name: 'Help Center' })
+  await expect(
+    helpDialog.getByText('Open settings and configure a valid API token.'),
+  ).toBeVisible()
   await expect(helpDialog.getByRole('button', { name: 'Open settings now' })).toBeVisible()
 })

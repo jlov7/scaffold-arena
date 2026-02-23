@@ -34,7 +34,6 @@ export interface TroubleshootingPlaybook {
 interface ResolveHelpBlockerInput {
   isOnline: boolean
   connectionState: 'idle' | 'connected' | 'retrying' | 'failed'
-  hasApiToken: boolean
   errorMessage: string | null
 }
 
@@ -174,13 +173,11 @@ function normalizeTask(taskId: string): TaskKind {
 export function resolveHelpBlocker({
   isOnline,
   connectionState,
-  hasApiToken,
   errorMessage,
 }: ResolveHelpBlockerInput): HelpBlocker {
   if (!isOnline) return 'offline'
   if (connectionState === 'retrying') return 'retrying'
   if (connectionState === 'failed') return 'failed'
-  if (!hasApiToken) return 'auth'
   if (!errorMessage) return 'none'
   return classifyApiError(errorMessage).kind
 }

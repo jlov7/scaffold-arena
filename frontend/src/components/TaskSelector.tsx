@@ -17,6 +17,7 @@ interface TaskSelectorProps {
   onRun: (taskId: string, modelId: string) => void
   onCancel: () => void
   showMobileActionBar?: boolean
+  showRunControls?: boolean
 }
 
 function inferProviderFromModelId(modelId: string): string {
@@ -45,6 +46,7 @@ export function TaskSelector({
   onRun,
   onCancel,
   showMobileActionBar = true,
+  showRunControls = true,
 }: TaskSelectorProps) {
   function handleRunOrCancel() {
     if (isRunning) {
@@ -135,25 +137,26 @@ export function TaskSelector({
           Est. {estimatedCostUsd === null ? '—' : `$${estimatedCostUsd.toFixed(4)}`}
         </div>
 
-        {/* Run / Cancel button (desktop) */}
-        <Button
-          type="button"
-          onClick={handleRunOrCancel}
-          disabled={!isRunning && !selectedTaskId}
-          aria-label={isRunning ? 'Cancel current run' : 'Start arena run'}
-          tone={isRunning ? 'danger' : 'primary'}
-          className="hidden whitespace-nowrap px-4 py-2 font-bold sm:inline-flex"
-        >
-          <span className="inline-flex items-center gap-1.5">
-            <Icon name={isRunning ? 'stop' : 'play'} className="h-3 w-3" />
-            {isRunning ? COPY.actions.cancelRun : COPY.actions.runArena}
-          </span>
-        </Button>
+        {showRunControls && (
+          <Button
+            type="button"
+            onClick={handleRunOrCancel}
+            disabled={!isRunning && !selectedTaskId}
+            aria-label={isRunning ? 'Cancel current run' : 'Start arena run'}
+            tone={isRunning ? 'danger' : 'primary'}
+            className="hidden whitespace-nowrap px-4 py-2 font-bold sm:inline-flex"
+          >
+            <span className="inline-flex items-center gap-1.5">
+              <Icon name={isRunning ? 'stop' : 'play'} className="h-3 w-3" />
+              {isRunning ? COPY.actions.cancelRun : COPY.actions.runArena}
+            </span>
+          </Button>
+        )}
       </div>
       </div>
 
       {/* Sticky action bar (mobile) */}
-      {showMobileActionBar && (
+      {showMobileActionBar && showRunControls && (
         <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-bg-secondary/95 px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
           <Button
             type="button"

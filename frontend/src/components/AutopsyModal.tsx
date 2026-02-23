@@ -1,13 +1,14 @@
-import { useEffect, useRef } from 'react'
+import { useState } from 'react'
 
 import type { AutopsyResult } from '../types'
+import { Modal } from './primitives/Modal'
 
 interface AutopsyModalProps {
   isOpen: boolean
   onClose: () => void
   autopsy: AutopsyResult | null
   isLoading: boolean
-  onApplyPatch: (patch: Record<string, unknown>) => void
+  onApplyPatch: (patch: Record<string, unknown>) => Promise<void> | void
   scaffoldName: string
 }
 
@@ -42,175 +43,131 @@ export default function AutopsyModal({
   scaffoldName,
 }: AutopsyModalProps) {
   const hasPatch = autopsy?.patch && Object.keys(autopsy.patch).length > 0
-  const modalRef = useRef<HTMLDivElement>(null)
-  const prevFocusRef = useRef<HTMLElement | null>(null)
+  const [isApplyingPatch, setIsApplyingPatch] = useState(false)
 
-  useEffect(() => {
-    if (!isOpen) return
-    prevFocusRef.current = document.activeElement as HTMLElement | null
-    const first = modalRef.current?.querySelector<HTMLElement>(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
-    )
-    first?.focus()
-
-    return () => {
-      prevFocusRef.current?.focus()
-    }
-  }, [isOpen])
-
-  if (!isOpen) return null
-
-  function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
-    if (e.target === e.currentTarget) onClose()
-  }
-
-  function handleApply() {
-    if (autopsy?.patch) onApplyPatch(autopsy.patch)
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.key === 'Escape') {
-      e.stopPropagation()
-      onClose()
-      return
-    }
-    if (e.key !== 'Tab') return
-
-    const focusables = modalRef.current?.querySelectorAll<HTMLElement>(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
-    )
-    if (!focusables || focusables.length === 0) return
-
-    const first = focusables[0]
-    const last = focusables[focusables.length - 1]
-    const active = document.activeElement
-
-    if (e.shiftKey && active === first) {
-      e.preventDefault()
-      last.focus()
-    } else if (!e.shiftKey && active === last) {
-      e.preventDefault()
-      first.focus()
+  async function handleApplyPatch(): Promise<void> {
+    if (!autopsy?.patch || isApplyingPatch) return
+    setIsApplyingPatch(true)
+    try {
+      await onApplyPatch(autopsy.patch)
+    } finally {
+      setIsApplyingPatch(false)
     }
   }
 
   return (
-    <div
-      className="motion-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-      onClick={handleOverlayClick}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title={`Autopsy: ${scaffoldName}`}
+      closeLabel="Close autopsy modal"
+      className="max-h-[85vh] max-w-2xl font-mono shadow-2xl"
+      contentClassName="flex min-h-0 flex-1 flex-col"
     >
-      <div
-        ref={modalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="autopsy-modal-title"
-        className="motion-slide-up bg-bg-secondary border border-border rounded-lg w-full max-w-2xl max-h-[85vh] flex flex-col font-mono shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleKeyDown}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
-          <div className="flex items-center gap-3">
-            <span className="text-accent-loser text-xs tracking-widest font-bold">AUTOPSY</span>
-            <span className="text-border">|</span>
-            <span id="autopsy-modal-title" className="text-text-primary text-sm">{scaffoldName}</span>
+      <div className="flex-1 overflow-y-auto px-5 py-4">
+        {isLoading && (
+          <div className="rounded border border-border/60 bg-bg-primary p-3 text-xs text-text-secondary">
+            Analyzing failures and generating patch suggestions...
           </div>
-          <button
-            type="button"
-            aria-label="Close autopsy modal"
-            onClick={onClose}
-            className="text-text-secondary hover:text-text-primary transition-colors text-lg leading-none w-6 h-6 flex items-center justify-center rounded hover:bg-border/50"
-          >
-            X
-          </button>
-        </div>
+        )}
 
-        {/* Body */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5">
-          {isLoading && (
-            <div className="text-text-secondary text-xs animate-pulse">Analyzing failures...</div>
-          )}
+        {!isLoading && !autopsy && (
+          <div className="rounded border border-border/60 bg-bg-primary p-3 text-xs text-text-secondary">
+            No autopsy data is available for this scaffold yet. Rerun analysis from Results and try again.
+          </div>
+        )}
 
-          {!isLoading && !autopsy && (
-            <div className="text-text-secondary text-xs opacity-40">No autopsy data available.</div>
-          )}
+        {!isLoading && autopsy && (
+          <div className="space-y-5">
+            {autopsy.summary && (
+              <div>
+                <div className="mb-1 text-xs tracking-widest text-text-secondary/60">SUMMARY</div>
+                <div className="text-sm leading-relaxed text-text-primary">{autopsy.summary}</div>
+              </div>
+            )}
 
-          {!isLoading && autopsy && (
-            <>
-              {/* Summary */}
-              {autopsy.summary && (
-                <div>
-                  <div className="text-xs text-text-secondary/60 tracking-widest mb-1">SUMMARY</div>
-                  <div className="text-sm text-text-primary leading-relaxed">{autopsy.summary}</div>
-                </div>
-              )}
-
-              {/* Failures */}
-              {autopsy.failures.length > 0 && (
-                <div>
-                  <div className="text-xs text-text-secondary/60 tracking-widest mb-2">FAILURES</div>
-                  <div className="space-y-3">
-                    {autopsy.failures.map((f, i) => (
-                      <div key={i} className="border border-border/50 rounded p-3 bg-bg-primary/40">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span
-                            className={[
-                              'text-xs font-bold w-5 shrink-0',
-                              severityStyle(f.severity),
-                            ].join(' ')}
-                          >
-                            [{severityIcon(f.severity)}]
-                          </span>
-                          <span className="text-text-primary text-xs font-semibold">{f.type}</span>
-                          <span
-                            className={[
-                              'ml-auto text-xs uppercase tracking-wide',
-                              severityStyle(f.severity),
-                            ].join(' ')}
-                          >
-                            {f.severity}
-                          </span>
-                        </div>
-                        {f.description && (
-                          <div className="text-xs text-text-secondary mb-1 pl-7">{f.description}</div>
-                        )}
-                        {f.evidence && (
-                          <div className="pl-7">
-                            <span className="text-xs text-text-secondary/50">Evidence: </span>
-                            <span className="text-xs text-text-secondary">{f.evidence}</span>
-                          </div>
-                        )}
+            {autopsy.failures.length > 0 ? (
+              <div>
+                <div className="mb-2 text-xs tracking-widest text-text-secondary/60">FAILURES</div>
+                <div className="space-y-3">
+                  {autopsy.failures.map((failure, index) => (
+                    <div
+                      key={`${failure.type}-${index}`}
+                      className="rounded border border-border/50 bg-bg-primary/40 p-3"
+                    >
+                      <div className="mb-1 flex items-center gap-2">
+                        <span
+                          className={[
+                            'w-5 shrink-0 text-xs font-bold',
+                            severityStyle(failure.severity),
+                          ].join(' ')}
+                        >
+                          [{severityIcon(failure.severity)}]
+                        </span>
+                        <span className="text-xs font-semibold text-text-primary">{failure.type}</span>
+                        <span
+                          className={[
+                            'ml-auto text-xs uppercase tracking-wide',
+                            severityStyle(failure.severity),
+                          ].join(' ')}
+                        >
+                          {failure.severity}
+                        </span>
                       </div>
-                    ))}
-                  </div>
+                      {failure.description && (
+                        <div className="mb-1 pl-7 text-xs text-text-secondary">{failure.description}</div>
+                      )}
+                      {failure.evidence && (
+                        <div className="pl-7 text-xs text-text-secondary">
+                          <span className="text-text-secondary/60">Evidence: </span>
+                          <span>{failure.evidence}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            ) : (
+              <div className="rounded border border-border/60 bg-bg-primary p-3 text-xs text-text-secondary">
+                No concrete failures were extracted. Validate prompt and scoring context, then rerun autopsy.
+              </div>
+            )}
 
-              {/* Patch */}
-              {hasPatch && (
-                <div>
-                  <div className="text-xs text-text-secondary/60 tracking-widest mb-2">SUGGESTED PATCH</div>
-                  <pre className="bg-bg-primary border border-border/50 rounded p-3 text-xs text-text-secondary overflow-x-auto whitespace-pre-wrap break-words leading-relaxed">
-                    {JSON.stringify(autopsy.patch, null, 2)}
-                  </pre>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* Footer */}
-        {!isLoading && autopsy && hasPatch && (
-          <div className="px-5 py-4 border-t border-border shrink-0 flex justify-end">
-            <button
-              onClick={handleApply}
-              className="text-xs font-bold text-bg-primary bg-accent-winner hover:bg-accent-winner/80 active:bg-accent-winner/70 transition-colors rounded px-4 py-2 tracking-wide"
-            >
-              Apply Patch &amp; Rerun
-            </button>
+            {hasPatch && (
+              <div>
+                <div className="mb-2 text-xs tracking-widest text-text-secondary/60">SUGGESTED PATCH</div>
+                <pre className="overflow-x-auto whitespace-pre-wrap break-words rounded border border-border/50 bg-bg-primary p-3 text-xs leading-relaxed text-text-secondary">
+                  {JSON.stringify(autopsy.patch, null, 2)}
+                </pre>
+              </div>
+            )}
           </div>
         )}
       </div>
-    </div>
+
+      {!isLoading && autopsy && (
+        <div className="shrink-0 border-t border-border px-5 py-4">
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="ui-control rounded border border-border px-3 py-1.5 text-xs text-text-secondary hover:border-accent-info hover:text-accent-info"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                void handleApplyPatch()
+              }}
+              disabled={!hasPatch || isApplyingPatch}
+              className="ui-control rounded border border-accent-winner bg-accent-winner px-4 py-1.5 text-xs font-bold tracking-wide text-bg-primary hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {isApplyingPatch ? 'Applying patch...' : 'Apply patch and rerun'}
+            </button>
+          </div>
+        </div>
+      )}
+    </Modal>
   )
 }

@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react'
-
+import { Modal } from './primitives/Modal'
 import { emitAppToast } from '../utils/toast'
 
 interface ReportModalProps {
@@ -65,7 +64,6 @@ function renderInline(text: string): React.ReactNode {
   let key = 0
 
   while (remaining.length > 0) {
-    // Bold: **text**
     const boldMatch = remaining.match(/^\*\*(.+?)\*\*/)
     if (boldMatch) {
       parts.push(<strong key={key++} className="font-bold text-text-primary">{boldMatch[1]}</strong>)
@@ -73,7 +71,6 @@ function renderInline(text: string): React.ReactNode {
       continue
     }
 
-    // Inline code: `code`
     const codeMatch = remaining.match(/^`([^`]+)`/)
     if (codeMatch) {
       parts.push(
@@ -85,7 +82,6 @@ function renderInline(text: string): React.ReactNode {
       continue
     }
 
-    // Italic: *text*
     const italicMatch = remaining.match(/^\*(.+?)\*/)
     if (italicMatch) {
       parts.push(<em key={key++}>{italicMatch[1]}</em>)
@@ -93,7 +89,6 @@ function renderInline(text: string): React.ReactNode {
       continue
     }
 
-    // Link: [text](url)
     const linkMatch = remaining.match(/^\[([^\]]+)\]\(([^)]+)\)/)
     if (linkMatch) {
       parts.push(
@@ -105,7 +100,6 @@ function renderInline(text: string): React.ReactNode {
       continue
     }
 
-    // Plain text — consume until next special character
     const nextSpecial = remaining.slice(1).search(/[*`[]/)
     if (nextSpecial === -1) {
       parts.push(remaining)
@@ -128,7 +122,6 @@ function renderMarkdown(raw: string): React.ReactNode {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
 
-    // Code fence toggle
     if (line.startsWith('```')) {
       if (!inCodeBlock) {
         inCodeBlock = true
@@ -153,44 +146,44 @@ function renderMarkdown(raw: string): React.ReactNode {
 
     if (line.startsWith('# ')) {
       result.push(
-        <div key={i} className="text-lg font-bold text-text-primary mb-3 mt-4 first:mt-0 border-b border-border pb-1">
+        <div key={i} className="mb-3 mt-4 border-b border-border pb-1 text-lg font-bold text-text-primary first:mt-0">
           {renderInline(line.slice(2))}
         </div>,
       )
     } else if (line.startsWith('## ')) {
       result.push(
-        <div key={i} className="text-base font-semibold text-text-primary mb-2 mt-4">
+        <div key={i} className="mb-2 mt-4 text-base font-semibold text-text-primary">
           {renderInline(line.slice(3))}
         </div>,
       )
     } else if (line.startsWith('### ')) {
       result.push(
-        <div key={i} className="text-sm font-semibold text-text-secondary mb-1 mt-3">
+        <div key={i} className="mb-1 mt-3 text-sm font-semibold text-text-secondary">
           {renderInline(line.slice(4))}
         </div>,
       )
     } else if (line.startsWith('---')) {
-      result.push(<div key={i} className="border-t border-border my-3" />)
+      result.push(<div key={i} className="my-3 border-t border-border" />)
     } else if (line.trim() === '') {
       result.push(<div key={i} className="h-2" />)
     } else if (/^(\d+)\.\s/.test(line)) {
       const match = line.match(/^(\d+)\.\s(.*)/)!
       result.push(
-        <div key={i} className="text-sm text-text-secondary leading-relaxed pl-4 flex gap-2">
-          <span className="shrink-0 text-text-muted tabular-nums">{match[1]}.</span>
+        <div key={i} className="flex gap-2 pl-4 text-sm leading-relaxed text-text-secondary">
+          <span className="shrink-0 tabular-nums text-text-muted">{match[1]}.</span>
           <span>{renderInline(match[2])}</span>
         </div>,
       )
     } else if (line.startsWith('- ') || line.startsWith('* ')) {
       result.push(
-        <div key={i} className="text-sm text-text-secondary leading-relaxed pl-4 flex gap-2">
+        <div key={i} className="flex gap-2 pl-4 text-sm leading-relaxed text-text-secondary">
           <span className="shrink-0 text-text-muted">&bull;</span>
           <span>{renderInline(line.slice(2))}</span>
         </div>,
       )
     } else {
       result.push(
-        <div key={i} className="text-sm text-text-secondary leading-relaxed">
+        <div key={i} className="text-sm leading-relaxed text-text-secondary">
           {renderInline(line)}
         </div>,
       )
@@ -207,125 +200,72 @@ export default function ReportModal({
   pdfBase64,
   isLoading,
 }: ReportModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null)
-  const prevFocusRef = useRef<HTMLElement | null>(null)
-
-  useEffect(() => {
-    if (!isOpen) return
-    prevFocusRef.current = document.activeElement as HTMLElement | null
-    const first = modalRef.current?.querySelector<HTMLElement>(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
-    )
-    first?.focus()
-
-    return () => {
-      prevFocusRef.current?.focus()
-    }
-  }, [isOpen])
-
-  if (!isOpen) return null
-
-  function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
-    if (e.target === e.currentTarget) onClose()
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.key === 'Escape') {
-      e.stopPropagation()
-      onClose()
-      return
-    }
-    if (e.key !== 'Tab') return
-
-    const focusables = modalRef.current?.querySelectorAll<HTMLElement>(
-      'button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])',
-    )
-    if (!focusables || focusables.length === 0) return
-
-    const first = focusables[0]
-    const last = focusables[focusables.length - 1]
-    const active = document.activeElement
-
-    if (e.shiftKey && active === first) {
-      e.preventDefault()
-      last.focus()
-    } else if (!e.shiftKey && active === last) {
-      e.preventDefault()
-      first.focus()
-    }
-  }
-
   return (
-    <div
-      className="motion-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-      onClick={handleOverlayClick}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Audit report"
+      className="h-[88vh] max-w-3xl font-mono shadow-2xl"
+      contentClassName="flex min-h-0 flex-1 flex-col"
     >
-      <div
-        ref={modalRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="report-modal-title"
-        className="motion-slide-up bg-bg-secondary border border-border rounded-lg w-full max-w-3xl h-[88vh] flex flex-col shadow-2xl font-mono"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={handleKeyDown}
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border shrink-0">
-          <span id="report-modal-title" className="text-xs tracking-widest font-bold text-text-primary">AUDIT REPORT</span>
+      <div className="flex-1 overflow-y-auto px-6 py-5">
+        {isLoading && (
+          <div className="rounded border border-border/60 bg-bg-primary p-3 text-xs text-text-secondary">
+            Generating report and preparing downloads...
+          </div>
+        )}
+
+        {!isLoading && !markdown && (
+          <div className="rounded border border-border/60 bg-bg-primary p-3 text-xs text-text-secondary">
+            No report is available yet. Run export from the Results workspace to generate one.
+          </div>
+        )}
+
+        {!isLoading && markdown && (
+          <div className="text-sm">{renderMarkdown(markdown)}</div>
+        )}
+      </div>
+
+      <div className="shrink-0 border-t border-border px-5 py-4">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="text-text-secondary hover:text-text-primary transition-colors text-lg leading-none w-6 h-6 flex items-center justify-center rounded hover:bg-border/50"
-            aria-label="Close"
+            className="ui-control rounded border border-border px-3 py-1.5 text-xs text-text-secondary hover:border-accent-info hover:text-accent-info"
           >
-            X
+            Close
           </button>
-        </div>
-
-        {/* Body */}
-        <div className="flex-1 overflow-y-auto px-6 py-5">
-          {isLoading && (
-            <div className="text-text-secondary text-xs animate-pulse">Generating report...</div>
-          )}
-
-          {!isLoading && !markdown && (
-            <div className="text-text-secondary text-xs opacity-40">No report available.</div>
-          )}
-
-          {!isLoading && markdown && (
-            <div className="text-sm">{renderMarkdown(markdown)}</div>
-          )}
-        </div>
-
-        {/* Footer */}
-        {!isLoading && markdown && (
-          <div className="px-5 py-4 border-t border-border shrink-0 flex items-center gap-3 justify-end">
-            <button
-              type="button"
-              onClick={() => void copyMarkdown(markdown)}
-              className="ui-control text-xs font-bold text-text-primary bg-bg-tertiary hover:bg-border/60 active:bg-border transition-colors border border-border rounded px-4 py-2 tracking-wide"
-            >
-              Copy
-            </button>
-            <button
-              type="button"
-              onClick={() => downloadMarkdown(markdown)}
-              className="ui-control text-xs font-bold text-text-primary bg-bg-tertiary hover:bg-border/60 active:bg-border transition-colors border border-border rounded px-4 py-2 tracking-wide"
-            >
-              Download .md
-            </button>
-            {pdfBase64 && (
+          {markdown && (
+            <>
               <button
                 type="button"
-                onClick={() => downloadPdf(pdfBase64)}
-                className="ui-control text-xs font-bold text-bg-primary bg-accent-info hover:bg-accent-info/80 active:bg-accent-info/70 transition-colors rounded px-4 py-2 tracking-wide"
+                onClick={() => {
+                  void copyMarkdown(markdown)
+                }}
+                className="ui-control rounded border border-border bg-bg-tertiary px-4 py-2 text-xs font-bold tracking-wide text-text-primary hover:bg-border/60"
               >
-                Download PDF
+                Copy
               </button>
-            )}
-          </div>
-        )}
+              <button
+                type="button"
+                onClick={() => downloadMarkdown(markdown)}
+                className="ui-control rounded border border-border bg-bg-tertiary px-4 py-2 text-xs font-bold tracking-wide text-text-primary hover:bg-border/60"
+              >
+                Download .md
+              </button>
+            </>
+          )}
+          {markdown && pdfBase64 && (
+            <button
+              type="button"
+              onClick={() => downloadPdf(pdfBase64)}
+              className="ui-control rounded border border-accent-info bg-accent-info px-4 py-2 text-xs font-bold tracking-wide text-bg-primary hover:opacity-90"
+            >
+              Download PDF
+            </button>
+          )}
+        </div>
       </div>
-    </div>
+    </Modal>
   )
 }

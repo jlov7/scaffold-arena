@@ -38,6 +38,13 @@ test('captures major route snapshots (mobile)', async ({ page }) => {
 
 test('captures state-family snapshots (blocked and empty)', async ({ page }) => {
   await mockDefaultApi(page)
+  await page.route('**/api/runs', async (route) => {
+    await route.fulfill({
+      status: 503,
+      contentType: 'text/plain',
+      body: 'service unavailable',
+    })
+  })
   await page.route('**/api/runs?*', async (route) => {
     await route.fulfill({
       status: 200,
@@ -48,7 +55,28 @@ test('captures state-family snapshots (blocked and empty)', async ({ page }) => 
   await page.setViewportSize({ width: 1280, height: 800 })
 
   await page.goto('/arena')
-  await expect(page.getByText('Immediate guidance')).toBeVisible()
+  const configureButtons = [
+    page.getByRole('button', { name: 'Start with configure lane' }),
+    page.getByRole('button', { name: 'Go to configure lane' }),
+    page.getByRole('button', { name: /^Configure$/ }),
+  ]
+  for (const locator of configureButtons) {
+    if (await locator.first().isVisible()) {
+      await locator.first().click()
+      break
+    }
+  }
+  const runButtons = [
+    page.getByRole('button', { name: 'Run from configure lane' }),
+    page.getByRole('button', { name: 'Run arena' }),
+  ]
+  for (const locator of runButtons) {
+    if (await locator.first().isVisible()) {
+      await locator.first().click()
+      break
+    }
+  }
+  await expect(page.getByText(/recovery playbook/i)).toBeVisible()
   const blocked = await page.screenshot({ fullPage: true })
   expect(blocked.byteLength).toBeGreaterThan(10_000)
 

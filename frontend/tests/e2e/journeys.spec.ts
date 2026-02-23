@@ -6,6 +6,20 @@ test.beforeEach(async ({ page }) => {
   await mockDefaultApi(page)
 })
 
+async function moveToConfigureLane(page: import('@playwright/test').Page): Promise<void> {
+  const candidates = [
+    page.getByRole('button', { name: 'Start with configure lane' }),
+    page.getByRole('button', { name: 'Go to configure lane' }),
+    page.getByRole('button', { name: /configure lane/i }),
+  ]
+  for (const locator of candidates) {
+    if (await locator.first().isVisible()) {
+      await locator.first().click()
+      return
+    }
+  }
+}
+
 test('resume deep-link journey restores prior run context', async ({ page }) => {
   await page.goto('/arena?run_id=run_hist_1')
 
@@ -45,7 +59,16 @@ test('guided onboarding journey can be paused and resumed', async ({ page }) => 
 })
 
 test('auth blocker journey routes to settings via help center', async ({ page }) => {
+  await page.route('**/api/runs', async (route) => {
+    await route.fulfill({
+      status: 401,
+      contentType: 'text/plain',
+      body: 'unauthorized',
+    })
+  })
   await page.goto('/arena')
+  await moveToConfigureLane(page)
+  await page.getByRole('button', { name: /Run from configure lane|Run arena/i }).first().click()
   await page.getByRole('button', { name: /^Help$/ }).click()
   const helpDialog = page.getByRole('dialog', { name: 'Help Center' })
   await expect(helpDialog).toBeVisible()
@@ -121,7 +144,16 @@ test('settings journey enforces clear-key confirmation guardrail', async ({
 })
 
 test('blocked-state journey can switch to safe fallback mode', async ({ page }) => {
+  await page.route('**/api/runs', async (route) => {
+    await route.fulfill({
+      status: 503,
+      contentType: 'text/plain',
+      body: 'service unavailable',
+    })
+  })
   await page.goto('/arena')
+  await moveToConfigureLane(page)
+  await page.getByRole('button', { name: /Run from configure lane|Run arena/i }).first().click()
   await expect(page.getByText('Safe fallback mode', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Enable safe fallback mode' }).click()
   await expect(page).toHaveURL(/\/history/)

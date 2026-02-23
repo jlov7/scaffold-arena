@@ -6,6 +6,20 @@ test.beforeEach(async ({ page }) => {
   await mockDefaultApi(page)
 })
 
+async function moveToConfigureLane(page: import('@playwright/test').Page): Promise<void> {
+  const candidates = [
+    page.getByRole('button', { name: 'Start with configure lane' }),
+    page.getByRole('button', { name: 'Go to configure lane' }),
+    page.getByRole('button', { name: /configure lane/i }),
+  ]
+  for (const locator of candidates) {
+    if (await locator.first().isVisible()) {
+      await locator.first().click()
+      return
+    }
+  }
+}
+
 test('keyboard shortcut opens and closes shortcut overlay', async ({ page }) => {
   await page.goto('/arena')
   await page.getByRole('heading', { name: 'SCAFFOLD ARENA' }).click()
@@ -36,7 +50,16 @@ test('pointer interaction reveals score breakdown tooltip', async ({ page }) => 
 })
 
 test('help center routes primary action to settings for auth blockers', async ({ page }) => {
+  await page.route('**/api/runs', async (route) => {
+    await route.fulfill({
+      status: 401,
+      contentType: 'text/plain',
+      body: 'unauthorized',
+    })
+  })
   await page.goto('/arena')
+  await moveToConfigureLane(page)
+  await page.getByRole('button', { name: /Run from configure lane|Run arena/i }).first().click()
   await page.getByRole('button', { name: /^Help$/ }).click()
   const helpDialog = page.getByRole('dialog', { name: 'Help Center' })
   await expect(helpDialog).toBeVisible()
@@ -137,7 +160,7 @@ test('mobile help and guided tour content remains readable without horizontal ov
   await page.getByRole('button', { name: 'Help', exact: true }).click()
   const helpDialog = page.getByRole('dialog', { name: 'Help Center' })
   await expect(helpDialog).toBeVisible()
-  await expect(helpDialog.getByText('Extraction recovery playbook')).toBeVisible()
+  await expect(helpDialog.getByText(/success playbook|recovery playbook/i)).toBeVisible()
 
   const helpOverflow = await helpDialog.evaluate((el) => el.scrollWidth - el.clientWidth)
   expect(helpOverflow).toBeLessThanOrEqual(2)

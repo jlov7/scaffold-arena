@@ -83,7 +83,7 @@ for (const device of DEVICES) {
         await page.getByRole('button', { name: 'Help', exact: true }).click()
         const helpDialog = page.getByRole('dialog', { name: 'Help Center' })
         await expect(helpDialog).toBeVisible()
-        await expect(helpDialog.getByText('Extraction recovery playbook')).toBeVisible()
+        await expect(helpDialog.getByText(/success playbook|recovery playbook/i)).toBeVisible()
         return
       }
 
