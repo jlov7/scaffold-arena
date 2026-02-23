@@ -180,6 +180,7 @@ const API_TOKEN_STORAGE_KEY = 'scaffold_arena_api_token'
 const CONTEXT_STORAGE_KEY = 'scaffold_arena_last_context'
 const EXPERIENCE_MODE_STORAGE_KEY = 'scaffold_arena_experience_mode'
 const PROFILE_STORAGE_KEY = 'scaffold_arena_user_profile'
+const TEXT_SCALE_STORAGE_KEY = 'scaffold_arena_text_scale'
 const ONBOARDING_PROGRESS_STORAGE_KEY = 'scaffold_arena_onboarding_progress'
 const CHECKLIST_HIDDEN_STORAGE_KEY = 'scaffold_arena_checklist_hidden'
 const AUTOPSY_GUIDE_DISMISSED_KEY = 'scaffold_arena_autopsy_guide_dismissed'
@@ -219,6 +220,8 @@ const PROFILE_AUDIENCE_LABEL: Record<UserProfile, string> = {
   analyst: 'Analyst',
   executive: 'Executive',
 }
+
+type TextScale = 'comfortable' | 'standard' | 'dense'
 
 const PERSONA_GUIDANCE: Record<UserProfile, PersonaGuidance> = {
   evaluator: {
@@ -369,6 +372,7 @@ export default function App() {
   const [historyHydrationPending, setHistoryHydrationPending] = useState(false)
   const [leaderboardStats, setLeaderboardStats] = useState<LeaderboardStats | null>(null)
   const [theme, setTheme] = useState<'dark' | 'light'>('dark')
+  const [textScale, setTextScale] = useState<TextScale>('comfortable')
   const [experienceMode, setExperienceMode] = useState<ExperienceMode>('guided')
   const [userProfile, setUserProfile] = useState<UserProfile>('evaluator')
   const [onboardingProgress, setOnboardingProgress] = useState<OnboardingProgressState>(() =>
@@ -593,6 +597,16 @@ export default function App() {
         const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
         setTheme(systemDark ? 'dark' : 'light')
       }
+      const storedTextScale = localStorage.getItem(TEXT_SCALE_STORAGE_KEY)
+      if (
+        storedTextScale === 'comfortable' ||
+        storedTextScale === 'standard' ||
+        storedTextScale === 'dense'
+      ) {
+        setTextScale(storedTextScale)
+      } else {
+        setTextScale('comfortable')
+      }
       const storedMode = localStorage.getItem(EXPERIENCE_MODE_STORAGE_KEY)
       if (storedMode === 'guided' || storedMode === 'advanced') {
         setExperienceMode(storedMode)
@@ -632,6 +646,15 @@ export default function App() {
       // localStorage unavailable
     }
   }, [theme])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-text-scale', textScale)
+    try {
+      localStorage.setItem(TEXT_SCALE_STORAGE_KEY, textScale)
+    } catch {
+      // localStorage unavailable
+    }
+  }, [textScale])
 
   useEffect(() => {
     try {
@@ -1697,6 +1720,18 @@ export default function App() {
         label: `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
         run: () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark')),
       },
+      {
+        id: 'cycle-text-scale',
+        label: `Cycle text size (current: ${textScale})`,
+        run: () =>
+          setTextScale((prev) =>
+            prev === 'dense'
+              ? 'standard'
+              : prev === 'standard'
+                ? 'comfortable'
+                : 'dense',
+          ),
+      },
     ],
     [
       handleExportBundle,
@@ -1705,6 +1740,7 @@ export default function App() {
       navigateToView,
       openHelpCenter,
       runFromCurrentSelection,
+      textScale,
       theme,
       winnerId,
     ],
@@ -2344,6 +2380,8 @@ export default function App() {
             userProfileLabel={PROFILE_AUDIENCE_LABEL[userProfile]}
             experienceMode={experienceMode}
             theme={theme}
+            textScale={textScale}
+            onTextScaleChange={setTextScale}
             llmApiKey={llmApiKey}
             llmKeyStorageMode={llmKeyStorageMode}
             showLlmKey={showLlmKey}

@@ -26,6 +26,18 @@
   --color-accent-warning: #f59e0b;
 }
 
+:root {
+  font-size: 16px;
+}
+
+:root[data-text-scale='comfortable'] {
+  font-size: 17px;
+}
+
+:root[data-text-scale='dense'] {
+  font-size: 15px;
+}
+
 :root[data-theme='light'] {
   --color-bg-primary: #f3f4f8;
   --color-bg-secondary: #ffffff;

@@ -13,10 +13,14 @@ interface RunOptions {
   evaluation_profile: 'balanced' | 'strict' | 'cost_first'
 }
 
+type TextScale = 'comfortable' | 'standard' | 'dense'
+
 export interface SettingsWorkspaceProps {
   userProfileLabel: string
   experienceMode: ExperienceMode
   theme: string
+  textScale: TextScale
+  onTextScaleChange: (scale: TextScale) => void
   llmApiKey: string
   llmKeyStorageMode: LlmKeyStorageMode
   showLlmKey: boolean
@@ -61,6 +65,8 @@ export function SettingsWorkspace({
   userProfileLabel,
   experienceMode,
   theme,
+  textScale,
+  onTextScaleChange,
   llmApiKey,
   llmKeyStorageMode,
   showLlmKey,
@@ -101,7 +107,7 @@ export function SettingsWorkspace({
   lastPreflight,
 }: SettingsWorkspaceProps) {
   return (
-    <section className="max-w-5xl rounded-lg border border-border bg-bg-secondary p-4 font-mono text-xs">
+    <section className="max-w-5xl rounded-lg border border-border bg-bg-secondary p-4 font-mono text-sm">
       <div className="text-[10px] uppercase tracking-widest text-text-secondary">
         Settings &amp; Preferences
       </div>
@@ -410,6 +416,51 @@ export function SettingsWorkspace({
         <div className="rounded border border-border/60 bg-bg-primary p-3">
           <div className="text-[11px] text-text-secondary">Theme</div>
           <div className="mt-1 text-text-primary">{theme === 'dark' ? 'Dark' : 'Light'}</div>
+          <div className="mt-3 text-[11px] text-text-secondary">Text size</div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => onTextScaleChange('comfortable')}
+              title="Larger text and spacing for easiest readability."
+              className={[
+                'rounded border px-2.5 py-1.5 text-[11px]',
+                textScale === 'comfortable'
+                  ? 'border-accent-info bg-accent-info/10 text-accent-info'
+                  : 'border-border text-text-secondary hover:border-accent-info hover:text-accent-info',
+              ].join(' ')}
+            >
+              Comfortable
+            </button>
+            <button
+              type="button"
+              onClick={() => onTextScaleChange('standard')}
+              title="Balanced density and readability."
+              className={[
+                'rounded border px-2.5 py-1.5 text-[11px]',
+                textScale === 'standard'
+                  ? 'border-accent-info bg-accent-info/10 text-accent-info'
+                  : 'border-border text-text-secondary hover:border-accent-info hover:text-accent-info',
+              ].join(' ')}
+            >
+              Standard
+            </button>
+            <button
+              type="button"
+              onClick={() => onTextScaleChange('dense')}
+              title="Fits more information per screen."
+              className={[
+                'rounded border px-2.5 py-1.5 text-[11px]',
+                textScale === 'dense'
+                  ? 'border-accent-info bg-accent-info/10 text-accent-info'
+                  : 'border-border text-text-secondary hover:border-accent-info hover:text-accent-info',
+              ].join(' ')}
+            >
+              Dense
+            </button>
+          </div>
+          <div className="mt-2 text-[11px] text-text-muted">
+            Tip: choose <span className="text-text-primary">Comfortable</span> for demos and first-time users.
+          </div>
         </div>
         <div className="rounded border border-border/60 bg-bg-primary p-3">
           <div className="text-[11px] text-text-secondary">Notifications</div>
