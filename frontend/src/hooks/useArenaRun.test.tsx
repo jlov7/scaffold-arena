@@ -6,10 +6,12 @@ import { useArenaRun } from './useArenaRun'
 const createArenaRunMock = vi.fn()
 const cancelRunMock = vi.fn()
 const fetchRunDetailsMock = vi.fn()
+const fetchRunDiagnosticsMock = vi.fn()
 
 vi.mock('../api/client', () => ({
   createArenaRun: (...args: unknown[]) => createArenaRunMock(...args),
   cancelRun: (...args: unknown[]) => cancelRunMock(...args),
+  fetchRunDiagnostics: (...args: unknown[]) => fetchRunDiagnosticsMock(...args),
   fetchRunDetails: (...args: unknown[]) => fetchRunDetailsMock(...args),
   getEventStreamUrl: (runId: string) => `/api/runs/${runId}/events`,
 }))
@@ -45,6 +47,8 @@ describe('useArenaRun', () => {
     createArenaRunMock.mockReset()
     cancelRunMock.mockReset()
     fetchRunDetailsMock.mockReset()
+    fetchRunDiagnosticsMock.mockReset()
+    fetchRunDiagnosticsMock.mockResolvedValue({ timeline: [] })
     vi.stubGlobal('EventSource', MockEventSource as unknown as typeof EventSource)
   })
 

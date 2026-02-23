@@ -1,4 +1,5 @@
 import { Suspense, lazy } from 'react'
+import type { LlmKeyStorageMode, RunPreflightResult } from '../../api/client'
 import type { ExperienceMode } from '../../components/journey/ExperienceModeCard'
 import type { ModelMeta, ScaffoldMeta } from '../../types'
 import type { TelemetryEvent } from '../../telemetry/events'
@@ -9,6 +10,7 @@ interface RunOptions {
   temperature: number
   max_output_tokens: number
   timeout_s: number
+  evaluation_profile: 'balanced' | 'strict' | 'cost_first'
 }
 
 export interface SettingsWorkspaceProps {
@@ -16,8 +18,10 @@ export interface SettingsWorkspaceProps {
   experienceMode: ExperienceMode
   theme: string
   llmApiKey: string
+  llmKeyStorageMode: LlmKeyStorageMode
   showLlmKey: boolean
   onLlmApiKeyChange: (key: string) => void
+  onLlmKeyStorageModeChange: (mode: LlmKeyStorageMode) => void
   onToggleShowLlmKey: () => void
   onClearLlmKey: () => void
   runMode: string
@@ -50,6 +54,7 @@ export interface SettingsWorkspaceProps {
   onSaveCustomTask: () => void
   onNavigateToArena: () => void
   activeErrorMessage: string | null
+  lastPreflight: RunPreflightResult | null
 }
 
 export function SettingsWorkspace({
@@ -57,8 +62,10 @@ export function SettingsWorkspace({
   experienceMode,
   theme,
   llmApiKey,
+  llmKeyStorageMode,
   showLlmKey,
   onLlmApiKeyChange,
+  onLlmKeyStorageModeChange,
   onToggleShowLlmKey,
   onClearLlmKey,
   runMode,
@@ -91,6 +98,7 @@ export function SettingsWorkspace({
   onSaveCustomTask,
   onNavigateToArena,
   activeErrorMessage,
+  lastPreflight,
 }: SettingsWorkspaceProps) {
   return (
     <section className="max-w-5xl rounded-lg border border-border bg-bg-secondary p-4 font-mono text-xs">
@@ -143,7 +151,58 @@ export function SettingsWorkspace({
         <div className="mt-1.5 text-[10px] text-text-muted">
           {llmApiKey ? '✓ Key configured — sent per-request via encrypted header' : 'No key set — server-side keys will be used if available'}
         </div>
+        <div className="mt-2 rounded border border-border/70 bg-bg-secondary p-2">
+          <div className="text-[10px] uppercase tracking-widest text-text-muted">
+            Key storage mode
+          </div>
+          <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-text-secondary">
+            <label className="flex items-center gap-1.5">
+              <input
+                type="radio"
+                name="llm-key-storage"
+                value="session"
+                checked={llmKeyStorageMode === 'session'}
+                onChange={() => onLlmKeyStorageModeChange('session')}
+              />
+              Session only (recommended)
+            </label>
+            <label className="flex items-center gap-1.5">
+              <input
+                type="radio"
+                name="llm-key-storage"
+                value="persistent"
+                checked={llmKeyStorageMode === 'persistent'}
+                onChange={() => onLlmKeyStorageModeChange('persistent')}
+              />
+              Remember in this browser
+            </label>
+          </div>
+        </div>
       </div>
+
+      {lastPreflight && (
+        <div className="mt-3 rounded border border-border/60 bg-bg-primary p-3">
+          <div className="text-[10px] uppercase tracking-widest text-text-muted">
+            Last preflight
+          </div>
+          <div
+            className={[
+              'mt-1 text-[11px]',
+              lastPreflight.can_run ? 'text-accent-winner' : 'text-accent-loser',
+            ].join(' ')}
+          >
+            {lastPreflight.can_run ? 'Ready to run' : 'Run blocked - fix failed checks'}
+          </div>
+          <div className="mt-2 space-y-1 text-[11px] text-text-secondary">
+            {lastPreflight.checks.map((check) => (
+              <div key={check.id}>
+                <span className="uppercase tracking-wide text-text-muted">{check.id}:</span>{' '}
+                {check.message}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <details
         className="mt-3 rounded border border-border/60 bg-bg-primary p-3"
@@ -197,7 +256,7 @@ export function SettingsWorkspace({
           Guardrail: Force re-run bypasses cache and triggers new API spend.
         </div>
 
-        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-4">
           <label className="space-y-1">
             <div className="text-text-secondary">Temperature: {runOptions.temperature.toFixed(1)}</div>
             <input
@@ -249,6 +308,24 @@ export function SettingsWorkspace({
               aria-label="Request timeout in seconds"
               className="w-full rounded border border-border bg-bg-secondary px-2 py-1"
             />
+          </label>
+          <label className="space-y-1">
+            <div className="text-text-secondary">Evaluation profile</div>
+            <select
+              value={runOptions.evaluation_profile}
+              onChange={(e) =>
+                onRunOptionsChange((prev) => ({
+                  ...prev,
+                  evaluation_profile: e.target.value as RunOptions['evaluation_profile'],
+                }))
+              }
+              aria-label="Evaluation profile"
+              className="w-full rounded border border-border bg-bg-secondary px-2 py-1"
+            >
+              <option value="balanced">Balanced</option>
+              <option value="strict">Strict</option>
+              <option value="cost_first">Cost-first</option>
+            </select>
           </label>
         </div>
 

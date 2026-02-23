@@ -31,6 +31,7 @@ Use this index to navigate Scaffold Arena docs by role and task.
 - Scaffolds deep dive: [`scaffolds.md`](scaffolds.md)
 - API reference: [`api-reference.md`](api-reference.md)
 - Evaluation model: [`evaluation.md`](evaluation.md)
+- Walkthrough (visual demo): [`walkthrough.md`](walkthrough.md)
 
 ## Architecture and Engineering
 

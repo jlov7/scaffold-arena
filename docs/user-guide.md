@@ -69,6 +69,16 @@ Use the **Configure lane** to confirm task + model, check the cost estimate, and
 
 This launches all four scaffold architectures simultaneously.
 
+### Preflight Guardrail
+
+Each run passes through a preflight gate that checks:
+- Task/model/scaffold validity
+- Run options (including evaluation profile)
+- Budget availability
+- Provider credential readiness
+
+When blocked, you get an explicit remediation action instead of a late failure.
+
 ---
 
 ## Step 3: Live Run Lane (Watch Execution)
@@ -155,6 +165,17 @@ Case 1 (cheap + scaffolding) vs. Case 2 (expensive + bare) is the money shot:
 
 ---
 
+## Timeline Replay (Diagnostics Lane)
+
+Use **Timeline replay** to step through event order and timing:
+- Play/pause event sequence
+- Scrub via slider
+- Inspect scaffold-level event summaries
+
+This is useful for troubleshooting ordering bugs, delayed failures, and retry behavior.
+
+---
+
 ## Step 6: Diagnose Failures
 
 Click **"Autopsy"** on any losing scaffold to understand *why* it scored lower.
@@ -200,6 +221,17 @@ The report includes:
 
 - **Markdown (.md)** — Always available. Great for pasting into documents or wikis.
 - **PDF (.pdf)** — Available when PDF export is enabled. Formatted for printing or email.
+- **Bundle (.zip)** — One-click share package with `run.json`, `diagnostics.json`, and `report.md`.
+
+---
+
+## Command Palette
+
+Press `Cmd/Ctrl+K` to open the command palette and execute common actions quickly:
+- Navigate to any workspace
+- Start run / run proof comparison
+- Export report or export bundle
+- Open help center
 
 ---
 

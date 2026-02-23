@@ -29,6 +29,10 @@ export default function ShortcutOverlay({
             <kbd className="rounded border border-border px-2 py-0.5">Cmd/Ctrl + Enter</kbd>
           </div>
           <div className="flex items-center justify-between">
+            <span>Open command palette</span>
+            <kbd className="rounded border border-border px-2 py-0.5">Cmd/Ctrl + K</kbd>
+          </div>
+          <div className="flex items-center justify-between">
             <span>Close modals/overlay</span>
             <kbd className="rounded border border-border px-2 py-0.5">Escape</kbd>
           </div>

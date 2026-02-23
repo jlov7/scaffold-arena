@@ -12,6 +12,7 @@ interface AppShellHeaderProps {
   onOpenHelp: () => void
   onExplainScreen: () => void
   onOpenTour: () => void
+  onOpenCommandPalette: () => void
   onToggleTheme: () => void
   onNavigate: (view: AppView) => void
 }
@@ -23,6 +24,7 @@ export function AppShellHeader({
   onOpenHelp,
   onExplainScreen,
   onOpenTour,
+  onOpenCommandPalette,
   onToggleTheme,
   onNavigate,
 }: AppShellHeaderProps) {
@@ -67,6 +69,14 @@ export function AppShellHeader({
               className="ui-control rounded border border-transparent min-h-11 px-2.5 py-2 text-xs font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:px-2 sm:py-1 sm:text-[11px]"
             >
               {COPY.actions.takeTour}
+            </button>
+            <button
+              type="button"
+              onClick={onOpenCommandPalette}
+              className="ui-control rounded border border-transparent min-h-11 px-2.5 py-2 text-xs font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:px-2 sm:py-1 sm:text-[11px]"
+              aria-label="Open command palette"
+            >
+              Cmd/Ctrl+K
             </button>
             <button
               type="button"

@@ -38,6 +38,7 @@ Scaffold Arena is intentionally split into lanes so first-time users are not ove
 3. `Arena -> Live run lane`: monitor scaffold execution in real time.
 4. `Results -> Summary lane`: decision-first score/cost/time readout.
 5. `Results -> Diagnostics lane`: diff, autopsy, and proof comparison.
+6. `Settings -> Run readiness`: preflight checks, API-key storage mode, and operational controls.
 
 ![Results Summary](docs/assets/screenshots/results-summary-desktop.png)
 
@@ -78,6 +79,25 @@ graph TB
 3. Diagnose failures.
 4. Apply patch and rerun.
 5. Export evidence.
+
+## What Is New In This Build
+
+- Run preflight checks before launch (`task/model/scaffolds/options/budget/provider`) with actionable remediation.
+- Session-first BYOK key handling with explicit opt-in persistence.
+- Replayable run timeline in Diagnostics lane for failure and ordering analysis.
+- One-click export bundle (`run.json`, `diagnostics.json`, `report.md`) for sharing.
+- Command palette (`Cmd/Ctrl+K`) for fast expert navigation and actions.
+- Evaluation profile presets (`balanced`, `strict`, `cost_first`) with deterministic-first weighting.
+
+```mermaid
+flowchart LR
+    A["Configure Run"] --> B["Preflight Checks"]
+    B -->|pass| C["Start Run + SSE Stream"]
+    B -->|fail| D["Actionable Blocker Guidance"]
+    C --> E["Results Summary"]
+    E --> F["Diagnostics + Timeline Replay"]
+    E --> G["Export Report / Bundle"]
+```
 
 ## Deterministic-First Evaluation
 
@@ -136,6 +156,7 @@ Open `http://localhost:5173`.
 - Team onboarding: [docs/onboarding.md](docs/onboarding.md)
 - End-to-end usage: [docs/user-guide.md](docs/user-guide.md)
 - Documentation portal: [docs/README.md](docs/README.md)
+- API-level details: [docs/api-reference.md](docs/api-reference.md)
 
 ## Repository Structure
 
@@ -144,6 +165,9 @@ backend/      FastAPI app, run engine, evaluation, autopsy, reports, backend tes
 frontend/     React app, route/lane UX, telemetry, E2E/a11y/visual tests
 docs/         Explainers, architecture, onboarding, ops playbooks, audits
 ```
+
+- Backend details: [backend/README.md](backend/README.md)
+- Frontend details: [frontend/README.md](frontend/README.md)
 
 ### Structure Principles
 

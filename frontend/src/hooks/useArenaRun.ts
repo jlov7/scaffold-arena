@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react'
 import {
   createArenaRun,
   cancelRun,
+  fetchRunDiagnostics,
   fetchRunDetails,
   getEventStreamUrl,
 } from '../api/client'
@@ -16,6 +17,7 @@ import type {
   ScaffoldCompletedEvent,
   EvaluationCompletedEvent,
   RunCompleteEvent,
+  RunTimelineEvent,
 } from '../types'
 
 function initPanel(scaffold: ScaffoldMeta): PanelState {
@@ -30,6 +32,15 @@ function initPanel(scaffold: ScaffoldMeta): PanelState {
     evaluation: null,
     error: null,
   }
+}
+
+function shortHash(input: string): string {
+  let hash = 0
+  for (let i = 0; i < input.length; i += 1) {
+    hash = (hash << 5) - hash + input.charCodeAt(i)
+    hash |= 0
+  }
+  return Math.abs(hash).toString(16)
 }
 
 export function useArenaRun(scaffolds: ScaffoldMeta[]) {
@@ -47,6 +58,7 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
     'idle' | 'connected' | 'retrying' | 'failed'
   >('idle')
   const [connectionRetryCount, setConnectionRetryCount] = useState(0)
+  const [timelineEvents, setTimelineEvents] = useState<RunTimelineEvent[]>([])
   const startInFlightRef = useRef(false)
   const lastStartRequestRef = useRef<{
     key: string
@@ -86,10 +98,41 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
     })
   }, [])
 
+  const appendTimelineEvent = useCallback(
+    (eventName: string, data: Record<string, unknown>) => {
+      if (eventName === 'scaffold_delta' || eventName === 'heartbeat') return
+      setTimelineEvents((prev) => {
+        const seq = prev.length > 0 ? prev[prev.length - 1].seq + 1 : 1
+        const scaffoldId =
+          typeof data.scaffold_id === 'string' ? data.scaffold_id : null
+        const summary =
+          typeof data.summary === 'string'
+            ? data.summary
+            : scaffoldId
+              ? `${scaffoldId}: ${eventName.replaceAll('_', ' ')}`
+              : eventName.replaceAll('_', ' ')
+        const next = [
+          ...prev,
+          {
+            seq,
+            event: eventName,
+            ts_ms:
+              typeof data.ts_ms === 'number' ? data.ts_ms : Date.now(),
+            scaffold_id: scaffoldId,
+            summary,
+          },
+        ]
+        return next.slice(-400)
+      })
+    },
+    [],
+  )
+
   const handleEvent = useCallback(
     (eventName: string, data: unknown) => {
       const d = data as Record<string, unknown>
       const sid = d.scaffold_id as string | undefined
+      appendTimelineEvent(eventName, d)
 
       switch (eventName) {
         case 'run_started':
@@ -180,14 +223,14 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
         }
       }
     },
-    [updatePanel, scheduleFlush],
+    [appendTimelineEvent, updatePanel, scheduleFlush],
   )
 
   const hydrateFromResults = useCallback(
     (
       results: RunResults,
       hydratedWinnerId: string | null,
-      options?: { cached?: boolean },
+      options?: { cached?: boolean; timeline?: RunTimelineEvent[] },
     ) => {
       const cached = options?.cached ?? false
       setFinalResults(results)
@@ -195,6 +238,11 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
       setIsCachedResult(cached)
       setIsRunning(false)
       setStreamUrl(null)
+      if (options?.timeline) {
+        setTimelineEvents(options.timeline.slice(-400))
+      } else if (cached) {
+        setTimelineEvents([])
+      }
       setPanels((prev) =>
         prev.map((panel) => {
           const result = results[panel.scaffoldId]
@@ -225,6 +273,16 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
       const hasResults = Object.keys(results).length > 0
       if (!hasResults) return false
       const hydratedWinner = (record.winner_id as string | null) ?? null
+      const diagnosticsRaw = await fetchRunDiagnostics(runId).catch(() => null)
+      if (
+        diagnosticsRaw &&
+        Array.isArray((diagnosticsRaw as { timeline?: unknown }).timeline)
+      ) {
+        const timeline = (diagnosticsRaw as { timeline: RunTimelineEvent[] }).timeline
+        if (timeline.length > 0) {
+          setTimelineEvents(timeline.slice(-400))
+        }
+      }
       hydrateFromResults(results, hydratedWinner, { cached: false })
       setRunError(null)
       setConnectionState('idle')
@@ -298,10 +356,12 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
       setConnectionRetryCount(0)
       setWinnerId(null)
       setFinalResults(null)
+      setTimelineEvents([])
       setPanels(scaffolds.map(initPanel))
       setIsRunning(true)
 
       const scaffoldIds = scaffolds.map((s) => s.id)
+      const idempotencyKey = `${Date.now()}-${shortHash(requestKey)}`
       try {
         const result = await createArenaRun({
           task_id: taskId,
@@ -309,6 +369,7 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
           scaffold_ids: scaffoldIds,
           options,
           ...(customTask ? { custom_task: customTask } : {}),
+          idempotency_key: idempotencyKey,
         })
 
         setRunId(result.run_id)
@@ -336,6 +397,7 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
       setRunError(null)
       textBuffers.current = {}
       setPanels(scaffolds.map(initPanel))
+      setTimelineEvents([])
     }
   }, [runId, scaffolds])
 
@@ -357,11 +419,13 @@ export function useArenaRun(scaffolds: ScaffoldMeta[]) {
     runError,
     connectionState,
     connectionRetryCount,
+    timelineEvents,
     startRun,
     cancel,
     retryConnection,
     hydrateFromResults,
     updatePanel,
     setPanels,
+    setTimelineEvents,
   }
 }

@@ -109,6 +109,32 @@ export interface RunCompleteEvent {
   results: RunResults
 }
 
+export interface RunTimelineEvent {
+  seq: number
+  event: string
+  ts_ms: number
+  scaffold_id?: string | null
+  summary: string
+}
+
+export interface RunDiagnostics {
+  run_id: string
+  kind: string
+  status: string
+  created_at?: number
+  completed_at?: number
+  duration_ms?: number | null
+  task_id: string
+  model_id: string
+  scaffold_ids: string[]
+  options: Record<string, unknown>
+  event_count: number
+  event_type_counts: Record<string, number>
+  scaffold_status: Record<string, string>
+  errors: Record<string, string>
+  timeline: RunTimelineEvent[]
+}
+
 // --- Panel state ---
 
 export type PanelStatus = 'idle' | 'running' | 'completed' | 'failed' | 'winner' | 'loser'

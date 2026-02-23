@@ -88,7 +88,8 @@ Model entries include a `provider` field (`anthropic`, `openai`, `gemini`, or `o
     ],
     "features": {
         "llm_judge": true,
-        "pdf_export": false
+        "pdf_export": false,
+        "evaluation_profiles": ["balanced", "strict", "cost_first"]
     }
 }
 ```
@@ -111,7 +112,8 @@ Start an arena run. Launches all specified scaffolds concurrently against the se
     "options": {
         "temperature": 0,
         "max_output_tokens": 2048,
-        "timeout_s": 75
+        "timeout_s": 75,
+        "evaluation_profile": "balanced"
     }
 }
 ```
@@ -123,13 +125,20 @@ Start an arena run. Launches all specified scaffolds concurrently against the se
 | `scaffold_ids` | string[] | No | All 4 scaffolds | Which scaffolds to run |
 | `options` | object | No | See defaults | Run options |
 
+**Optional Request Header:**
+
+| Header | Description |
+|---|---|
+| `X-Idempotency-Key` | Replays the same response for duplicate run-create submissions with identical payloads. |
+
 **Response:**
 
 ```json
 {
     "run_id": "run_20250219_143022_a1b2c3d4",
     "stream_url": "/api/runs/run_20250219_143022_a1b2c3d4/events",
-    "cancel_url": "/api/runs/run_20250219_143022_a1b2c3d4/cancel"
+    "cancel_url": "/api/runs/run_20250219_143022_a1b2c3d4/cancel",
+    "idempotent_replay": false
 }
 ```
 
@@ -294,6 +303,96 @@ Keep-alive event sent every 15 seconds during inactivity.
 {
     "run_id": "run_xxx",
     "ts_ms": 1708354255000
+}
+```
+
+---
+
+### `GET /api/runs/{run_id}/diagnostics`
+
+Returns machine-readable run diagnostics with event counts and a replayable timeline.
+
+**Response (shape):**
+
+```json
+{
+  "run_id": "run_xxx",
+  "kind": "arena",
+  "status": "completed",
+  "event_count": 18,
+  "event_type_counts": {
+    "run_started": 1,
+    "scaffold_started": 4,
+    "scaffold_completed": 4,
+    "evaluation_completed": 4,
+    "run_complete": 1
+  },
+  "scaffold_status": {
+    "bare": "completed"
+  },
+  "errors": {},
+  "timeline": [
+    {
+      "seq": 1,
+      "event": "run_started",
+      "ts_ms": 1708354222000,
+      "scaffold_id": null,
+      "summary": "Run started"
+    }
+  ]
+}
+```
+
+---
+
+### `GET /api/runs/{run_id}/export-bundle`
+
+Downloads a zip bundle with run payload + diagnostics + report.
+
+**Bundle contents:**
+
+- `README.txt`
+- `run.json`
+- `diagnostics.json`
+- `report.md`
+
+**Content type:** `application/zip`
+
+---
+
+## Run Preflight
+
+### `POST /api/preflight`
+
+Validates run readiness before launch and returns actionable blockers instead of failing late.
+
+**Request Body:**
+
+```json
+{
+  "task_id": "extraction",
+  "model_id": "claude-sonnet-4-6",
+  "scaffold_ids": ["bare", "plan_execute_verify"],
+  "options": {
+    "temperature": 0,
+    "max_output_tokens": 2048,
+    "timeout_s": 75,
+    "evaluation_profile": "balanced"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "ok": true,
+  "can_run": true,
+  "checked_at": 1708354222.0,
+  "checks": [
+    {"id": "task", "status": "pass", "message": "Task is valid."},
+    {"id": "provider", "status": "pass", "message": "Provider credentials are ready."}
+  ]
 }
 ```
 

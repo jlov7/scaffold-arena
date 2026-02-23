@@ -12,6 +12,7 @@ interface ScoreDashboardProps {
   onRunComparison: (winningScaffoldId: string) => void
   onRunAutopsy: (scaffoldId: string) => void
   onExportReport?: () => void
+  onExportBundle?: () => void
   onExportJson?: () => void
   onShare?: () => void
 }
@@ -138,6 +139,7 @@ export const ScoreDashboard = memo(function ScoreDashboard({
   onRunComparison,
   onRunAutopsy,
   onExportReport,
+  onExportBundle,
   onExportJson,
   onShare,
 }: ScoreDashboardProps) {
@@ -307,6 +309,14 @@ export const ScoreDashboard = memo(function ScoreDashboard({
             <Icon name="download" className="h-3 w-3" />
             {COPY.actions.exportReport}
           </span>
+        </Button>
+        <Button
+          onClick={onExportBundle}
+          disabled={!onExportBundle}
+          aria-label="Download export bundle"
+          className="px-4 py-2 text-sm"
+        >
+          Export Bundle
         </Button>
         <Button
           onClick={onExportJson}

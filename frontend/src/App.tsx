@@ -9,14 +9,21 @@ import {
   fetchMeta,
   createComparison,
   createModelComparison,
+  exportRunBundle,
+  fetchRunDiagnostics,
   fetchRuns,
   fetchRunDetails,
+  getLlmKeyStorageMode,
   fetchStats,
+  runPreflight,
   runAutopsy,
   createPatchRerun,
   generateReport,
   getLlmApiKey,
+  setLlmKeyStorageMode,
   setLlmApiKey,
+  type LlmKeyStorageMode,
+  type RunPreflightResult,
 } from './api/client'
 import { useArenaRun } from './hooks/useArenaRun'
 import { useOnlineStatus } from './hooks/useOnlineStatus'
@@ -28,6 +35,7 @@ import ReportModal from './components/ReportModal'
 import LoadingSkeletons from './components/LoadingSkeletons'
 import ToastStack, { type ToastItem } from './components/ToastStack'
 import ShortcutOverlay from './components/ShortcutOverlay'
+import CommandPalette, { type CommandPaletteItem } from './components/CommandPalette'
 import LiveRegion from './components/LiveRegion'
 import GuidedTourModal from './components/GuidedTourModal'
 import { AppFooter } from './components/shell/AppFooter'
@@ -88,12 +96,14 @@ import { HistoryWorkspace } from './features/workspaces/HistoryWorkspace'
 import { LeaderboardWorkspace } from './features/workspaces/LeaderboardWorkspace'
 import { ResultsWorkspace } from './features/workspaces/ResultsWorkspace'
 import { SettingsWorkspace } from './features/workspaces/SettingsWorkspace'
+import type { RunDeltaSummary } from './features/workspaces/ResultsWorkspace'
 import type {
   AppMeta,
   AutopsyResult,
   LeaderboardStats,
   RunMetrics,
   RunResults,
+  RunTimelineEvent,
 } from './types'
 
 interface ComparisonCaseDisplay {
@@ -196,6 +206,12 @@ const TOUR_STEPS = [
     body: 'Review scores, diffs, history, and autopsy guidance to improve outcomes.',
   },
 ]
+const DEFAULT_RUN_OPTIONS = {
+  temperature: 0,
+  max_output_tokens: 2048,
+  timeout_s: 75,
+  evaluation_profile: 'balanced' as 'balanced' | 'strict' | 'cost_first',
+}
 
 const PROFILE_AUDIENCE_LABEL: Record<UserProfile, string> = {
   evaluator: 'Evaluator',
@@ -320,14 +336,17 @@ export default function App() {
     runError,
     connectionState,
     connectionRetryCount,
+    timelineEvents,
     startRun,
     cancel,
     retryConnection,
     hydrateFromResults,
     setPanels,
+    setTimelineEvents,
   } = useArenaRun(scaffolds)
   const [operationError, setOperationError] = useState<string | null>(null)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const [toasts, setToasts] = useState<ToastItem[]>([])
   const [helpSource, setHelpSource] = useState<
     'header' | 'banner' | 'keyboard' | 'card' | 'route' | 'unknown'
@@ -340,9 +359,7 @@ export default function App() {
   const [secondaryModelId, setSecondaryModelId] = useState('')
   const [forceRerun, setForceRerun] = useState(false)
   const [runOptions, setRunOptions] = useState({
-    temperature: 0,
-    max_output_tokens: 2048,
-    timeout_s: 75,
+    ...DEFAULT_RUN_OPTIONS,
   })
   const [customTasks, setCustomTasks] = useState<CustomTaskDef[]>([])
   const [customTaskName, setCustomTaskName] = useState('')
@@ -374,8 +391,17 @@ export default function App() {
   >(() =>
     'Notification' in window ? Notification.permission : 'unsupported',
   )
+  const [llmKeyStorageMode, setLlmKeyStorageModeState] = useState<LlmKeyStorageMode>(() =>
+    getLlmKeyStorageMode(),
+  )
   const [llmApiKey, setLlmApiKeyState] = useState(() => getLlmApiKey() ?? '')
   const [showLlmKey, setShowLlmKey] = useState(false)
+  const [lastPreflight, setLastPreflight] = useState<RunPreflightResult | null>(
+    null,
+  )
+  const [runDeltaSummary, setRunDeltaSummary] = useState<RunDeltaSummary | null>(
+    null,
+  )
   const [tourOpen, setTourOpen] = useState(false)
   const [tourStep, setTourStep] = useState(0)
   const { activeView, navigateToView } = useViewNavigation()
@@ -402,6 +428,15 @@ export default function App() {
   const navHistoryRef = useRef<Array<{ view: AppView; ts: number }>>([])
   const navSignalRef = useRef<string | null>(null)
   const routeTimingRef = useRef<{ view: AppView; enteredAt: number } | null>(null)
+  const previousRunSnapshotRef = useRef<{
+    runId: string | null
+    winnerId: string | null
+    results: RunResults | null
+  }>({
+    runId: null,
+    winnerId: null,
+    results: null,
+  })
   const taskOptions = useMemo(
     () => [
       ...tasks,
@@ -531,9 +566,19 @@ export default function App() {
     try {
       const rawOptions = localStorage.getItem(OPTIONS_STORAGE_KEY)
       if (rawOptions) {
-        const parsed = JSON.parse(rawOptions) as typeof runOptions
+        const parsed = JSON.parse(rawOptions) as Partial<typeof runOptions>
         if (typeof parsed === 'object' && parsed) {
-          setRunOptions(parsed)
+          const profile =
+            parsed.evaluation_profile === 'strict' ||
+            parsed.evaluation_profile === 'cost_first' ||
+            parsed.evaluation_profile === 'balanced'
+              ? parsed.evaluation_profile
+              : 'balanced'
+          setRunOptions({
+            ...DEFAULT_RUN_OPTIONS,
+            ...parsed,
+            evaluation_profile: profile,
+          })
         }
       }
       const rawCustom = localStorage.getItem(CUSTOM_TASKS_STORAGE_KEY)
@@ -803,6 +848,13 @@ export default function App() {
     }
   }, [customTasks, runOptions])
 
+  useEffect(() => {
+    setLlmKeyStorageMode(llmKeyStorageMode)
+    if (llmApiKey.trim()) {
+      setLlmApiKey(llmApiKey, { mode: llmKeyStorageMode })
+    }
+  }, [llmApiKey, llmKeyStorageMode])
+
   // Track last run params for comparison/report
   const lastRunRef = useRef({ taskId: '', modelId: '' })
   const [hasEverRun, setHasEverRun] = useState(false)
@@ -867,11 +919,6 @@ export default function App() {
         pushToast('error', message)
         return
       }
-      trackEvent('run_started', {
-        task_id: taskId,
-        model_id: modelId,
-        mode: runMode,
-      })
       if (
         'Notification' in window &&
         Notification.permission === 'default' &&
@@ -883,16 +930,26 @@ export default function App() {
         })
       }
 
+      const prepareRunContext = () => {
+        lastRunRef.current = { taskId, modelId }
+        setHasEverRun(true)
+        setArenaLane('live')
+        setOperationError(null)
+        setComparisonCases([])
+        setComparisonLoading(false)
+        setComparisonStreamUrl(null)
+        setAutopsyTarget(null)
+        setAutopsyResult(null)
+      }
+
       lastRunRef.current = { taskId, modelId }
-      setHasEverRun(true)
-      setArenaLane('live')
-      setOperationError(null)
-      setComparisonCases([])
-      setComparisonLoading(false)
-      setComparisonStreamUrl(null)
-      setAutopsyTarget(null)
-      setAutopsyResult(null)
       if (runMode === 'model') {
+        prepareRunContext()
+        trackEvent('run_started', {
+          task_id: taskId,
+          model_id: modelId,
+          mode: runMode,
+        })
         setComparisonLoading(true)
         void createModelComparison({
           task_id: taskId,
@@ -939,17 +996,60 @@ export default function App() {
           | { ts: number; results: RunResults; winnerId: string | null }
           | undefined
         if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
+          prepareRunContext()
+          setLastPreflight(null)
           hydrateFromResults(cached.results, cached.winnerId, { cached: true })
           pushToast('info', 'Loaded cached results')
           return
         }
       }
 
-      void startRun(taskId, modelId, runOptions, customPayload).catch((err) => {
-        const message = `Failed to start run: ${getErrorMessage(err)}`
-        setOperationError(message)
-        pushToast('error', message)
+      const launchArenaRun = () => {
+        prepareRunContext()
+        trackEvent('run_started', {
+          task_id: taskId,
+          model_id: modelId,
+          mode: runMode,
+        })
+        void startRun(taskId, modelId, runOptions, customPayload).catch((err) => {
+          const message = `Failed to start run: ${getErrorMessage(err)}`
+          setOperationError(message)
+          pushToast('error', message)
+        })
+      }
+
+      if (customPayload) {
+        setLastPreflight(null)
+        launchArenaRun()
+        return
+      }
+
+      void runPreflight({
+        task_id: taskId,
+        model_id: modelId,
+        scaffold_ids: scaffolds.map((scaffold) => scaffold.id),
+        options: runOptions,
       })
+        .then((preflight) => {
+          setLastPreflight(preflight)
+          if (!preflight.can_run) {
+            const failing = preflight.checks.find((check) => check.status === 'fail')
+            const message = failing?.message ?? 'Run blocked by preflight checks.'
+            setOperationError(message)
+            setArenaLane('configure')
+            pushToast(
+              'error',
+              failing?.action ? `${message} ${failing.action}` : message,
+            )
+            return
+          }
+          launchArenaRun()
+        })
+        .catch((err) => {
+          const message = `Preflight check failed: ${getErrorMessage(err)}`
+          setOperationError(message)
+          pushToast('error', message)
+        })
     },
     [
       runMode,
@@ -957,6 +1057,7 @@ export default function App() {
       secondaryModelId,
       modelModeScaffoldId,
       runOptions,
+      scaffolds,
       customTasks,
       forceRerun,
       buildCacheKey,
@@ -985,6 +1086,7 @@ export default function App() {
         setAutopsyTarget(null)
         setReportOpen(false)
         setShortcutsOpen(false)
+        setCommandPaletteOpen(false)
         setHelpOpen(false)
         return
       }
@@ -994,6 +1096,12 @@ export default function App() {
       if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
         event.preventDefault()
         runFromCurrentSelection()
+        return
+      }
+
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault()
+        setCommandPaletteOpen((prev) => !prev)
         return
       }
 
@@ -1263,6 +1371,29 @@ export default function App() {
     })
   }, [finalResults, pushToast, winnerId])
 
+  const handleExportBundle = useCallback(async () => {
+    if (!runId) {
+      pushToast('error', 'No run selected to export.')
+      return
+    }
+    try {
+      const blob = await exportRunBundle(runId)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `scaffold-arena-${runId}-bundle.zip`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+      pushToast('success', 'Export bundle downloaded')
+    } catch (err) {
+      const message = `Bundle export failed: ${getErrorMessage(err)}`
+      setOperationError(message)
+      pushToast('error', message)
+    }
+  }, [pushToast, runId])
+
   const handleShareRun = useCallback(async () => {
     try {
       const shareUrl = window.location.href
@@ -1294,6 +1425,21 @@ export default function App() {
         const record = parseRunDetailsResponse(rawRecord)
         const results = (record.results ?? {}) as RunResults
         const hydratedWinner = (record.winner_id as string | null) ?? null
+        const diagnosticsRaw = await fetchRunDiagnostics(historyRunId).catch(
+          () => null,
+        )
+        if (
+          diagnosticsRaw &&
+          Array.isArray((diagnosticsRaw as { timeline?: unknown }).timeline)
+        ) {
+          setTimelineEvents(
+            ((diagnosticsRaw as { timeline: RunTimelineEvent[] }).timeline ?? []).slice(
+              -400,
+            ),
+          )
+        } else {
+          setTimelineEvents([])
+        }
         hydrateFromResults(results, hydratedWinner, { cached: false })
         const taskId = record.task_id ?? ''
         const modelId = record.model_id ?? ''
@@ -1318,6 +1464,7 @@ export default function App() {
     [
       hydrateFromResults,
       navigateToView,
+      setTimelineEvents,
       pushToast,
       selectedModelId,
       selectedTaskId,
@@ -1489,6 +1636,79 @@ export default function App() {
     ],
   )
 
+  const commandPaletteCommands = useMemo<CommandPaletteItem[]>(
+    () => [
+      {
+        id: 'run-now',
+        label: 'Run benchmark now',
+        hint: 'Cmd/Ctrl+Enter',
+        run: runFromCurrentSelection,
+      },
+      {
+        id: 'open-arena',
+        label: 'Open Arena workspace',
+        run: () => navigateToView('arena'),
+      },
+      {
+        id: 'open-results',
+        label: 'Open Results workspace',
+        run: () => navigateToView('results'),
+      },
+      {
+        id: 'open-history',
+        label: 'Open History workspace',
+        run: () => navigateToView('history'),
+      },
+      {
+        id: 'open-settings',
+        label: 'Open Settings workspace',
+        run: () => navigateToView('settings'),
+      },
+      {
+        id: 'proof-comparison',
+        label: 'Run proof comparison on winner',
+        run: () => {
+          if (!winnerId) return
+          void handleRunComparison(winnerId)
+        },
+      },
+      {
+        id: 'export-report',
+        label: 'Export report',
+        run: () => {
+          void handleExportReport()
+        },
+      },
+      {
+        id: 'export-bundle',
+        label: 'Export run bundle',
+        run: () => {
+          void handleExportBundle()
+        },
+      },
+      {
+        id: 'open-help',
+        label: 'Open help center',
+        hint: 'H / F1',
+        run: () => openHelpCenter('keyboard'),
+      },
+      {
+        id: 'toggle-theme',
+        label: `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`,
+        run: () => setTheme((prev) => (prev === 'dark' ? 'light' : 'dark')),
+      },
+    ],
+    [
+      handleExportBundle,
+      handleExportReport,
+      handleRunComparison,
+      navigateToView,
+      openHelpCenter,
+      runFromCurrentSelection,
+      theme,
+      winnerId,
+    ],
+  )
 
   const runNextAction = useCallback(() => {
     executeNextActionCommand(nextActionKey, {
@@ -1732,6 +1952,47 @@ export default function App() {
   useEffect(() => {
     if (!finalResults) return
 
+    const previousSnapshot = previousRunSnapshotRef.current
+    if (
+      previousSnapshot.results &&
+      (previousSnapshot.runId !== runId ||
+        previousSnapshot.results !== finalResults)
+    ) {
+      const scoreDeltas = Object.keys(finalResults)
+        .map((scaffoldId) => {
+          const current = finalResults[scaffoldId]?.evaluation?.total_score ?? 0
+          const previous =
+            previousSnapshot.results?.[scaffoldId]?.evaluation?.total_score ?? 0
+          return { scaffoldId, delta: current - previous }
+        })
+        .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
+
+      const currentCost = Object.values(finalResults).reduce(
+        (sum, result) => sum + (result.metrics?.cost_usd ?? 0),
+        0,
+      )
+      const previousCost = Object.values(previousSnapshot.results).reduce(
+        (sum, result) => sum + (result.metrics?.cost_usd ?? 0),
+        0,
+      )
+
+      setRunDeltaSummary({
+        previousWinnerId: previousSnapshot.winnerId,
+        currentWinnerId: winnerId,
+        winnerChanged: previousSnapshot.winnerId !== winnerId,
+        totalCostDeltaUsd: currentCost - previousCost,
+        scoreDeltas,
+      })
+    } else if (!previousSnapshot.results) {
+      setRunDeltaSummary(null)
+    }
+
+    previousRunSnapshotRef.current = {
+      runId,
+      winnerId,
+      results: finalResults,
+    }
+
     if (runId && lastTrackedRunCompleteRef.current !== runId) {
       lastTrackedRunCompleteRef.current = runId
       trackEvent('run_completed', {
@@ -1865,6 +2126,7 @@ export default function App() {
         onOpenHelp={() => openHelpCenter('header')}
         onExplainScreen={() => openHelpCenter('route')}
         onOpenTour={() => setTourOpen(true)}
+        onOpenCommandPalette={() => setCommandPaletteOpen(true)}
         onToggleTheme={() =>
           setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
         }
@@ -1893,6 +2155,12 @@ export default function App() {
       {(runError || operationError) && (
         <div className="mx-6 mt-4 rounded border border-accent-loser/40 bg-accent-loser/10 px-4 py-3 font-mono text-xs text-accent-loser">
           {runError ?? operationError}
+        </div>
+      )}
+
+      {lastPreflight && !lastPreflight.can_run && (
+        <div className="mx-6 mt-4 rounded border border-accent-warning/40 bg-accent-warning/10 px-4 py-3 font-mono text-xs text-accent-warning">
+          Preflight blocked this run. Open Settings to resolve failed checks, then rerun.
         </div>
       )}
 
@@ -2038,9 +2306,12 @@ export default function App() {
             comparisonCases={comparisonCases}
             comparisonLoading={comparisonLoading}
             deferredResultsReady={deferredResultsReady}
+            timelineEvents={timelineEvents}
+            runDeltaSummary={runDeltaSummary}
             onRunComparison={handleRunComparison}
             onRunAutopsy={handleRunAutopsy}
             onExportReport={handleExportReport}
+            onExportBundle={handleExportBundle}
             onExportJson={handleExportJson}
             onShare={handleShareRun}
             onNavigateToArena={() => navigateToView('arena')}
@@ -2074,11 +2345,13 @@ export default function App() {
             experienceMode={experienceMode}
             theme={theme}
             llmApiKey={llmApiKey}
+            llmKeyStorageMode={llmKeyStorageMode}
             showLlmKey={showLlmKey}
             onLlmApiKeyChange={(key) => {
               setLlmApiKeyState(key)
-              setLlmApiKey(key)
+              setLlmApiKey(key, { mode: llmKeyStorageMode })
             }}
+            onLlmKeyStorageModeChange={setLlmKeyStorageModeState}
             onToggleShowLlmKey={() => setShowLlmKey((v) => !v)}
             onClearLlmKey={() => {
               const confirmed = window.confirm(
@@ -2086,7 +2359,7 @@ export default function App() {
               )
               if (!confirmed) return
               setLlmApiKeyState('')
-              setLlmApiKey('')
+              setLlmApiKey('', { mode: llmKeyStorageMode })
             }}
             runMode={runMode}
             onRunModeChange={setRunMode}
@@ -2118,6 +2391,7 @@ export default function App() {
             onSaveCustomTask={saveCustomTask}
             onNavigateToArena={() => navigateToView('arena')}
             activeErrorMessage={activeErrorMessage}
+            lastPreflight={lastPreflight}
           />
         )}
       </main>
@@ -2171,6 +2445,11 @@ export default function App() {
       <ShortcutOverlay
         isOpen={shortcutsOpen}
         onClose={() => setShortcutsOpen(false)}
+      />
+      <CommandPalette
+        isOpen={commandPaletteOpen}
+        onClose={() => setCommandPaletteOpen(false)}
+        commands={commandPaletteCommands}
       />
       <HelpCenterModal
         isOpen={helpOpen}

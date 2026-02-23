@@ -1,8 +1,12 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import io
+import json
 import logging
 import time
+import zipfile
 from contextlib import asynccontextmanager
 
 from dotenv import load_dotenv
@@ -10,7 +14,7 @@ from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -30,6 +34,7 @@ from core.registry import all_tasks_meta, all_scaffolds_meta  # noqa: E402
 from core.stats import compute_stats  # noqa: E402
 from core.run_engine import (  # noqa: E402
     _runs,
+    build_run_diagnostics,
     RunEvictedError,
     RunKind,
     cancel_active_runs,
@@ -44,6 +49,8 @@ from core.run_engine import (  # noqa: E402
 from core.storage import get_run_record, init_db, list_runs, persist_run  # noqa: E402
 
 logger = logging.getLogger(__name__)
+_IDEMPOTENCY_TTL_SECONDS = 60 * 60
+_idempotency_cache: dict[str, dict] = {}
 
 
 @asynccontextmanager
@@ -183,6 +190,46 @@ def _validate_budget_for_new_run() -> None:
         raise HTTPException(status_code=429, detail=str(exc)) from exc
 
 
+def _prune_idempotency_cache() -> None:
+    now = time.time()
+    for key, entry in list(_idempotency_cache.items()):
+        if now - float(entry.get("ts", 0)) >= _IDEMPOTENCY_TTL_SECONDS:
+            _idempotency_cache.pop(key, None)
+
+
+def _idempotency_fingerprint(payload: dict, llm_api_key: str | None) -> str:
+    normalized = {"payload": payload, "llm_api_key_present": bool(llm_api_key)}
+    as_json = json.dumps(normalized, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(as_json.encode("utf-8")).hexdigest()
+
+
+def _lookup_idempotent_response(idempotency_key: str, fingerprint: str) -> dict | None:
+    _prune_idempotency_cache()
+    cached = _idempotency_cache.get(idempotency_key)
+    if not cached:
+        return None
+    if cached.get("fingerprint") != fingerprint:
+        raise HTTPException(
+            status_code=409,
+            detail="Idempotency key was reused with a different request payload.",
+        )
+    response = dict(cached.get("response", {}))
+    response["idempotent_replay"] = True
+    return response
+
+
+def _store_idempotent_response(
+    idempotency_key: str,
+    fingerprint: str,
+    response_payload: dict,
+) -> None:
+    _idempotency_cache[idempotency_key] = {
+        "fingerprint": fingerprint,
+        "response": dict(response_payload),
+        "ts": time.time(),
+    }
+
+
 # --- Health ---
 @app.get("/api/health")
 async def health():
@@ -199,6 +246,7 @@ async def meta():
         "features": {
             "llm_judge": settings.enable_llm_judge,
             "pdf_export": settings.enable_pdf_export,
+            "evaluation_profiles": ["balanced", "strict", "cost_first"],
         },
         "budget": {
             **budget_tracker.snapshot(daily_budget_usd=settings.daily_budget_usd),
@@ -238,6 +286,126 @@ class CreateRunRequest(BaseModel):
     custom_task: dict | None = None
 
 
+class RunPreflightRequest(BaseModel):
+    task_id: str = Field(min_length=1, max_length=128)
+    model_id: str = Field(min_length=1, max_length=128)
+    scaffold_ids: list[str] = Field(min_length=1)
+    options: dict | None = None
+
+
+def _build_preflight_check(
+    check_id: str,
+    status: str,
+    message: str,
+    action: str | None = None,
+) -> dict:
+    payload = {"id": check_id, "status": status, "message": message}
+    if action:
+        payload["action"] = action
+    return payload
+
+
+@app.post("/api/preflight")
+@limiter.limit("20/minute")
+async def run_preflight(
+    request: Request,
+    req: RunPreflightRequest,
+    _auth: None = Depends(verify_token),
+):
+    checks: list[dict] = []
+
+    try:
+        _validate_task_id(req.task_id)
+        checks.append(_build_preflight_check("task", "pass", "Task is valid."))
+    except HTTPException as exc:
+        checks.append(
+            _build_preflight_check(
+                "task",
+                "fail",
+                str(exc.detail),
+                "Select a task listed in the Task selector.",
+            )
+        )
+
+    try:
+        _validate_model_id(req.model_id)
+        checks.append(_build_preflight_check("model", "pass", "Model is valid."))
+    except HTTPException as exc:
+        checks.append(
+            _build_preflight_check(
+                "model",
+                "fail",
+                str(exc.detail),
+                "Choose a model from the current model registry.",
+            )
+        )
+
+    try:
+        _validate_scaffold_ids(req.scaffold_ids)
+        checks.append(_build_preflight_check("scaffolds", "pass", "Scaffold selection is valid."))
+    except HTTPException as exc:
+        checks.append(
+            _build_preflight_check(
+                "scaffolds",
+                "fail",
+                str(exc.detail),
+                "Adjust scaffold selection before running.",
+            )
+        )
+
+    try:
+        from core.run_engine import RunOptions
+
+        RunOptions(**(req.options or {}))
+        checks.append(_build_preflight_check("options", "pass", "Run options are valid."))
+    except ValueError as exc:
+        checks.append(
+            _build_preflight_check(
+                "options",
+                "fail",
+                str(exc),
+                "Fix run options in Settings before starting.",
+            )
+        )
+
+    try:
+        _validate_budget_for_new_run()
+        checks.append(_build_preflight_check("budget", "pass", "Budget allows a new run."))
+    except HTTPException as exc:
+        checks.append(
+            _build_preflight_check(
+                "budget",
+                "fail",
+                str(exc.detail),
+                "Increase budget or wait for next daily rollover.",
+            )
+        )
+
+    llm_api_key = _extract_llm_api_key(request)
+    try:
+        from core.provider import get_provider
+
+        get_provider(req.model_id, api_key_override=llm_api_key)
+        checks.append(_build_preflight_check("provider", "pass", "Provider credentials are ready."))
+    except Exception as exc:  # pragma: no cover - defensive runtime guard
+        checks.append(
+            _build_preflight_check(
+                "provider",
+                "fail",
+                str(exc),
+                "Set a valid provider key in Settings (BYOK) or backend environment.",
+            )
+        )
+
+    ok = all(check["status"] != "fail" for check in checks)
+    return {
+        "ok": ok,
+        "can_run": ok,
+        "checked_at": time.time(),
+        "checks": checks,
+    }
+
+
 @app.get("/api/runs")
 async def get_runs(limit: int = 50):
     clamped_limit = max(1, min(limit, 500))
@@ -266,6 +434,15 @@ async def create_arena_run(
     req: CreateRunRequest,
     _auth: None = Depends(verify_token),
 ):
+    llm_api_key = _extract_llm_api_key(request)
+    idempotency_key_raw = request.headers.get("x-idempotency-key")
+    idempotency_key = idempotency_key_raw.strip() if idempotency_key_raw else ""
+    if idempotency_key:
+        fingerprint = _idempotency_fingerprint(req.model_dump(mode="json"), llm_api_key)
+        cached_response = _lookup_idempotent_response(idempotency_key, fingerprint)
+        if cached_response is not None:
+            return cached_response
+
     _validate_model_id(req.model_id)
     _validate_scaffold_ids(req.scaffold_ids)
     _validate_budget_for_new_run()
@@ -293,7 +470,6 @@ async def create_arena_run(
     else:
         _validate_task_id(req.task_id)
 
-    llm_api_key = _extract_llm_api_key(request)
     try:
         run = create_run(
             kind=RunKind.ARENA,
@@ -308,11 +484,15 @@ async def create_arena_run(
 
     # Start in background — don't await
     asyncio.create_task(start_arena_run(run))
-    return {
+    response_payload = {
         "run_id": run.run_id,
         "stream_url": f"/api/runs/{run.run_id}/events",
         "cancel_url": f"/api/runs/{run.run_id}/cancel",
+        "idempotent_replay": False,
     }
+    if idempotency_key:
+        _store_idempotent_response(idempotency_key, fingerprint, response_payload)
+    return response_payload
 
 
 @app.get("/api/runs/{run_id}")
@@ -340,6 +520,112 @@ async def stream_events(run_id: str):
         _sse_generator(run_id),
         media_type="text/event-stream",
     )
+
+
+def _build_stored_run_diagnostics(record: dict) -> dict:
+    timeline: list[dict] = []
+    seq = 1
+    created_ts_ms = int(float(record.get("created_at") or time.time()) * 1000)
+    timeline.append(
+        {
+            "seq": seq,
+            "event": "run_started",
+            "ts_ms": created_ts_ms,
+            "scaffold_id": None,
+            "summary": "Run started",
+        }
+    )
+    seq += 1
+
+    results = record.get("results") or {}
+    event_counts: dict[str, int] = {"run_started": 1, "run_complete": 1}
+    scaffold_status: dict[str, str] = {}
+    errors: dict[str, str] = {}
+
+    for scaffold_id, result in results.items():
+        has_error = isinstance(result, dict) and "error" in result
+        event = "scaffold_failed" if has_error else "scaffold_completed"
+        event_counts[event] = event_counts.get(event, 0) + 1
+        status = "failed" if has_error else "completed"
+        scaffold_status[scaffold_id] = status
+        if has_error:
+            errors[scaffold_id] = str(result.get("error"))
+        timeline.append(
+            {
+                "seq": seq,
+                "event": event,
+                "ts_ms": created_ts_ms + seq * 5,
+                "scaffold_id": scaffold_id,
+                "summary": f"{scaffold_id} {status}",
+            }
+        )
+        seq += 1
+        if not has_error and isinstance(result, dict) and result.get("evaluation"):
+            event_counts["evaluation_completed"] = event_counts.get("evaluation_completed", 0) + 1
+            timeline.append(
+                {
+                    "seq": seq,
+                    "event": "evaluation_completed",
+                    "ts_ms": created_ts_ms + seq * 5,
+                    "scaffold_id": scaffold_id,
+                    "summary": f"{scaffold_id} scored",
+                }
+            )
+            seq += 1
+
+    complete_ts_ms = int(float(record.get("completed_at") or record.get("created_at") or time.time()) * 1000)
+    timeline.append(
+        {
+            "seq": seq,
+            "event": "run_complete",
+            "ts_ms": complete_ts_ms,
+            "scaffold_id": None,
+            "summary": "Run completed",
+        }
+    )
+
+    duration_ms = None
+    if record.get("completed_at") and record.get("created_at"):
+        duration_ms = int((float(record["completed_at"]) - float(record["created_at"])) * 1000)
+
+    return {
+        "run_id": record.get("run_id"),
+        "kind": record.get("kind"),
+        "status": record.get("status"),
+        "created_at": record.get("created_at"),
+        "completed_at": record.get("completed_at"),
+        "duration_ms": duration_ms,
+        "task_id": record.get("task_id"),
+        "model_id": record.get("model_id"),
+        "scaffold_ids": record.get("scaffold_ids", []),
+        "options": record.get("options", {}),
+        "event_count": len(timeline),
+        "event_type_counts": event_counts,
+        "scaffold_status": scaffold_status,
+        "errors": errors,
+        "timeline": timeline,
+    }
+
+
+def _resolve_run_payload(run_id: str) -> dict:
+    try:
+        run = get_run(run_id)
+        payload = _live_run_payload(run)
+        payload["diagnostics"] = build_run_diagnostics(run)
+        return payload
+    except (RunEvictedError, ValueError):
+        record = get_run_record(run_id)
+        if not record:
+            raise HTTPException(404, "Run not found")
+        payload = dict(record)
+        payload["diagnostics"] = _build_stored_run_diagnostics(record)
+        return payload
+
+
+@app.get("/api/runs/{run_id}/diagnostics")
+async def get_run_diagnostics(run_id: str):
+    payload = _resolve_run_payload(run_id)
+    return payload["diagnostics"]
 
 
 async def _sse_generator(run_id: str):
@@ -734,6 +1020,68 @@ async def generate_report(
         response["pdf_base64"] = None
 
     return response
+
+
+@app.get("/api/runs/{run_id}/export-bundle")
+@limiter.limit("20/minute")
+async def export_run_bundle(
+    request: Request,
+    run_id: str,
+    _auth: None = Depends(verify_token),
+):
+    del request
+    payload = _resolve_run_payload(run_id)
+    status = payload.get("status")
+    if status not in {"completed", "failed"}:
+        raise HTTPException(status_code=409, detail="Run is still in progress; complete it before exporting.")
+
+    results = payload.get("results", {})
+    if not isinstance(results, dict) or not results:
+        raise HTTPException(status_code=400, detail="Run does not include exportable results.")
+
+    from report.markdown import generate_markdown
+
+    markdown = generate_markdown(
+        task_id=str(payload.get("task_id", "")),
+        model_id=str(payload.get("model_id", "")),
+        results=results,
+        comparison=None,
+        autopsy=None,
+        patch_rerun=None,
+    )
+
+    run_metadata = {
+        "run_id": payload.get("run_id"),
+        "kind": payload.get("kind"),
+        "status": payload.get("status"),
+        "task_id": payload.get("task_id"),
+        "model_id": payload.get("model_id"),
+        "scaffold_ids": payload.get("scaffold_ids"),
+        "options": payload.get("options"),
+        "created_at": payload.get("created_at"),
+        "completed_at": payload.get("completed_at"),
+        "winner_id": payload.get("winner_id"),
+    }
+    diagnostics = payload.get("diagnostics", {})
+
+    bundle_readme = (
+        "Scaffold Arena Export Bundle\n"
+        "===========================\n\n"
+        "This bundle contains the canonical run payload, diagnostics timeline, and audit markdown.\n"
+        "Synthetic-source tasks remain demo data and are clearly labeled in the report.\n"
+    )
+
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, mode="w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("README.txt", bundle_readme)
+        zf.writestr("run.json", json.dumps({"metadata": run_metadata, "results": results}, indent=2))
+        zf.writestr("diagnostics.json", json.dumps(diagnostics, indent=2))
+        zf.writestr("report.md", markdown)
+
+    buffer.seek(0)
+    filename = f"scaffold-arena-{run_id}-bundle.zip"
+    headers = {"Content-Disposition": f'attachment; filename="{filename}"'}
+    return StreamingResponse(buffer, media_type="application/zip", headers=headers)
 
 
 # --- Static frontend serving (production only) ---

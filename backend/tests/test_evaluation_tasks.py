@@ -55,3 +55,46 @@ async def test_evaluate_research_task(monkeypatch: pytest.MonkeyPatch) -> None:
     result = await evaluate(task, output, provider=None, model_id="claude-sonnet-4-6")
     assert "citation_coverage" in result["breakdown"]
     assert "required_findings_coverage" in result["breakdown"]
+
+
+@pytest.mark.asyncio
+async def test_evaluation_profiles_shift_weight_toward_deterministic(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(settings, "enable_llm_judge", False)
+    task = ExtractionTask()
+    output = json.dumps(task.get_gold())
+
+    balanced = await evaluate(
+        task,
+        output,
+        provider=None,
+        model_id="claude-sonnet-4-6",
+        evaluation_profile="balanced",
+    )
+    strict = await evaluate(
+        task,
+        output,
+        provider=None,
+        model_id="claude-sonnet-4-6",
+        evaluation_profile="strict",
+    )
+    cost_first = await evaluate(
+        task,
+        output,
+        provider=None,
+        model_id="claude-sonnet-4-6",
+        evaluation_profile="cost_first",
+    )
+
+    def deterministic_share(result: dict) -> float:
+        return sum(
+            entry["weight"]
+            for entry in result["weights"].values()
+            if entry["type"] == "deterministic"
+        )
+
+    assert strict["profile"] == "strict"
+    assert cost_first["profile"] == "cost_first"
+    assert deterministic_share(strict) >= 0.7
+    assert deterministic_share(cost_first) >= 0.7
+    assert deterministic_share(strict) > deterministic_share(balanced)
+    assert deterministic_share(cost_first) > deterministic_share(balanced)

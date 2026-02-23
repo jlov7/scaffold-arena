@@ -1,10 +1,11 @@
 import { Suspense, lazy } from 'react'
 import { ScoreDashboard } from '../../components/ScoreDashboard'
 import { WorkspaceSection } from '../../components/layout/WorkspaceSection'
+import RunTimeline from '../../components/RunTimeline'
 import StateCallout from '../../components/StateCallout'
 import { COPY } from '../../content/copy'
 import type { UiStateDescriptor } from '../states/taxonomy'
-import type { RunResults } from '../../types'
+import type { RunResults, RunTimelineEvent } from '../../types'
 import type { UserProfile } from '../../components/journey/ExperienceModeCard'
 import type { RoleResultsSummary } from '../results/roleSummary'
 
@@ -43,6 +44,14 @@ interface ComparisonCaseDisplay {
   cost: number
 }
 
+export interface RunDeltaSummary {
+  previousWinnerId: string | null
+  currentWinnerId: string | null
+  winnerChanged: boolean
+  totalCostDeltaUsd: number
+  scoreDeltas: Array<{ scaffoldId: string; delta: number }>
+}
+
 export interface ResultsWorkspaceProps {
   compactMode: boolean
   onToggleCompactMode: () => void
@@ -62,9 +71,12 @@ export interface ResultsWorkspaceProps {
   comparisonCases: ComparisonCaseDisplay[]
   comparisonLoading: boolean
   deferredResultsReady: boolean
+  timelineEvents: RunTimelineEvent[]
+  runDeltaSummary: RunDeltaSummary | null
   onRunComparison: (winnerId: string) => Promise<void>
   onRunAutopsy: (scaffoldId: string) => Promise<void>
   onExportReport: () => Promise<void>
+  onExportBundle: () => Promise<void>
   onExportJson: () => void
   onShare: () => Promise<void>
   onNavigateToArena: () => void
@@ -92,9 +104,12 @@ export function ResultsWorkspace({
   comparisonCases,
   comparisonLoading,
   deferredResultsReady,
+  timelineEvents,
+  runDeltaSummary,
   onRunComparison,
   onRunAutopsy,
   onExportReport,
+  onExportBundle,
   onExportJson,
   onShare,
   onNavigateToArena,
@@ -193,6 +208,33 @@ export function ResultsWorkspace({
 
       {finalResults && resultsLane === 'summary' && (
         <>
+          {runDeltaSummary && (
+            <WorkspaceSection template="review-dense" priority="important" className="font-mono stack-tight">
+              <div className="ui-heading-sm text-text-secondary">
+                What changed since your previous run
+              </div>
+              <div className="text-xs text-text-secondary">
+                Winner:{' '}
+                {runDeltaSummary.currentWinnerId ?? 'none'}
+                {runDeltaSummary.winnerChanged ? ' (changed)' : ' (unchanged)'}
+              </div>
+              <div className="text-xs text-text-secondary">
+                Total cost delta: {runDeltaSummary.totalCostDeltaUsd >= 0 ? '+' : ''}
+                ${runDeltaSummary.totalCostDeltaUsd.toFixed(4)}
+              </div>
+              {runDeltaSummary.scoreDeltas.length > 0 && (
+                <div className="grid gap-1 text-[11px] text-text-secondary sm:grid-cols-2">
+                  {runDeltaSummary.scoreDeltas.slice(0, 6).map((entry) => (
+                    <div key={entry.scaffoldId}>
+                      {entry.scaffoldId}: {entry.delta >= 0 ? '+' : ''}
+                      {entry.delta.toFixed(1)}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </WorkspaceSection>
+          )}
+
           {roleResultsSummary && (
             <WorkspaceSection template="review-dense" priority="important" className="font-mono stack-tight">
               <div className="ui-heading-sm text-text-secondary">
@@ -249,6 +291,7 @@ export function ResultsWorkspace({
             onRunComparison={onRunComparison}
             onRunAutopsy={onRunAutopsy}
             onExportReport={onExportReport}
+            onExportBundle={onExportBundle}
             onExportJson={onExportJson}
             onShare={onShare}
           />
@@ -325,6 +368,8 @@ export function ResultsWorkspace({
 
           {deferredResultsReady ? (
             <>
+              <RunTimeline events={timelineEvents} />
+
               <Suspense fallback={<div className="text-xs text-text-muted">Loading diff...</div>}>
                 <DiffView results={finalResults} scaffoldNames={scaffoldNames} />
               </Suspense>

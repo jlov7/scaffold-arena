@@ -45,17 +45,56 @@ WEIGHT_TABLES = {
     },
 }
 
+EVALUATION_PROFILES: dict[str, dict[str, float]] = {
+    "balanced": {"deterministic_boost": 1.0, "judge_boost": 1.0},
+    "strict": {"deterministic_boost": 1.12, "judge_boost": 0.55},
+    "cost_first": {"deterministic_boost": 1.2, "judge_boost": 0.35},
+}
+
+
+def _resolve_weights(task_type: str, evaluation_profile: str) -> dict[str, dict]:
+    if task_type not in WEIGHT_TABLES:
+        raise ValueError(f"Unknown task type: {task_type}")
+    if evaluation_profile not in EVALUATION_PROFILES:
+        raise ValueError(
+            f"Unknown evaluation profile: {evaluation_profile}. "
+            f"Supported: {sorted(EVALUATION_PROFILES)}"
+        )
+
+    base_weights = WEIGHT_TABLES[task_type]
+    profile = EVALUATION_PROFILES[evaluation_profile]
+    adjusted: dict[str, dict] = {}
+    total = 0.0
+    for metric, entry in base_weights.items():
+        multiplier = (
+            profile["deterministic_boost"]
+            if entry["type"] == "deterministic"
+            else profile["judge_boost"]
+        )
+        weight = entry["weight"] * multiplier
+        adjusted[metric] = {"type": entry["type"], "weight": weight}
+        total += weight
+
+    if total <= 0:
+        return base_weights
+
+    normalized: dict[str, dict] = {}
+    for metric, entry in adjusted.items():
+        normalized[metric] = {
+            "type": entry["type"],
+            "weight": round(entry["weight"] / total, 6),
+        }
+    return normalized
+
 
 async def evaluate(
     task: BaseTask,
     raw_output: str,
     provider: LLMProvider,
     model_id: str,
+    evaluation_profile: str = "balanced",
 ) -> dict:
-    if task.task_type not in WEIGHT_TABLES:
-        raise ValueError(f"Unknown task type: {task.task_type}")
-
-    weights = WEIGHT_TABLES[task.task_type]
+    weights = _resolve_weights(task.task_type, evaluation_profile)
     breakdown: dict[str, float] = {}
     notes: list[str] = []
 
@@ -155,6 +194,7 @@ async def evaluate(
         "total_score": total_score,
         "breakdown": breakdown,
         "weights": weights,
+        "profile": evaluation_profile,
         "notes": notes,
         "judge": judge_result,
     }

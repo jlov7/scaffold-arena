@@ -1,6 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createArenaRun, fetchMeta, setApiToken } from './client'
+import {
+  createArenaRun,
+  fetchMeta,
+  getLlmApiKey,
+  setApiToken,
+  setLlmApiKey,
+  setLlmKeyStorageMode,
+} from './client'
 
 describe('api client', () => {
   beforeEach(() => {
@@ -51,5 +58,33 @@ describe('api client', () => {
     vi.stubGlobal('fetch', fetchMock)
 
     await expect(fetchMeta()).rejects.toThrow('500: boom')
+  })
+
+  it('stores llm keys in session mode by default', () => {
+    setLlmKeyStorageMode('session')
+    setLlmApiKey('sk-session')
+    expect(getLlmApiKey()).toBe('sk-session')
+  })
+
+  it('sends idempotency key when provided for run creation', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        run_id: 'run_1',
+        stream_url: '/api/runs/run_1/events',
+        cancel_url: '/api/runs/run_1/cancel',
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await createArenaRun({
+      task_id: 'extraction',
+      model_id: 'claude-sonnet-4-6',
+      scaffold_ids: ['bare'],
+      idempotency_key: 'idem-1',
+    })
+
+    const call = fetchMock.mock.calls[0]
+    expect(call[1].headers['X-Idempotency-Key']).toBe('idem-1')
   })
 })

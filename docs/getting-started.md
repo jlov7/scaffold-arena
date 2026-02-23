@@ -118,7 +118,11 @@ The default model is Claude Sonnet 4.6. You can switch to Claude Haiku 4.5, Open
 
 ### Step 4: Click "Run Arena"
 
-Start the run from Configure lane, then open Live run lane to monitor execution.
+Start the run from Configure lane.
+
+Before launch, the app runs a **preflight check** (task/model/scaffolds/options/budget/provider readiness). If any check fails, you get a concrete blocker message and remediation.
+
+Then open Live run lane to monitor execution.
 
 Four panels appear, each running a different scaffold architecture on your selected task. You'll see:
 
@@ -148,6 +152,12 @@ Click "Autopsy" on any losing scaffold to see exactly why it scored lower. The a
 
 Click "Export Report" to generate a comprehensive Markdown report documenting the full arena results. Download as `.md` or `.pdf`.
 
+For sharing complete evidence in one file, use **Export Bundle** in Results. It downloads a zip containing run payload + diagnostics timeline + report markdown.
+
+### Fast Navigation (Optional)
+
+Open the command palette with `Cmd/Ctrl+K` to jump between workspaces or trigger actions quickly.
+
 ## Configuration
 
 ### Environment Variables
@@ -171,6 +181,8 @@ All configuration is via environment variables in `backend/.env`:
 | `ENABLE_LLM_JUDGE` | `true` | Enable LLM judge for subjective scoring (costs extra API calls) |
 | `ENABLE_PDF_EXPORT` | `false` | Enable PDF report export (requires weasyprint) |
 | `MAX_CONCURRENT_LLM_CALLS` | `3` | Max concurrent provider API calls |
+
+In **Settings**, BYOK storage defaults to **session-only**. Switch to **Remember in this browser** only if you explicitly want persistent local storage.
 
 ### Optional: Disable LLM Judge
 

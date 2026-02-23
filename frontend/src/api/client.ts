@@ -3,6 +3,11 @@ import type { AppMeta, AutopsyResult, LeaderboardStats } from '../types'
 const BASE = '/api'
 const TOKEN_STORAGE_KEY = 'scaffold_arena_api_token'
 const LLM_KEY_STORAGE_KEY = 'scaffold_arena_llm_api_key'
+const LLM_KEY_STORAGE_MODE_KEY = 'scaffold_arena_llm_api_key_storage_mode'
+
+export type LlmKeyStorageMode = 'session' | 'persistent'
+
+let sessionLlmApiKey: string | null = null
 
 function sanitizeErrorText(text: string): string {
   return text
@@ -33,22 +38,58 @@ export function setApiToken(token: string): void {
   }
 }
 
+export function getLlmKeyStorageMode(): LlmKeyStorageMode {
+  try {
+    const stored = localStorage.getItem(LLM_KEY_STORAGE_MODE_KEY)
+    return stored === 'persistent' ? 'persistent' : 'session'
+  } catch {
+    return 'session'
+  }
+}
+
+export function setLlmKeyStorageMode(mode: LlmKeyStorageMode): void {
+  try {
+    localStorage.setItem(LLM_KEY_STORAGE_MODE_KEY, mode)
+    if (mode === 'session') {
+      localStorage.removeItem(LLM_KEY_STORAGE_KEY)
+    }
+  } catch {
+    // no-op when storage is unavailable
+  }
+}
+
 export function getLlmApiKey(): string | null {
+  if (sessionLlmApiKey && sessionLlmApiKey.trim().length > 0) {
+    return sessionLlmApiKey.trim()
+  }
   try {
     const stored = localStorage.getItem(LLM_KEY_STORAGE_KEY)
-    return stored && stored.trim().length > 0 ? stored.trim() : null
+    if (stored && stored.trim().length > 0) {
+      sessionLlmApiKey = stored.trim()
+      return sessionLlmApiKey
+    }
+    return null
   } catch {
     return null
   }
 }
 
-export function setLlmApiKey(key: string): void {
+export function setLlmApiKey(
+  key: string,
+  options?: { mode?: LlmKeyStorageMode },
+): void {
+  const mode = options?.mode ?? getLlmKeyStorageMode()
+  sessionLlmApiKey = key.trim() || null
   try {
     if (!key.trim()) {
       localStorage.removeItem(LLM_KEY_STORAGE_KEY)
       return
     }
-    localStorage.setItem(LLM_KEY_STORAGE_KEY, key.trim())
+    if (mode === 'persistent') {
+      localStorage.setItem(LLM_KEY_STORAGE_KEY, key.trim())
+    } else {
+      localStorage.removeItem(LLM_KEY_STORAGE_KEY)
+    }
   } catch {
     // no-op when storage is unavailable
   }
@@ -84,8 +125,17 @@ export async function createArenaRun(params: {
   scaffold_ids: string[]
   options?: Record<string, unknown>
   custom_task?: Record<string, unknown>
-}): Promise<{ run_id: string; stream_url: string; cancel_url: string }> {
-  return fetchJSON('/runs', { method: 'POST', body: JSON.stringify(params) })
+  idempotency_key?: string
+}): Promise<{ run_id: string; stream_url: string; cancel_url: string; idempotent_replay?: boolean }> {
+  const { idempotency_key, ...payload } = params
+  const init: RequestInit = {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }
+  if (idempotency_key) {
+    init.headers = { 'X-Idempotency-Key': idempotency_key }
+  }
+  return fetchJSON('/runs', init)
 }
 
 export async function cancelRun(runId: string): Promise<void> {
@@ -153,6 +203,51 @@ export async function fetchRuns(limit: number = 50): Promise<{ runs: Array<Recor
 
 export async function fetchRunDetails(runId: string): Promise<Record<string, unknown>> {
   return fetchJSON(`/runs/${runId}`)
+}
+
+export interface RunPreflightCheck {
+  id: string
+  status: 'pass' | 'warn' | 'fail'
+  message: string
+  action?: string
+}
+
+export interface RunPreflightResult {
+  ok: boolean
+  can_run: boolean
+  checked_at: number
+  checks: RunPreflightCheck[]
+}
+
+export async function runPreflight(params: {
+  task_id: string
+  model_id: string
+  scaffold_ids: string[]
+  options?: Record<string, unknown>
+}): Promise<RunPreflightResult> {
+  return fetchJSON('/preflight', { method: 'POST', body: JSON.stringify(params) })
+}
+
+export async function fetchRunDiagnostics(runId: string): Promise<Record<string, unknown>> {
+  return fetchJSON(`/runs/${runId}/diagnostics`)
+}
+
+export async function exportRunBundle(runId: string): Promise<Blob> {
+  const token = getApiToken()
+  const llmKey = getLlmApiKey()
+  const headers: HeadersInit = {
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(llmKey ? { 'X-LLM-API-Key': llmKey } : {}),
+  }
+  const res = await fetch(`${BASE}/runs/${runId}/export-bundle`, {
+    method: 'GET',
+    headers,
+  })
+  if (!res.ok) {
+    const text = await res.text().catch(() => res.statusText)
+    throw new Error(`${res.status}: ${sanitizeErrorText(text)}`)
+  }
+  return res.blob()
 }
 
 export async function fetchStats(limit: number = 1000): Promise<LeaderboardStats> {
