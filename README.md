@@ -5,8 +5,10 @@
  / ___| / ___|  / \  |  ___|  ___/ _ \| |   |  _ \    / \  |  _ \| ____| \ | |  / \
  \___ \| |     / _ \ | |_  | |_ | | | | |   | | | |  / _ \ | |_) |  _| |  \| | / _ \
   ___) | |___ / ___ \|  _| |  _|| |_| | |___| |_| | / ___ \|  _ <| |___| |\  |/ ___ \
- |____/ \____/_/   \_\_|   |_|   \___/|_____|____/ /_/   \_\_| \_\_____|_| \_/_/   \_\
+|____/ \____/_/   \_\_|   |_|   \___/|_____|____/ /_/   \_\_| \_\_____|_| \_/_/   \_\
 ```
+
+`SCAFFOLD ARENA`
 
 **Same model. Different scaffolding. Wildly different outcomes.**
 
@@ -178,10 +180,12 @@ Open `http://localhost:5173`.
 backend/      FastAPI app, run engine, evaluation, autopsy, reports, backend tests
 frontend/     React app, route/lane UX, telemetry, E2E/a11y/visual tests
 docs/         Explainers, architecture, onboarding, ops playbooks, audits
+scripts/      Repo verification and security scan utilities
 ```
 
 - Backend details: [backend/README.md](backend/README.md)
 - Frontend details: [frontend/README.md](frontend/README.md)
+- Scripts: [scripts/README.md](scripts/README.md)
 
 ### Structure Principles
 

@@ -54,4 +54,3 @@ Use this index to navigate Scaffold Arena docs by role and task.
 - Frontend scorecard: [`reviews/frontend-panel-scorecard.md`](reviews/frontend-panel-scorecard.md)
 - A/B experiments: [`reviews/ab-experiments-results.md`](reviews/ab-experiments-results.md)
 - Frontend 100 plan: [`plans/2026-02-19-frontend-100-score-plan.md`](plans/2026-02-19-frontend-100-score-plan.md)
-- Release plan: [`../RELEASE_PLAN.md`](../RELEASE_PLAN.md)

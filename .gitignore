@@ -16,6 +16,11 @@ frontend/dist/
 
 # Environment
 .env
+*.env.local
+*.env.development
+*.env.production
+*.env.test
+*.secrets
 backend/.env
 
 # IDE
