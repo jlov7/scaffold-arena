@@ -46,7 +46,7 @@ body {
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
   font-family: var(--font-body);
-  font-size: var(--type-sm);
+  font-size: var(--type-md);
   line-height: var(--line-normal);
   -webkit-font-smoothing: antialiased;
 }
@@ -129,14 +129,14 @@ p {
 
 .ui-heading-lg {
   font-family: var(--font-display);
-  font-size: clamp(1rem, 2vw, 1.125rem);
+  font-size: clamp(1.125rem, 2.2vw, 1.5rem);
   line-height: 1.2;
   letter-spacing: 0.02em;
 }
 
 .ui-heading-sm {
   font-family: var(--font-display);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   line-height: 1.35;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -144,7 +144,7 @@ p {
 
 .ui-metadata {
   font-family: var(--font-display);
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: var(--color-text-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -273,7 +273,7 @@ p {
 
 @media (min-width: 640px) {
   body {
-    font-size: var(--type-md);
+    font-size: clamp(1rem, 0.96rem + 0.18vw, 1.0625rem);
   }
 }
 

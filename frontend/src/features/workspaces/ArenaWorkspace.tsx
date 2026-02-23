@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react'
 import ArenaGrid from '../../components/ArenaGrid'
 import BlockerGuideCard from '../../components/help/BlockerGuideCard'
 import OnboardingChecklist from '../../components/help/OnboardingChecklist'
@@ -39,6 +40,29 @@ const ARENA_LANE_COPY: Record<
     description: 'Watch streaming outputs and validate winners before jumping to Results.',
   },
 }
+
+const ONBOARDING_TIPS = [
+  {
+    id: 'first-run',
+    label: 'How do I start?',
+    detail: 'Choose one task and one model, then click "Run from configure lane". Do one run first before comparisons.',
+  },
+  {
+    id: 'live',
+    label: 'What is Live run?',
+    detail: 'Live run streams each scaffold output in real time so you can spot quality differences before final scoring.',
+  },
+  {
+    id: 'results',
+    label: 'Where do I decide?',
+    detail: 'Open Results after the run. Start in Summary for score/cost/time, then open Diagnostics only if needed.',
+  },
+  {
+    id: 'blocked',
+    label: 'What if I get stuck?',
+    detail: 'Open Help Center from the header or use the blocker card. It gives exact next actions for auth, network, and provider issues.',
+  },
+] as const
 
 export interface ArenaWorkspaceProps {
   arenaLane: ArenaWorkspaceLane
@@ -125,6 +149,14 @@ export function ArenaWorkspace({
   submitFrictionFeedback,
   onDismissFrictionFeedback,
 }: ArenaWorkspaceProps) {
+  const [activeTipId, setActiveTipId] = useState<(typeof ONBOARDING_TIPS)[number]['id'] | null>(
+    ONBOARDING_TIPS[0].id,
+  )
+  const activeTip = useMemo(
+    () => ONBOARDING_TIPS.find((tip) => tip.id === activeTipId) ?? ONBOARDING_TIPS[0],
+    [activeTipId],
+  )
+
   return (
     <>
       <section className="space-y-3">
@@ -139,7 +171,7 @@ export function ArenaWorkspace({
           <h2 className="ui-heading-lg text-text-primary">
             {ARENA_LANE_COPY[arenaLane].label}
           </h2>
-          <p className="text-xs text-text-secondary">
+          <p className="text-sm text-text-secondary">
             {ARENA_LANE_COPY[arenaLane].description}
           </p>
           <div className="grid gap-2 sm:grid-cols-3">
@@ -150,8 +182,9 @@ export function ArenaWorkspace({
                   type="button"
                   onClick={() => onArenaLaneChange(lane)}
                   disabled={lane === 'live' && !hasRun && !isRunning}
+                  title={ARENA_LANE_COPY[lane].description}
                   className={[
-                    'rounded border px-3 py-2 text-left text-xs font-mono transition-colors disabled:cursor-not-allowed disabled:opacity-40',
+                    'rounded border px-3 py-2 text-left text-sm font-mono transition-colors disabled:cursor-not-allowed disabled:opacity-40',
                     arenaLane === lane
                       ? 'border-accent-info bg-accent-info/10 text-accent-info'
                       : 'border-border text-text-secondary hover:border-accent-info hover:text-accent-info',
@@ -176,28 +209,62 @@ export function ArenaWorkspace({
             <h3 className="ui-heading-lg text-text-primary">
               {personaGuidance.title}
             </h3>
-            <p className="text-xs text-text-secondary">
+            <p className="text-sm text-text-secondary">
               {personaGuidance.body}
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => onArenaLaneChange(personaGuidance.lane)}
-                className="rounded border border-accent-info px-3 py-1.5 text-xs font-mono text-accent-info hover:bg-accent-info/15"
+                className="rounded border border-accent-info px-3 py-1.5 text-sm font-mono text-accent-info hover:bg-accent-info/15"
               >
                 {personaGuidance.cta}
               </button>
               <button
                 type="button"
                 onClick={onTourOpen}
-                className="rounded border border-border px-3 py-1.5 text-xs font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
+                className="rounded border border-border px-3 py-1.5 text-sm font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
               >
                 Open guided tour
               </button>
             </div>
-            <div className="rounded border border-border/60 bg-bg-primary px-3 py-2 text-xs text-text-secondary">
+            <div className="rounded border border-border/60 bg-bg-primary px-3 py-2 text-sm text-text-secondary">
               Keep onboarding lightweight: pick your role, choose one task, run once,
               then move to Results summary before diagnostics.
+            </div>
+            <div className="rounded border border-border/60 bg-bg-primary px-3 py-3">
+              <div className="ui-heading-sm text-text-secondary">
+                Quick guidance
+              </div>
+              <p className="mt-1 text-sm text-text-secondary">
+                Hover or tap any tip below for plain-language guidance.
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {ONBOARDING_TIPS.map((tip) => {
+                  const isActive = tip.id === activeTip.id
+                  return (
+                    <button
+                      key={tip.id}
+                      type="button"
+                      title={tip.detail}
+                      onMouseEnter={() => setActiveTipId(tip.id)}
+                      onFocus={() => setActiveTipId(tip.id)}
+                      onClick={() => setActiveTipId(tip.id)}
+                      className={[
+                        'rounded border px-2.5 py-1.5 text-sm font-mono transition-colors',
+                        isActive
+                          ? 'border-accent-info bg-accent-info/10 text-accent-info'
+                          : 'border-border text-text-secondary hover:border-accent-info hover:text-accent-info',
+                      ].join(' ')}
+                    >
+                      {tip.label}
+                    </button>
+                  )
+                })}
+              </div>
+              <p className="mt-3 rounded border border-accent-info/35 bg-accent-info/8 px-3 py-2 text-sm text-text-primary">
+                {activeTip.detail}
+              </p>
             </div>
             {experienceMode === 'guided' && !checklistHidden && (
               <OnboardingChecklist
@@ -222,7 +289,7 @@ export function ArenaWorkspace({
                 <button
                   type="button"
                   onClick={onChecklistShow}
-                  className="rounded border border-accent-info px-3 py-1.5 text-xs font-mono text-accent-info hover:bg-accent-info/15"
+                  className="rounded border border-accent-info px-3 py-1.5 text-sm font-mono text-accent-info hover:bg-accent-info/15"
                 >
                   Resume checklist
                 </button>
@@ -250,13 +317,13 @@ export function ArenaWorkspace({
               <div className="ui-heading-sm text-accent-info">
                 Safe fallback mode
               </div>
-              <p className="text-xs text-text-secondary">
+              <p className="text-sm text-text-secondary">
                 If live execution stays blocked, continue with saved runs and evidence export while resolving the issue.
               </p>
               <button
                 type="button"
                 onClick={enterSafeFallbackMode}
-                className="rounded border border-accent-info/70 px-3 py-1.5 text-xs text-accent-info hover:bg-accent-info/15"
+                className="rounded border border-accent-info/70 px-3 py-1.5 text-sm text-accent-info hover:bg-accent-info/15"
               >
                 Enable safe fallback mode
               </button>
@@ -270,28 +337,28 @@ export function ArenaWorkspace({
           <div className="ui-heading-sm text-accent-info">
             Quick feedback
           </div>
-          <p className="text-xs text-text-secondary">
+          <p className="text-sm text-text-secondary">
             Was the blocker guidance clear enough to unblock you?
           </p>
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => submitFrictionFeedback('helpful')}
-              className="rounded border border-accent-winner/70 px-3 py-1.5 text-xs text-accent-winner hover:bg-accent-winner/15"
+              className="rounded border border-accent-winner/70 px-3 py-1.5 text-sm text-accent-winner hover:bg-accent-winner/15"
             >
               Yes, helpful
             </button>
             <button
               type="button"
               onClick={() => submitFrictionFeedback('not_helpful')}
-              className="rounded border border-accent-warning/70 px-3 py-1.5 text-xs text-accent-warning hover:bg-accent-warning/15"
+              className="rounded border border-accent-warning/70 px-3 py-1.5 text-sm text-accent-warning hover:bg-accent-warning/15"
             >
               Not clear enough
             </button>
             <button
               type="button"
               onClick={onDismissFrictionFeedback}
-              className="rounded border border-border px-3 py-1.5 text-xs text-text-secondary hover:border-accent-info hover:text-accent-info"
+              className="rounded border border-border px-3 py-1.5 text-sm text-text-secondary hover:border-accent-info hover:text-accent-info"
             >
               Dismiss
             </button>
@@ -328,7 +395,7 @@ export function ArenaWorkspace({
 
       {arenaLane === 'onboarding' && (
         <div className="rounded-lg border border-border/50 bg-bg-secondary/50 p-6">
-          <div className="text-[10px] text-text-muted uppercase tracking-widest font-mono mb-5">
+          <div className="text-xs text-text-muted uppercase tracking-widest font-mono mb-5">
             How this workspace unfolds
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -336,7 +403,7 @@ export function ArenaWorkspace({
               <div className="text-accent-info font-mono text-sm font-bold mb-1.5">
                 01 - Configure
               </div>
-              <p className="text-xs text-text-secondary leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 Select one task and one model so all scaffolds run against the same test.
               </p>
             </div>
@@ -344,7 +411,7 @@ export function ArenaWorkspace({
               <div className="text-accent-info font-mono text-sm font-bold mb-1.5">
                 02 - Observe
               </div>
-              <p className="text-xs text-text-secondary leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 Move to Live run when ready and watch streamed output and panel state in real time.
               </p>
             </div>
@@ -352,7 +419,7 @@ export function ArenaWorkspace({
               <div className="text-accent-info font-mono text-sm font-bold mb-1.5">
                 03 - Decide
               </div>
-              <p className="text-xs text-text-secondary leading-relaxed">
+              <p className="text-sm text-text-secondary leading-relaxed">
                 Open Results summary first, then diagnostics only when deeper evidence is needed.
               </p>
             </div>
@@ -361,14 +428,14 @@ export function ArenaWorkspace({
             <button
               type="button"
               onClick={() => onArenaLaneChange('configure')}
-              className="rounded border border-accent-info px-3 py-1.5 text-xs font-mono text-accent-info hover:bg-accent-info/15"
+              className="rounded border border-accent-info px-3 py-1.5 text-sm font-mono text-accent-info hover:bg-accent-info/15"
             >
               Start with configure lane
             </button>
             <button
               type="button"
               onClick={() => onNavigateToView('history')}
-              className="rounded border border-border px-3 py-1.5 text-xs font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
+              className="rounded border border-border px-3 py-1.5 text-sm font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
             >
               Returning user? Open history
             </button>
@@ -388,7 +455,7 @@ export function ArenaWorkspace({
           <h3 className="ui-heading-lg text-text-primary">
             Keep setup focused, then jump to live run
           </h3>
-          <p className="text-xs text-text-secondary">
+          <p className="text-sm text-text-secondary">
             Pick your benchmark inputs here. Move to Live run to monitor execution and
             avoid mixing setup with analysis.
           </p>
@@ -397,14 +464,14 @@ export function ArenaWorkspace({
               type="button"
               onClick={runFromCurrentSelection}
               disabled={!selectedTaskId || !selectedModelId || isRunning || !isOnline}
-              className="rounded border border-accent-info px-3 py-1.5 text-xs font-mono text-accent-info hover:bg-accent-info/15 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded border border-accent-info px-3 py-1.5 text-sm font-mono text-accent-info hover:bg-accent-info/15 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Run from configure lane
             </button>
             <button
               type="button"
               onClick={() => onArenaLaneChange('live')}
-              className="rounded border border-border px-3 py-1.5 text-xs font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
+              className="rounded border border-border px-3 py-1.5 text-sm font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
             >
               Open live run lane
             </button>

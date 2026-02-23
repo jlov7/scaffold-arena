@@ -17,6 +17,14 @@ interface AppShellHeaderProps {
   onNavigate: (view: AppView) => void
 }
 
+const VIEW_HINTS: Record<AppView, string> = {
+  arena: 'Run and monitor benchmarks.',
+  results: 'Review winners, costs, and diagnostics.',
+  history: 'Re-open previous runs quickly.',
+  leaderboard: 'Compare aggregate scaffold performance.',
+  settings: 'Configure keys, preferences, and safeguards.',
+}
+
 export function AppShellHeader({
   activeView,
   stageLabel,
@@ -38,42 +46,42 @@ export function AppShellHeader({
       <div className="px-4 py-2.5 sm:px-6">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="font-mono text-sm font-bold tracking-tight text-text-primary">
+            <h1 className="font-mono text-lg font-bold tracking-tight text-text-primary sm:text-xl">
               {COPY.app.title}
             </h1>
-            <p className="mt-1 text-[11px] text-text-secondary">
+            <p className="mt-1 text-sm text-text-secondary sm:text-[0.95rem]">
               {COPY.app.subtitle}
             </p>
           </div>
           <div className="ml-auto flex min-w-0 flex-wrap items-center justify-end gap-1">
-            <span className="hidden rounded border border-accent-info/40 bg-accent-info/10 px-2 py-0.5 text-[10px] font-mono text-accent-info sm:inline-block">
+            <span className="hidden rounded border border-accent-info/40 bg-accent-info/10 px-2 py-1 text-xs font-mono text-accent-info sm:inline-block">
               {stageLabel}
             </span>
             <button
               type="button"
               onClick={onOpenHelp}
-              className="ui-control rounded border border-transparent min-h-11 px-2.5 py-2 text-xs font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:px-2 sm:py-1 sm:text-[11px]"
+              className="ui-control rounded border border-transparent min-h-11 px-2.5 py-2 text-sm font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-xs"
             >
               Help
             </button>
             <button
               type="button"
               onClick={onExplainScreen}
-              className="ui-control hidden rounded border border-transparent min-h-11 px-2.5 py-2 text-xs font-mono text-text-secondary hover:border-border hover:text-accent-info sm:inline-block sm:min-h-0 sm:px-2 sm:py-1 sm:text-[11px]"
+              className="ui-control hidden rounded border border-transparent min-h-11 px-2.5 py-2 text-sm font-mono text-text-secondary hover:border-border hover:text-accent-info sm:inline-block sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-xs"
             >
               Explain this screen
             </button>
             <button
               type="button"
               onClick={onOpenTour}
-              className="ui-control rounded border border-transparent min-h-11 px-2.5 py-2 text-xs font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:px-2 sm:py-1 sm:text-[11px]"
+              className="ui-control rounded border border-transparent min-h-11 px-2.5 py-2 text-sm font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-xs"
             >
               {COPY.actions.takeTour}
             </button>
             <button
               type="button"
               onClick={onOpenCommandPalette}
-              className="ui-control rounded border border-transparent min-h-11 px-2.5 py-2 text-xs font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:px-2 sm:py-1 sm:text-[11px]"
+              className="ui-control rounded border border-transparent min-h-11 px-2.5 py-2 text-sm font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-xs"
               aria-label="Open command palette"
             >
               Cmd/Ctrl+K
@@ -81,7 +89,7 @@ export function AppShellHeader({
             <button
               type="button"
               onClick={onToggleTheme}
-              className="ui-control rounded border border-transparent min-h-11 min-w-11 px-3 py-2 text-xs font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:min-w-0 sm:px-2 sm:py-1 sm:text-[11px]"
+              className="ui-control rounded border border-transparent min-h-11 min-w-11 px-3 py-2 text-sm font-mono text-text-secondary hover:border-border hover:text-accent-info sm:min-h-0 sm:min-w-0 sm:px-2.5 sm:py-1.5 sm:text-xs"
               aria-label={theme === 'dark' ? 'Light theme' : 'Dark theme'}
             >
               {theme === 'dark' ? '\u2600' : '\u263E'}
@@ -97,10 +105,11 @@ export function AppShellHeader({
                   id={view === 'settings' ? 'tour-settings-link' : undefined}
                   type="button"
                   onClick={() => onNavigate(view)}
+                  title={VIEW_HINTS[view]}
                   aria-current={activeView === view ? 'page' : undefined}
                   aria-label={`Open ${appViewLabel(view)} view`}
                   className={[
-                    'ui-control rounded border min-h-11 px-2.5 py-2 text-xs font-mono transition-colors sm:min-h-0 sm:px-2.5 sm:py-1 sm:text-[11px]',
+                    'ui-control rounded border min-h-11 px-2.5 py-2 text-sm font-mono transition-colors sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-xs',
                     activeView === view
                       ? 'border-accent-info bg-accent-info/10 text-accent-info'
                       : 'border-transparent text-text-secondary hover:border-border hover:text-accent-info',
@@ -116,10 +125,11 @@ export function AppShellHeader({
                   key={view}
                   type="button"
                   onClick={() => onNavigate(view)}
+                  title={VIEW_HINTS[view]}
                   aria-current={activeView === view ? 'page' : undefined}
                   aria-label={`Open ${appViewLabel(view)} view`}
                   className={[
-                    'ui-control rounded border min-h-11 px-2.5 py-2 text-xs font-mono transition-colors sm:min-h-0 sm:px-2.5 sm:py-1 sm:text-[11px]',
+                    'ui-control rounded border min-h-11 px-2.5 py-2 text-sm font-mono transition-colors sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-xs',
                     activeView === view
                       ? 'border-accent-info bg-accent-info/10 text-accent-info'
                       : 'border-transparent text-text-secondary hover:border-border hover:text-accent-info',
@@ -139,10 +149,11 @@ export function AppShellHeader({
                       id={view === 'settings' ? 'tour-settings-link' : undefined}
                       type="button"
                       onClick={() => onNavigate(view)}
+                      title={VIEW_HINTS[view]}
                       aria-current={activeView === view ? 'page' : undefined}
                       aria-label={`Open ${appViewLabel(view)} view`}
                       className={[
-                        'ui-control mb-0.5 block w-full rounded min-h-11 px-3 py-2 text-left text-xs font-mono sm:min-h-0 sm:px-2 sm:py-1 sm:text-[11px]',
+                        'ui-control mb-0.5 block w-full rounded min-h-11 px-3 py-2 text-left text-sm font-mono sm:min-h-0 sm:px-2.5 sm:py-1.5 sm:text-xs',
                         activeView === view
                           ? 'bg-accent-info/10 text-accent-info'
                           : 'text-text-secondary hover:text-accent-info hover:bg-bg-tertiary',
@@ -155,7 +166,7 @@ export function AppShellHeader({
               </details>
             </div>
           </nav>
-          <div className="hidden text-[10px] font-mono text-text-muted min-[380px]:block">
+          <div className="hidden text-xs font-mono text-text-muted min-[380px]:block">
             {COPY.app.breadcrumbHome} / {appViewLabel(activeView)}
           </div>
         </div>
