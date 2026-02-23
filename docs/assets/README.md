@@ -19,5 +19,7 @@ Generated files:
 
 - `illustrations/system-map.svg`
 - `illustrations/value-flywheel.svg`
+- `illustrations/system-map.png`
+- `illustrations/value-flywheel.png`
 
-These are lightweight vector assets intended for README and docs pages.
+Use the PNG files in README/docs for maximum renderer compatibility (GitHub web/mobile and repo previews). Keep SVG files as editable sources.

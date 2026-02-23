@@ -7,7 +7,7 @@ Related docs:
 - Technical explainer: [`explainers/technical.md`](explainers/technical.md)
 - Frontend module boundaries: [`architecture/frontend-module-boundaries.md`](architecture/frontend-module-boundaries.md)
 
-![System Map](assets/illustrations/system-map.svg)
+![System Map](assets/illustrations/system-map.png)
 
 ## System Overview
 

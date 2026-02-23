@@ -44,7 +44,7 @@ Scaffold Arena is intentionally split into lanes so first-time users are not ove
 
 ## Architecture at a Glance
 
-![System Map](docs/assets/illustrations/system-map.svg)
+![System Map](docs/assets/illustrations/system-map.png)
 
 ```mermaid
 graph TB
@@ -72,7 +72,7 @@ graph TB
 
 ## Benchmark Loop
 
-![Value Flywheel](docs/assets/illustrations/value-flywheel.svg)
+![Value Flywheel](docs/assets/illustrations/value-flywheel.png)
 
 1. Run benchmark.
 2. Score and compare.
