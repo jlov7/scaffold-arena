@@ -15,7 +15,7 @@ This runbook covers production hardening checks, custom-domain cutover, smoke va
 3. Backend security headers and HSTS are enabled in production (`backend/main.py` middleware).
 4. CORS allowlist includes deployed frontend URL(s):
    - `CORS_ORIGINS=https://scaffold-arena.vercel.app,http://localhost:5173`
-5. Scheduled uptime monitoring is enabled (`.github/workflows/uptime.yml`) and repo notifications are on.
+5. Railway backend healthcheck is enabled via `railway.toml` (`/api/health`).
 
 ## Custom Domain Cutover (Vercel Frontend)
 
@@ -51,10 +51,10 @@ Use this once you have your domain name ready.
 
 ## Ongoing Monitoring
 
-1. GitHub scheduled monitor runs every 30 minutes (`Production Uptime Monitor`).
-2. On failure, it opens or updates a single incident issue:
-   - title: `[Uptime] Production health checks failing`
-3. Review issue updates and action run links for root-cause evidence.
+1. Railway continuously health-checks backend (`/api/health`) and restarts on failure.
+2. Run the frontend smoke script after deployments:
+   - `cd frontend && pnpm smoke:prod -- https://scaffold-arena.vercel.app`
+3. If you later enable paid CI minutes, you can add scheduled uptime checks back.
 
 ## Rollback Triggers
 
