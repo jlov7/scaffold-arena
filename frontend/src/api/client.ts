@@ -1,6 +1,7 @@
 import type { AppMeta, AutopsyResult, LeaderboardStats } from '../types'
 
-const BASE = '/api'
+const RAW_BASE = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim()
+const BASE = RAW_BASE && RAW_BASE.length > 0 ? RAW_BASE.replace(/\/$/, '') : '/api'
 const TOKEN_STORAGE_KEY = 'scaffold_arena_api_token'
 const LLM_KEY_STORAGE_KEY = 'scaffold_arena_llm_api_key'
 const LLM_KEY_STORAGE_MODE_KEY = 'scaffold_arena_llm_api_key_storage_mode'
