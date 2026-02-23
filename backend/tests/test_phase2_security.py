@@ -112,3 +112,27 @@ def test_run_endpoint_rate_limits_with_retry_after(client: TestClient) -> None:
     assert last_response is not None
     assert last_response.status_code == 429
     assert "Retry-After" in last_response.headers
+
+
+def test_security_headers_are_set_on_responses(client: TestClient) -> None:
+    res = client.get("/api/health")
+    assert res.status_code == 200
+    assert res.headers["X-Content-Type-Options"] == "nosniff"
+    assert res.headers["X-Frame-Options"] == "DENY"
+    assert res.headers["Referrer-Policy"] == "strict-origin-when-cross-origin"
+    assert res.headers["X-Permitted-Cross-Domain-Policies"] == "none"
+    assert "camera=()" in res.headers["Permissions-Policy"]
+
+
+def test_hsts_is_only_set_for_production_env(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    dev_response = client.get("/api/health")
+    assert "Strict-Transport-Security" not in dev_response.headers
+
+    monkeypatch.setattr(app_module.settings, "app_env", "production")
+    prod_response = client.get("/api/health")
+    assert prod_response.headers["Strict-Transport-Security"] == (
+        "max-age=63072000; includeSubDomains; preload"
+    )

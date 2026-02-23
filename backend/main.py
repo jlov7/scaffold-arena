@@ -109,6 +109,29 @@ app.add_middleware(
 )
 
 
+def _is_production_env() -> bool:
+    return settings.app_env.strip().lower() in {"prod", "production"}
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault(
+        "Permissions-Policy",
+        "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+    )
+    response.headers.setdefault("X-Permitted-Cross-Domain-Policies", "none")
+    if _is_production_env():
+        response.headers.setdefault(
+            "Strict-Transport-Security",
+            "max-age=63072000; includeSubDomains; preload",
+        )
+    return response
+
+
 @app.middleware("http")
 async def enforce_request_size_limits(request: Request, call_next):
     if request.method in {"POST", "PUT", "PATCH"}:
