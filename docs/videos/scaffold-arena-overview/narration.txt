@@ -1,0 +1,39 @@
+Most teams reach for a larger model when an AI system fails.
+
+Scaffold Arena starts with a sharper question.
+
+What if the model is not the bottleneck?
+
+What if the scaffold around the model decides the outcome?
+
+Run the same benchmark through multiple scaffold strategies.
+
+Stream every run live.
+
+Compare quality, cost, latency, and proof artifacts side by side.
+
+Then move from judgement to repair.
+
+Autopsy the failure.
+
+Generate a patch.
+
+Rerun the scaffold.
+
+Prove whether the change actually helped.
+
+This is not another chat interface.
+
+It is a research-lab workbench for improving AI systems.
+
+Every claim is tied to evidence: deterministic scores, usage cost, timeline events, output diffs, and exportable audit reports.
+
+The point is simple.
+
+Before you buy a bigger model, prove whether better scaffolding would have solved the problem.
+
+Same model.
+
+Different scaffolding.
+
+Wildly different outcomes.

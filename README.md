@@ -8,6 +8,12 @@ Scaffold Arena is an enterprise-grade scaffold engineering workbench for testing
   <img src="docs/assets/screenshots/readme-hero.png" alt="Scaffold Arena research-lab workbench" width="1200">
 </p>
 
+## One-Minute Overview
+
+[![Watch the Scaffold Arena overview video](docs/videos/scaffold-arena-overview/assets/poster.png)](docs/videos/scaffold-arena-overview/renders/scaffold-arena-overview.mp4)
+
+Watch the 66-second HyperFrames overview: [docs/videos/scaffold-arena-overview/renders/scaffold-arena-overview.mp4](docs/videos/scaffold-arena-overview/renders/scaffold-arena-overview.mp4)
+
 ## Live Deployment
 
 | Surface | URL |
@@ -212,6 +218,7 @@ Key docs:
 - Product context: [PRODUCT.md](PRODUCT.md)
 - Design system: [DESIGN.md](DESIGN.md)
 - Documentation portal: [docs/README.md](docs/README.md)
+- Overview video: [docs/videos/README.md](docs/videos/README.md)
 - Getting started: [docs/getting-started.md](docs/getting-started.md)
 - User guide: [docs/user-guide.md](docs/user-guide.md)
 - Architecture: [docs/architecture.md](docs/architecture.md)

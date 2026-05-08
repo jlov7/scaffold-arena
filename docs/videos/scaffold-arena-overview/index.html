@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Geist";
+        src: url("assets/geist-latin.woff2") format("woff2");
+        font-weight: 100 900;
+      }
+
+      @font-face {
+        font-family: "Geist Mono";
+        src: url("assets/geist-mono-latin.woff2") format("woff2");
+        font-weight: 100 900;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #0b0907;
+        color: #f1ede4;
+        font-family: "Geist", system-ui, sans-serif;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          linear-gradient(90deg, rgba(66, 55, 39, 0.16) 1px, transparent 1px) 0 0 / 96px 96px,
+          linear-gradient(0deg, rgba(66, 55, 39, 0.12) 1px, transparent 1px) 0 0 / 96px 96px,
+          #0b0907;
+      }
+
+      .shell {
+        position: absolute;
+        inset: 0;
+        padding: 72px 88px 84px;
+        display: flex;
+        flex-direction: column;
+        gap: 34px;
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        padding: 72px 88px 84px;
+        display: flex;
+        flex-direction: column;
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .scene--split {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 56px;
+        align-items: center;
+      }
+
+      .scene--center {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
+
+      .brand {
+        position: absolute;
+        top: 40px;
+        left: 56px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        color: #efe9df;
+      }
+
+      .brand-mark {
+        width: 54px;
+        height: 54px;
+        border: 1px solid rgba(74, 222, 128, 0.42);
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-family: "Geist Mono", monospace;
+        color: #4ade80;
+        background: rgba(18, 28, 20, 0.76);
+      }
+
+      .brand-title {
+        font-size: 28px;
+        font-weight: 720;
+        letter-spacing: 0;
+      }
+
+      .brand-subtitle {
+        margin-top: 3px;
+        font-size: 14px;
+        color: #b8afa2;
+      }
+
+      .caption {
+        position: absolute;
+        left: 88px;
+        right: 88px;
+        bottom: 42px;
+        z-index: 40;
+        min-height: 76px;
+        padding: 20px 28px;
+        border: 1px solid rgba(89, 77, 60, 0.72);
+        border-radius: 12px;
+        background: rgba(9, 8, 7, 0.82);
+        color: #f1ede4;
+        font-size: 34px;
+        line-height: 1.25;
+        letter-spacing: 0;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+      }
+
+      .kicker {
+        font-family: "Geist Mono", monospace;
+        color: #64b5f6;
+        font-size: 22px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2 {
+        margin: 0;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 1180px;
+        font-size: 104px;
+        line-height: 0.98;
+        font-weight: 760;
+      }
+
+      h2 {
+        font-size: 72px;
+        line-height: 1.04;
+        font-weight: 720;
+      }
+
+      p {
+        margin: 0;
+        color: #c8c0b4;
+        font-size: 31px;
+        line-height: 1.35;
+      }
+
+      .mono {
+        font-family: "Geist Mono", ui-monospace, monospace;
+      }
+
+      .signal {
+        color: #4ade80;
+      }
+
+      .muted {
+        color: #8c8376;
+      }
+
+      .warning {
+        color: #ffd166;
+      }
+
+      .danger {
+        color: #fb7185;
+      }
+
+      .stage-card {
+        border: 1px solid rgba(89, 77, 60, 0.72);
+        border-radius: 16px;
+        background: rgba(18, 15, 11, 0.92);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045);
+      }
+
+      .hero-question {
+        display: grid;
+        gap: 34px;
+        max-width: 1350px;
+      }
+
+      .question-row {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        font-family: "Geist Mono", monospace;
+        font-size: 24px;
+        line-height: 1;
+        color: #d8d1c6;
+        border: 1px solid rgba(89, 77, 60, 0.8);
+        background: rgba(4, 4, 3, 0.8);
+        border-radius: 999px;
+        padding: 18px 24px;
+      }
+
+      .system-diagram {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 24px;
+      }
+
+      .node {
+        min-height: 170px;
+        padding: 26px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .node-label {
+        font-family: "Geist Mono", monospace;
+        color: #d1c8ba;
+        font-size: 20px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .node-main {
+        font-size: 34px;
+        font-weight: 680;
+      }
+
+      .branch {
+        position: relative;
+        padding: 32px;
+      }
+
+      .branch-line {
+        height: 2px;
+        background: linear-gradient(90deg, rgba(74, 222, 128, 0), rgba(74, 222, 128, 0.82), rgba(100, 181, 246, 0.52));
+        margin: 24px 0;
+        transform-origin: left center;
+      }
+
+      .outcome-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+
+      .outcome {
+        min-height: 178px;
+        padding: 24px;
+      }
+
+      .outcome-score {
+        font-family: "Geist Mono", monospace;
+        font-size: 54px;
+        color: #f1ede4;
+      }
+
+      .screenshot-frame {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(89, 77, 60, 0.8);
+        border-radius: 22px;
+        background: #090807;
+        box-shadow: 0 34px 120px rgba(0, 0, 0, 0.48);
+      }
+
+      .screenshot-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .screenshot-frame.hero-shot {
+        width: 1420px;
+        height: 798px;
+      }
+
+      .screenshot-frame.large-shot {
+        width: 1120px;
+        height: 720px;
+      }
+
+      .screenshot-frame.tall-shot {
+        width: 360px;
+        height: 760px;
+      }
+
+      .overlay-label {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        border: 1px solid rgba(74, 222, 128, 0.36);
+        border-radius: 10px;
+        background: rgba(11, 15, 12, 0.9);
+        color: #dff9e7;
+        font-family: "Geist Mono", monospace;
+        font-size: 19px;
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #4ade80;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+
+      .metric {
+        padding: 26px;
+      }
+
+      .metric-value {
+        font-family: "Geist Mono", monospace;
+        font-size: 56px;
+        color: #f1ede4;
+      }
+
+      .metric-label {
+        margin-top: 10px;
+        font-family: "Geist Mono", monospace;
+        color: #a9a095;
+        font-size: 18px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .repair-loop {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        width: 100%;
+      }
+
+      .repair-step {
+        min-height: 210px;
+        padding: 26px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .repair-step strong {
+        display: block;
+        font-size: 35px;
+      }
+
+      .code-panel {
+        width: 100%;
+        padding: 26px;
+        font-family: "Geist Mono", monospace;
+        font-size: 24px;
+        line-height: 1.45;
+        color: #d8d1c6;
+        background: rgba(2, 2, 2, 0.82);
+      }
+
+      .report-panel {
+        width: 1040px;
+        padding: 34px;
+        text-align: left;
+      }
+
+      .report-list {
+        display: grid;
+        gap: 16px;
+        margin-top: 28px;
+      }
+
+      .report-row {
+        display: grid;
+        grid-template-columns: 180px 1fr 150px;
+        gap: 24px;
+        align-items: center;
+        padding: 18px 20px;
+        border: 1px solid rgba(89, 77, 60, 0.55);
+        border-radius: 10px;
+        background: rgba(8, 7, 6, 0.72);
+        font-family: "Geist Mono", monospace;
+        font-size: 19px;
+      }
+
+      .final-lockup {
+        max-width: 1280px;
+        display: grid;
+        gap: 30px;
+      }
+
+      .final-lockup h1 {
+        font-size: 112px;
+      }
+
+      .watermark {
+        position: absolute;
+        right: 56px;
+        top: 46px;
+        z-index: 20;
+        font-family: "Geist Mono", monospace;
+        font-size: 18px;
+        color: #8c8376;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="66"
+      data-width="1920"
+      data-height="1080"
+    >
+      <audio
+        id="narration"
+        data-start="0"
+        data-duration="57.728"
+        data-track-index="1"
+        src="assets/narration.wav"
+        data-volume="1"
+      ></audio>
+
+      <div class="brand">
+        <div class="brand-mark">SA</div>
+        <div>
+          <div class="brand-title">SCAFFOLD ARENA</div>
+          <div class="brand-subtitle">Scaffold engineering workbench</div>
+        </div>
+      </div>
+      <div class="watermark">Compare / Diagnose / Patch / Rerun</div>
+
+      <section id="scene-problem" class="scene clip scene--center" data-start="0" data-duration="7.4" data-track-index="2">
+        <div class="hero-question">
+          <div class="kicker">The expensive default</div>
+          <h1>When an AI system fails, most teams buy a larger model.</h1>
+          <div class="question-row">
+            <span class="pill">higher spend</span>
+            <span class="pill">unclear cause</span>
+            <span class="pill">no proof loop</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-thesis" class="scene clip scene--split" data-start="7.4" data-duration="8.6" data-track-index="3">
+        <div>
+          <div class="kicker">Sharper question</div>
+          <h2>What if the model is not the bottleneck?</h2>
+          <p style="margin-top: 28px">
+            Scaffold Arena tests the orchestration around the model: prompts, verification,
+            memory, recovery, and rerun strategy.
+          </p>
+        </div>
+        <div class="stage-card branch">
+          <div class="node stage-card">
+            <span class="node-label">Same model</span>
+            <span class="node-main mono">claude-sonnet-4-6</span>
+          </div>
+          <div class="branch-line"></div>
+          <div class="outcome-grid">
+            <div class="outcome stage-card">
+              <div class="node-label">Bare prompt</div>
+              <div class="outcome-score danger">42</div>
+              <p>Missing fields</p>
+            </div>
+            <div class="outcome stage-card">
+              <div class="node-label">Plan / verify</div>
+              <div class="outcome-score signal">88</div>
+              <p>Stronger evidence</p>
+            </div>
+            <div class="outcome stage-card">
+              <div class="node-label">Tool recovery</div>
+              <div class="outcome-score warning">63</div>
+              <p>Patch candidate</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-product" class="scene clip scene--center" data-start="16" data-duration="9" data-track-index="4">
+        <div class="kicker">The workbench</div>
+        <h2 style="margin-bottom: 28px">Run the same benchmark through every scaffold.</h2>
+        <div class="screenshot-frame hero-shot">
+          <img src="assets/arena-hero.png" alt="Arena workbench" />
+          <div class="overlay-label" style="left: 58px; top: 130px"><span class="dot"></span>Command bar</div>
+          <div class="overlay-label" style="right: 58px; top: 170px"><span class="dot"></span>Evidence inspector</div>
+          <div class="overlay-label" style="left: 48%; bottom: 54px"><span class="dot"></span>Guided workflow</div>
+        </div>
+      </section>
+
+      <section id="scene-stream" class="scene clip scene--split" data-start="25" data-duration="8" data-track-index="5">
+        <div>
+          <div class="kicker">Live execution</div>
+          <h2>Stream every run and keep the comparison fair.</h2>
+          <p style="margin-top: 28px">
+            Browser-native EventSource keeps the run observable: POST once, then GET-only SSE
+            for every scaffold phase and delta.
+          </p>
+        </div>
+        <div class="system-diagram">
+          <div class="node stage-card stream-node">
+            <span class="node-label">POST</span>
+            <span class="node-main mono">/api/runs</span>
+            <p>Create run</p>
+          </div>
+          <div class="node stage-card stream-node">
+            <span class="node-label">GET SSE</span>
+            <span class="node-main mono">/events</span>
+            <p>Stream phases</p>
+          </div>
+          <div class="node stage-card stream-node">
+            <span class="node-label">Fan-in</span>
+            <span class="node-main mono">results</span>
+            <p>Score together</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-evidence" class="scene clip scene--split" data-start="33" data-duration="9" data-track-index="6">
+        <div class="screenshot-frame large-shot">
+          <img src="assets/results-desktop.png" alt="Results workspace" />
+          <div class="overlay-label" style="left: 46px; top: 54px"><span class="dot"></span>Winner decision</div>
+          <div class="overlay-label" style="right: 40px; bottom: 46px"><span class="dot"></span>Proof triangle</div>
+        </div>
+        <div>
+          <div class="kicker">Evidence first</div>
+          <h2>Quality is only useful when it is tied to proof.</h2>
+          <div class="metric-row" style="margin-top: 34px">
+            <div class="metric stage-card">
+              <div class="metric-value signal">88</div>
+              <div class="metric-label">Winner score</div>
+            </div>
+            <div class="metric stage-card">
+              <div class="metric-value">$0.21</div>
+              <div class="metric-label">Usage cost</div>
+            </div>
+            <div class="metric stage-card">
+              <div class="metric-value">85%</div>
+              <div class="metric-label">Deterministic</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-repair" class="scene clip" data-start="42" data-duration="10" data-track-index="7">
+        <div style="display: grid; gap: 28px; margin-top: 120px">
+          <div>
+            <div class="kicker">Repair loop</div>
+            <h2>Move from judgement to improvement.</h2>
+          </div>
+          <div class="repair-loop">
+            <div class="repair-step stage-card">
+              <span class="node-label">01</span>
+              <strong>Autopsy</strong>
+              <p>Find missed fields, clauses, and citations.</p>
+            </div>
+            <div class="repair-step stage-card">
+              <span class="node-label">02</span>
+              <strong>Patch</strong>
+              <p>Generate a machine-applicable scaffold change.</p>
+            </div>
+            <div class="repair-step stage-card">
+              <span class="node-label">03</span>
+              <strong>Rerun</strong>
+              <p>Replay only the scaffold that changed.</p>
+            </div>
+            <div class="repair-step stage-card">
+              <span class="node-label">04</span>
+              <strong>Prove</strong>
+              <p>Compare the delta before declaring victory.</p>
+            </div>
+          </div>
+          <div class="code-panel stage-card">
+            <span class="danger">- missing:</span> effective_date, renewal_term<br />
+            <span class="signal">+ patch:</span> verify required fields before final answer<br />
+            <span class="signal">+ rerun:</span> plan_execute_verify / extraction / strict
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-audit" class="scene clip scene--split" data-start="52" data-duration="8" data-track-index="8">
+        <div>
+          <div class="kicker">Audit trail</div>
+          <h2>Every run becomes a reusable engineering signal.</h2>
+          <p style="margin-top: 28px">
+            The trace audit CLI turns saved runs into ranked findings and regression keys.
+            It is deterministic, offline, and ready for CI.
+          </p>
+        </div>
+        <div class="report-panel stage-card">
+          <div class="node-label">Trace-driven frontier audit</div>
+          <div class="report-list">
+            <div class="report-row"><span class="danger">high</span><span>winner_not_highest_score</span><span>run_audit_001</span></div>
+            <div class="report-row"><span class="danger">high</span><span>zero_cost_with_token_usage</span><span>bare</span></div>
+            <div class="report-row"><span class="warning">medium</span><span>patch_rerun_candidate</span><span>tool recovery</span></div>
+            <div class="report-row"><span class="signal">key</span><span>extraction.bare.schema_validity_low</span><span>regression</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene-final" class="scene clip scene--center" data-start="60" data-duration="6" data-track-index="9">
+        <div class="final-lockup">
+          <div class="kicker">The operating principle</div>
+          <h1>Before buying a bigger model, prove whether better scaffolding solves the problem.</h1>
+          <p class="mono" style="font-size: 36px">
+            Same model. <span class="signal">Different scaffolding.</span> Wildly different outcomes.
+          </p>
+        </div>
+      </section>
+
+      <div id="caption" class="caption"></div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      const tl = gsap.timeline({ paused: true });
+      const caption = document.querySelector("#caption");
+
+      gsap.set(caption, { autoAlpha: 0, y: 18 });
+
+      function showScene(selector, start, duration) {
+        const scene = document.querySelector(selector);
+        const content = scene.querySelectorAll(".kicker, h1, h2, p, .stage-card, .screenshot-frame, .pill");
+        tl.set(scene, { autoAlpha: 1 }, start);
+        tl.fromTo(
+          content,
+          { opacity: 0, y: 34 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.72,
+            stagger: 0.08,
+            ease: "power3.out",
+            immediateRender: false,
+          },
+          start + 0.12,
+        );
+        tl.set(scene, { autoAlpha: 0 }, start + duration);
+      }
+
+      function setCaption(text, start, duration) {
+        tl.call(() => {
+          caption.textContent = text;
+        }, [], start);
+        tl.to(caption, { autoAlpha: 1, y: 0, duration: 0.22, ease: "power2.out" }, start);
+        tl.to(caption, { autoAlpha: 0, y: -12, duration: 0.2, ease: "power2.in" }, start + duration - 0.2);
+        tl.set(caption, { autoAlpha: 0, y: -12 }, start + duration);
+      }
+
+      showScene("#scene-problem", 0, 7.4);
+      showScene("#scene-thesis", 7.4, 8.6);
+      showScene("#scene-product", 16, 9);
+      showScene("#scene-stream", 25, 8);
+      showScene("#scene-evidence", 33, 9);
+      showScene("#scene-repair", 42, 10);
+      showScene("#scene-audit", 52, 8);
+      showScene("#scene-final", 60, 6);
+
+      tl.fromTo(".branch-line", { scaleX: 0 }, { scaleX: 1, duration: 0.86, ease: "power3.out" }, 9.8);
+      tl.fromTo(".overlay-label", { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.38, stagger: 0.18, ease: "power2.out" }, 18.4);
+      tl.to(".stream-node", { y: -14, duration: 0.5, stagger: 0.14, yoyo: true, repeat: 3, ease: "power1.inOut" }, 27.2);
+      tl.to(".metric", { y: -10, duration: 0.45, stagger: 0.12, yoyo: true, repeat: 2, ease: "power1.inOut" }, 36.5);
+      tl.to(".repair-step", { y: -12, duration: 0.48, stagger: 0.14, yoyo: true, repeat: 1, ease: "power1.inOut" }, 46.2);
+      tl.to(".report-row", { x: 14, duration: 0.38, stagger: 0.12, yoyo: true, repeat: 1, ease: "power1.inOut" }, 55.2);
+
+      setCaption("Most teams reach for a larger model when an AI system fails.", 0.2, 3.4);
+      setCaption("Scaffold Arena starts with a sharper question.", 3.8, 2.7);
+      setCaption("What if the model is not the bottleneck?", 6.8, 2.6);
+      setCaption("What if the scaffold around the model decides the outcome?", 9.6, 3.3);
+      setCaption("Run the same benchmark through multiple scaffold strategies.", 13.2, 3.2);
+      setCaption("Stream every run live.", 17.2, 2.1);
+      setCaption("Compare quality, cost, latency, and proof artifacts side by side.", 20.1, 3.8);
+      setCaption("Then move from judgement to repair.", 24.4, 2.5);
+      setCaption("Autopsy the failure. Generate a patch. Rerun the scaffold.", 27.4, 4.2);
+      setCaption("Prove whether the change actually helped.", 32.2, 3.0);
+      setCaption("This is not another chat interface.", 35.6, 2.5);
+      setCaption("It is a research-lab workbench for improving AI systems.", 38.4, 3.6);
+      setCaption("Every claim is tied to evidence: scores, usage, timeline events, diffs, and reports.", 42.4, 5.0);
+      setCaption("Before you buy a bigger model, prove whether better scaffolding solved the problem.", 48.0, 5.4);
+      setCaption("Same model. Different scaffolding. Wildly different outcomes.", 54.0, 4.4);
+      setCaption("Scaffold Arena.", 60.0, 4.6);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

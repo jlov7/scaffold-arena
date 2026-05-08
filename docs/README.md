@@ -7,6 +7,7 @@ Use this index to navigate Scaffold Arena docs by role and task.
 - Product overview: [`/README.md`](../README.md)
 - Product context: [`../PRODUCT.md`](../PRODUCT.md)
 - Design system: [`../DESIGN.md`](../DESIGN.md)
+- Overview video: [`videos/README.md`](videos/README.md)
 - First-time setup: [`getting-started.md`](getting-started.md)
 - Hands-on workflow: [`walkthrough.md`](walkthrough.md)
 - Team onboarding: [`onboarding.md`](onboarding.md)
@@ -36,6 +37,7 @@ Use this index to navigate Scaffold Arena docs by role and task.
 - API reference: [`api-reference.md`](api-reference.md)
 - Evaluation model: [`evaluation.md`](evaluation.md)
 - Trace audit report: [`reviews/trace-driven-frontier-audit.md`](reviews/trace-driven-frontier-audit.md)
+- Overview video: [`videos/README.md`](videos/README.md)
 - Walkthrough (visual demo): [`walkthrough.md`](walkthrough.md)
 - Executable demos (Showboat + Rodney): [`demos/README.md`](demos/README.md)
 
