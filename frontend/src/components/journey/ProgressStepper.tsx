@@ -16,10 +16,10 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
   return (
     <>
       <section
-        className="rounded border border-border bg-bg-secondary p-3 sm:hidden"
+        className="lab-panel p-3 sm:hidden"
         aria-label="Mobile journey progress"
       >
-        <div className="flex items-center justify-between text-[11px] font-mono text-text-secondary">
+        <div className="flex items-center justify-between text-xs text-text-secondary">
           <span>
             Step {currentIndex + 1} of {steps.length}
           </span>
@@ -37,7 +37,7 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
               key={step.id}
               aria-current={step.status === 'current' ? 'step' : undefined}
               className={[
-                'min-w-[10.5rem] snap-start rounded border px-3 py-2 text-xs font-mono',
+                'min-w-[10.5rem] snap-start rounded-md border px-3 py-2 text-sm',
                 step.status === 'current'
                   ? 'border-accent-info bg-accent-info/10 text-accent-info'
                   : step.status === 'complete'
@@ -45,7 +45,7 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
                     : 'border-border bg-bg-secondary text-text-secondary',
               ].join(' ')}
             >
-              <div className="text-[10px] uppercase tracking-widest opacity-80">
+              <div className="font-mono text-[10px] uppercase tracking-[0.12em] opacity-80">
                 Step {index + 1}
               </div>
               <div className="mt-1">{step.label}</div>
@@ -63,7 +63,7 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
             key={step.id}
             aria-current={step.status === 'current' ? 'step' : undefined}
             className={[
-              'rounded border px-3 py-2 text-xs font-mono',
+              'rounded-md border px-3 py-2 text-sm',
               step.status === 'current'
                 ? 'border-accent-info bg-accent-info/10 text-accent-info'
                 : step.status === 'complete'
@@ -71,7 +71,7 @@ export function ProgressStepper({ steps }: ProgressStepperProps) {
                   : 'border-border bg-bg-secondary text-text-secondary',
             ].join(' ')}
           >
-            <div className="text-[10px] uppercase tracking-widest opacity-80">
+            <div className="font-mono text-[10px] uppercase tracking-[0.12em] opacity-80">
               Step {index + 1}
             </div>
             <div className="mt-1">{step.label}</div>

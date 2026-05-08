@@ -1,8 +1,10 @@
 import { memo, useMemo, useState } from 'react'
+import { Award, Download, FileJson, GitCompareArrows, Share2, Stethoscope } from 'lucide-react'
 import type { RunResults, EvalResult, RunMetrics } from '../types'
 import { COPY } from '../content/copy'
 import { Button } from './primitives/Button'
-import { Icon } from './primitives/Icon'
+import { Metric } from './primitives/Metric'
+import { StatusBadge } from './primitives/StatusBadge'
 
 interface ScoreDashboardProps {
   results: RunResults
@@ -171,15 +173,48 @@ export const ScoreDashboard = memo(function ScoreDashboard({
     : null
 
   return (
-    <div className="rounded-lg border border-border bg-bg-secondary p-6">
-      <h2 className="font-mono text-sm font-semibold uppercase tracking-wider text-text-secondary mb-4">
-        Results
-        {isCached && (
-          <span className="ml-2 rounded border border-accent-info/50 bg-accent-info/10 px-2 py-0.5 text-[10px] text-accent-info">
-            Cached
-          </span>
-        )}
-      </h2>
+    <div className="lab-panel p-5">
+      <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <div className="lab-label">Decision register</div>
+          <h2 className="mt-1 text-xl font-semibold tracking-[-0.01em] text-text-primary">
+            Results register
+          </h2>
+        </div>
+        {isCached && <StatusBadge tone="info">Cached</StatusBadge>}
+      </div>
+
+      {winner && (
+        <div className="mb-5 grid gap-3 lg:grid-cols-[1.2fr_repeat(3,minmax(0,0.7fr))]">
+          <div className="lab-row flex items-center gap-3 px-3 py-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-accent-winner/35 bg-accent-winner/10 text-accent-winner">
+              <Award className="h-5 w-5" strokeWidth={1.8} />
+            </div>
+            <div className="min-w-0">
+              <div className="lab-label">Winner</div>
+              <div className="truncate text-base font-semibold text-text-primary">
+                {scaffoldNames?.[winner.scaffoldId] ?? winner.scaffoldId}
+              </div>
+            </div>
+          </div>
+          <Metric
+            label="Score"
+            value={winner.score.toFixed(1)}
+            detail="Total evaluation"
+            tone="success"
+          />
+          <Metric
+            label="Cost"
+            value={formatCost(winner.metrics.cost_usd)}
+            detail="Provider usage"
+          />
+          <Metric
+            label="Time"
+            value={formatTime(winner.metrics.wall_time_ms)}
+            detail={`${formatTokens(winner.metrics).toLocaleString()} tokens`}
+          />
+        </div>
+      )}
 
       <div className="space-y-3 md:hidden">
         {ranked.map((entry, index) => {
@@ -222,17 +257,17 @@ export const ScoreDashboard = memo(function ScoreDashboard({
         })}
       </div>
 
-      <div className="hidden overflow-x-auto rounded border border-border md:block">
-        <table className="w-full font-mono text-sm">
+      <div className="hidden overflow-x-auto rounded-md border border-border md:block">
+        <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border">
-              <th className="px-4 py-2 text-left text-text-secondary font-normal">Rank</th>
-              <th className="px-4 py-2 text-left text-text-secondary font-normal">Scaffold</th>
-              <th className="px-4 py-2 text-left text-text-secondary font-normal">Score</th>
-              <th className="px-4 py-2 text-left text-text-secondary font-normal">Cost</th>
-              <th className="px-4 py-2 text-left text-text-secondary font-normal">Time</th>
-              <th className="px-4 py-2 text-left text-text-secondary font-normal">Tok</th>
-              <th className="px-4 py-2 text-left text-text-secondary font-normal"></th>
+            <tr className="border-b border-border bg-bg-primary/55">
+              <th className="px-4 py-2 text-left font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-text-muted">Rank</th>
+              <th className="px-4 py-2 text-left font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-text-muted">Scaffold</th>
+              <th className="px-4 py-2 text-left font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-text-muted">Score</th>
+              <th className="px-4 py-2 text-left font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-text-muted">Cost</th>
+              <th className="px-4 py-2 text-left font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-text-muted">Time</th>
+              <th className="px-4 py-2 text-left font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-text-muted">Tokens</th>
+              <th className="px-4 py-2 text-left font-mono text-[11px] font-normal uppercase tracking-[0.14em] text-text-muted"></th>
             </tr>
           </thead>
           <tbody>
@@ -244,28 +279,29 @@ export const ScoreDashboard = memo(function ScoreDashboard({
                 <tr
                   key={entry.scaffoldId}
                   className={`border-b border-border last:border-b-0 ${
-                    isWinner ? 'bg-bg-tertiary' : ''
+                    isWinner ? 'bg-accent-winner/7' : ''
                   }`}
                 >
-                  <td className="px-4 py-3 tabular-nums text-text-secondary">
+                  <td className="px-4 py-3 font-mono tabular-nums text-text-secondary">
                     {rank}.
                   </td>
                   <td className="px-4 py-3">
-                    <span className={isWinner ? 'text-accent-winner font-semibold' : 'text-text-primary'}>
-                      {isWinner && (
-                        <span className="mr-2" aria-label="Winner">&#x1F3C6;</span>
-                      )}
+                    <span className={[
+                      'inline-flex items-center gap-2',
+                      isWinner ? 'font-semibold text-accent-winner' : 'text-text-primary',
+                    ].join(' ')}>
+                      {isWinner && <Award className="h-4 w-4" aria-label="Winner" strokeWidth={1.8} />}
                       {scaffoldNames?.[entry.scaffoldId] ?? entry.scaffoldId}
                     </span>
                   </td>
                   <ScoreCell scaffoldId={entry.scaffoldId} score={entry.score} evaluation={entry.evaluation} />
-                  <td className="px-4 py-3 tabular-nums text-text-primary">
+                  <td className="px-4 py-3 font-mono tabular-nums text-text-primary">
                     {formatCost(entry.metrics.cost_usd)}
                   </td>
-                  <td className="px-4 py-3 tabular-nums text-text-primary">
+                  <td className="px-4 py-3 font-mono tabular-nums text-text-primary">
                     {formatTime(entry.metrics.wall_time_ms)}
                   </td>
-                  <td className="px-4 py-3 tabular-nums text-text-primary">
+                  <td className="px-4 py-3 font-mono tabular-nums text-text-primary">
                     {formatTokens(entry.metrics).toLocaleString()}
                   </td>
                   <td className="px-4 py-3">
@@ -286,7 +322,7 @@ export const ScoreDashboard = memo(function ScoreDashboard({
         </table>
       </div>
 
-      <div className="mt-4 flex gap-3 flex-wrap">
+      <div className="mt-5 flex flex-wrap gap-3 border-t border-border pt-4">
         <Button
           onClick={() => winner && onRunComparison(winner.scaffoldId)}
           disabled={!winner}
@@ -295,7 +331,7 @@ export const ScoreDashboard = memo(function ScoreDashboard({
           className="px-4 py-2 text-sm"
         >
           <span className="inline-flex items-center gap-1.5">
-            <Icon name="leaderboard" className="h-3 w-3" />
+            <GitCompareArrows className="h-4 w-4" strokeWidth={1.8} />
             Run Proof Comparison
           </span>
         </Button>
@@ -306,7 +342,7 @@ export const ScoreDashboard = memo(function ScoreDashboard({
           className="px-4 py-2 text-sm"
         >
           <span className="inline-flex items-center gap-1.5">
-            <Icon name="download" className="h-3 w-3" />
+            <Download className="h-4 w-4" strokeWidth={1.8} />
             {COPY.actions.exportReport}
           </span>
         </Button>
@@ -316,7 +352,10 @@ export const ScoreDashboard = memo(function ScoreDashboard({
           aria-label="Download export bundle"
           className="px-4 py-2 text-sm"
         >
-          Export Bundle
+          <span className="inline-flex items-center gap-1.5">
+            <Stethoscope className="h-4 w-4" strokeWidth={1.8} />
+            Export Bundle
+          </span>
         </Button>
         <Button
           onClick={onExportJson}
@@ -324,7 +363,10 @@ export const ScoreDashboard = memo(function ScoreDashboard({
           aria-label="Export JSON results"
           className="px-4 py-2 text-sm"
         >
-          {COPY.actions.exportJson}
+          <span className="inline-flex items-center gap-1.5">
+            <FileJson className="h-4 w-4" strokeWidth={1.8} />
+            {COPY.actions.exportJson}
+          </span>
         </Button>
         <Button
           onClick={onShare}
@@ -333,7 +375,7 @@ export const ScoreDashboard = memo(function ScoreDashboard({
           className="px-4 py-2 text-sm"
         >
           <span className="inline-flex items-center gap-1.5">
-            <Icon name="share" className="h-3 w-3" />
+            <Share2 className="h-4 w-4" strokeWidth={1.8} />
             {COPY.actions.share}
           </span>
         </Button>

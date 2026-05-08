@@ -8,8 +8,36 @@ on:
 # Run local verification via ./scripts/verify-all.sh before making releases public.
 
 jobs:
+  repo-hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Run secret scan
+        run: ./scripts/scan-secrets.sh
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: uv sync --extra dev
+
+      - name: Run trace audit smoke
+        run: |
+          uv run --project backend python scripts/trace-audit.py \
+            --input backend/tests/fixtures/trace_audit/sample_runs.json
+
   backend:
     runs-on: ubuntu-latest
+    needs:
+      - repo-hygiene
     defaults:
       run:
         working-directory: backend
@@ -33,6 +61,8 @@ jobs:
 
   frontend:
     runs-on: ubuntu-latest
+    needs:
+      - repo-hygiene
     defaults:
       run:
         working-directory: frontend
@@ -93,8 +123,8 @@ jobs:
           path: frontend/playwright-report
           if-no-files-found: warn
 
-      - name: Run visual regression snapshots
-        run: pnpm test:visual
+      - name: Run visual verification
+        run: pnpm verify:visual
 
       - name: Run Lighthouse CI checks
         run: pnpm perf:lighthouse

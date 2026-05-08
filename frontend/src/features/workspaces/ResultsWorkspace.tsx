@@ -3,6 +3,9 @@ import { ScoreDashboard } from '../../components/ScoreDashboard'
 import { WorkspaceSection } from '../../components/layout/WorkspaceSection'
 import RunTimeline from '../../components/RunTimeline'
 import StateCallout from '../../components/StateCallout'
+import { Button } from '../../components/primitives/Button'
+import { EmptyState } from '../../components/primitives/EmptyState'
+import { SegmentedControl } from '../../components/primitives/SegmentedControl'
 import { COPY } from '../../content/copy'
 import type { UiStateDescriptor } from '../states/taxonomy'
 import type { RunResults, RunTimelineEvent } from '../../types'
@@ -122,41 +125,43 @@ export function ResultsWorkspace({
       className={compactMode ? 'space-y-3' : 'space-y-5'}
       aria-label="Results workspace"
     >
-      <h2 className="font-mono text-sm text-text-primary">Results workspace</h2>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="text-[10px] uppercase tracking-widest text-text-secondary">
-          Results workspace
+      <div className="lab-panel flex flex-wrap items-start justify-between gap-3 p-4">
+        <div>
+          <div className="lab-label">Results workspace</div>
+          <h2 className="mt-1 text-lg font-semibold text-text-primary">
+            Results workspace
+          </h2>
+          <p className="lab-copy mt-1 text-sm">
+            Decision, diagnostics, and export. Confirm the winner first, then open diagnostics only when the evidence changes the next action.
+          </p>
         </div>
-        <button
+        <Button
           type="button"
           onClick={onToggleCompactMode}
-          className="rounded border border-border px-2.5 py-1 text-[11px] font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
+          tone="ghost"
         >
           {compactMode ? 'Disable compact mode' : 'Enable compact mode'}
-        </button>
+        </Button>
       </div>
       <WorkspaceSection template="review-dense" priority="important" className="stack-tight">
-        <div className="ui-heading-sm text-text-secondary">
-          Results workflow lane
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="lab-label">Results workflow lane</div>
+            <p className="mt-1 text-sm text-text-secondary">
+              Choose the amount of evidence needed for the current decision.
+            </p>
+          </div>
+          <SegmentedControl
+            label="Results workflow lane"
+            value={resultsLane}
+            onChange={onResultsLaneChange}
+            options={[
+              { value: 'summary', label: RESULTS_LANE_COPY.summary.label },
+              { value: 'diagnostics', label: RESULTS_LANE_COPY.diagnostics.label },
+            ]}
+          />
         </div>
-        <div className="grid gap-2 sm:grid-cols-2">
-          {(['summary', 'diagnostics'] as ResultsWorkspaceLane[]).map((lane) => (
-            <button
-              key={lane}
-              type="button"
-              onClick={() => onResultsLaneChange(lane)}
-              className={[
-                'rounded border px-3 py-2 text-left text-xs font-mono transition-colors',
-                resultsLane === lane
-                  ? 'border-accent-info bg-accent-info/10 text-accent-info'
-                  : 'border-border text-text-secondary hover:border-accent-info hover:text-accent-info',
-              ].join(' ')}
-            >
-              {RESULTS_LANE_COPY[lane].label}
-            </button>
-          ))}
-        </div>
-        <p className="text-xs text-text-secondary">
+        <p className="text-sm text-text-secondary">
           {RESULTS_LANE_COPY[resultsLane].description}
         </p>
       </WorkspaceSection>
@@ -175,55 +180,54 @@ export function ResultsWorkspace({
         />
       )}
       {!finalResults && (
-        <div className="max-w-3xl rounded-lg border border-border bg-bg-secondary p-5">
-          <h3 className="font-mono text-sm text-text-primary">No results loaded yet</h3>
-          <p className="mt-2 text-xs text-text-secondary">
-            {COPY.emptyStates.results}
-          </p>
-          <div className="mt-3 flex flex-wrap items-center gap-2">
-            <button
+        <EmptyState
+          title="No results loaded yet"
+          description={COPY.emptyStates.results}
+          action={
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
               type="button"
               onClick={onNavigateToArena}
-              className="rounded border border-accent-info px-3 py-1.5 text-xs font-mono text-accent-info hover:bg-accent-info/20"
+              tone="primary"
             >
               Start a new arena run
-            </button>
-            <button
+              </Button>
+              <Button
               type="button"
               onClick={onNavigateToHistory}
-              className="rounded border border-border px-3 py-1.5 text-xs font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
             >
               Load from history
-            </button>
-            <button
+              </Button>
+              <Button
               type="button"
               onClick={() => onOpenHelpCenter('route')}
-              className="rounded border border-border px-3 py-1.5 text-xs font-mono text-text-secondary hover:border-accent-info hover:text-accent-info"
+              tone="ghost"
             >
               Open help center
-            </button>
-          </div>
-        </div>
+              </Button>
+            </div>
+          }
+        />
       )}
 
       {finalResults && resultsLane === 'summary' && (
         <>
           {runDeltaSummary && (
-            <WorkspaceSection template="review-dense" priority="important" className="font-mono stack-tight">
+            <WorkspaceSection template="review-dense" priority="important" className="stack-tight">
               <div className="ui-heading-sm text-text-secondary">
                 What changed since your previous run
               </div>
-              <div className="text-xs text-text-secondary">
+              <div className="text-sm text-text-secondary">
                 Winner:{' '}
                 {runDeltaSummary.currentWinnerId ?? 'none'}
                 {runDeltaSummary.winnerChanged ? ' (changed)' : ' (unchanged)'}
               </div>
-              <div className="text-xs text-text-secondary">
+              <div className="text-sm text-text-secondary">
                 Total cost delta: {runDeltaSummary.totalCostDeltaUsd >= 0 ? '+' : ''}
                 ${runDeltaSummary.totalCostDeltaUsd.toFixed(4)}
               </div>
               {runDeltaSummary.scoreDeltas.length > 0 && (
-                <div className="grid gap-1 text-[11px] text-text-secondary sm:grid-cols-2">
+                <div className="grid gap-1 font-mono text-xs text-text-secondary sm:grid-cols-2">
                   {runDeltaSummary.scoreDeltas.slice(0, 6).map((entry) => (
                     <div key={entry.scaffoldId}>
                       {entry.scaffoldId}: {entry.delta >= 0 ? '+' : ''}
@@ -236,17 +240,17 @@ export function ResultsWorkspace({
           )}
 
           {roleResultsSummary && (
-            <WorkspaceSection template="review-dense" priority="important" className="font-mono stack-tight">
+            <WorkspaceSection template="review-dense" priority="important" className="stack-tight">
               <div className="ui-heading-sm text-text-secondary">
                 Role summary: {PROFILE_AUDIENCE_LABEL[userProfile]}
               </div>
               <h3 className="ui-heading-lg text-text-primary">
                 {roleResultsSummary.title}
               </h3>
-              <p className="text-xs text-text-secondary">
+              <p className="text-sm text-text-secondary">
                 {roleResultsSummary.body}
               </p>
-              <ul className="list-disc space-y-1 pl-4 text-xs text-text-secondary">
+              <ul className="list-disc space-y-1 pl-4 text-sm text-text-secondary">
                 {roleResultsSummary.details.map((detail) => (
                   <li key={detail}>{detail}</li>
                 ))}
@@ -255,11 +259,11 @@ export function ResultsWorkspace({
           )}
 
           {shouldShowAutopsyGuide && firstAutopsyTargetId && (
-            <WorkspaceSection template="review-dense" priority="important" className="font-mono stack-tight">
+            <WorkspaceSection template="review-dense" priority="important" className="stack-tight">
               <div className="ui-heading-sm text-accent-info">
                 First autopsy walkthrough
               </div>
-              <p className="text-xs text-text-secondary">
+              <p className="text-sm text-text-secondary">
                 Start from summary for a fast diagnostic handoff, or open the diagnostics lane for full evidence context.
               </p>
               <div className="flex flex-wrap items-center gap-2">
@@ -268,14 +272,14 @@ export function ResultsWorkspace({
                   onClick={() => {
                     void onRunAutopsy(firstAutopsyTargetId)
                   }}
-                  className="rounded border border-accent-info/70 px-3 py-1.5 text-xs text-accent-info hover:bg-accent-info/15"
+                  className="rounded border border-accent-info/70 px-3 py-1.5 text-sm text-accent-info hover:bg-accent-info/15"
                 >
                   Start first autopsy
                 </button>
                 <button
                   type="button"
                   onClick={() => onResultsLaneChange('diagnostics')}
-                  className="rounded border border-border px-3 py-1.5 text-xs text-text-secondary hover:border-accent-info hover:text-accent-info"
+                  className="rounded border border-border px-3 py-1.5 text-sm text-text-secondary hover:border-accent-info hover:text-accent-info"
                 >
                   Open diagnostics lane
                 </button>
@@ -296,17 +300,17 @@ export function ResultsWorkspace({
             onShare={onShare}
           />
 
-          <WorkspaceSection template="review-dense" priority="optional" className="font-mono stack-tight">
+          <WorkspaceSection template="review-dense" priority="optional" className="stack-tight">
             <div className="ui-heading-sm text-text-secondary">
               Need deeper proof?
             </div>
-            <p className="text-xs text-text-secondary">
+            <p className="text-sm text-text-secondary">
               Open Diagnostics when you need failure evidence, autopsy patches, or side-by-side diff reasoning.
             </p>
             <button
               type="button"
               onClick={() => onResultsLaneChange('diagnostics')}
-              className="rounded border border-accent-info px-3 py-1.5 text-xs text-accent-info hover:bg-accent-info/15"
+              className="rounded border border-accent-info px-3 py-1.5 text-sm text-accent-info hover:bg-accent-info/15"
             >
               Open diagnostics lane
             </button>
@@ -317,14 +321,14 @@ export function ResultsWorkspace({
       {finalResults && resultsLane === 'diagnostics' && (
         <>
           {shouldShowAutopsyGuide && firstAutopsyTargetId && (
-            <WorkspaceSection template="review-dense" priority="critical" className="font-mono stack-tight">
+            <WorkspaceSection template="review-dense" priority="critical" className="stack-tight">
               <div className="ui-heading-sm text-accent-info">
                 First autopsy walkthrough
               </div>
               <h3 className="ui-heading-lg text-text-primary">
                 Diagnose one scaffold before applying a patch
               </h3>
-              <ol className="list-decimal space-y-1 pl-4 text-xs text-text-secondary">
+              <ol className="list-decimal space-y-1 pl-4 text-sm text-text-secondary">
                 <li>Open autopsy for a non-winning scaffold.</li>
                 <li>Review concrete failure evidence and generated patch.</li>
                 <li>Apply patch and rerun to confirm improvement.</li>
@@ -335,14 +339,14 @@ export function ResultsWorkspace({
                   onClick={() => {
                     void onRunAutopsy(firstAutopsyTargetId)
                   }}
-                  className="rounded border border-accent-info/70 px-3 py-1.5 text-xs text-accent-info hover:bg-accent-info/15"
+                  className="rounded border border-accent-info/70 px-3 py-1.5 text-sm text-accent-info hover:bg-accent-info/15"
                 >
                   Start first autopsy
                 </button>
                 <button
                   type="button"
                   onClick={() => onSetAutopsyGuideDismissed(true)}
-                  className="rounded border border-border px-3 py-1.5 text-xs text-text-secondary hover:border-accent-info hover:text-accent-info"
+                  className="rounded border border-border px-3 py-1.5 text-sm text-text-secondary hover:border-accent-info hover:text-accent-info"
                 >
                   Dismiss walkthrough
                 </button>
@@ -350,17 +354,17 @@ export function ResultsWorkspace({
             </WorkspaceSection>
           )}
 
-          <WorkspaceSection template="review-dense" priority="optional" className="font-mono stack-tight">
+          <WorkspaceSection template="review-dense" priority="optional" className="stack-tight">
             <div className="ui-heading-sm text-text-secondary">
               Diagnostics lane
             </div>
-            <p className="text-xs text-text-secondary">
+            <p className="text-sm text-text-secondary">
               You are in evidence mode. Return to Summary for top-line winner and export decisions.
             </p>
             <button
               type="button"
               onClick={() => onResultsLaneChange('summary')}
-              className="rounded border border-border px-3 py-1.5 text-xs text-text-secondary hover:border-accent-info hover:text-accent-info"
+              className="rounded border border-border px-3 py-1.5 text-sm text-text-secondary hover:border-accent-info hover:text-accent-info"
             >
               Back to summary lane
             </button>

@@ -29,16 +29,11 @@ export function ExperienceModeCard({
   onProfileChange,
 }: ExperienceModeCardProps) {
   return (
-    <section
-      className="rounded-lg border border-accent-info/40 bg-accent-info/10 p-4"
-      aria-label="Workspace personalization"
-    >
+    <section className="lab-panel p-4" aria-label="Workspace personalization">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-accent-info">
-            Quick start setup
-          </div>
-          <h2 className="mt-1 text-sm font-mono text-text-primary">
+          <div className="lab-label text-accent-info">Quick start setup</div>
+          <h2 className="mt-1 text-lg font-semibold text-text-primary">
             Choose your experience
           </h2>
         </div>
@@ -47,7 +42,7 @@ export function ExperienceModeCard({
             type="button"
             onClick={() => onModeChange('guided')}
             className={[
-              'rounded border px-3 py-1.5 text-xs font-mono transition-colors',
+              'ui-control rounded-md border px-3 py-1.5 text-sm font-medium transition-colors',
               mode === 'guided'
                 ? 'border-accent-info bg-accent-info/20 text-accent-info'
                 : 'border-border text-text-secondary hover:border-accent-info hover:text-accent-info',
@@ -59,7 +54,7 @@ export function ExperienceModeCard({
             type="button"
             onClick={() => onModeChange('advanced')}
             className={[
-              'rounded border px-3 py-1.5 text-xs font-mono transition-colors',
+              'ui-control rounded-md border px-3 py-1.5 text-sm font-medium transition-colors',
               mode === 'advanced'
                 ? 'border-accent-info bg-accent-info/20 text-accent-info'
                 : 'border-border text-text-secondary hover:border-accent-info hover:text-accent-info',
@@ -71,7 +66,7 @@ export function ExperienceModeCard({
       </div>
 
       <div className="mt-3">
-        <div className="text-[10px] font-mono uppercase tracking-widest text-text-secondary">
+        <div className="lab-label">
           I am a...
         </div>
         <div className="mt-2 grid gap-2 sm:grid-cols-4">
@@ -81,7 +76,7 @@ export function ExperienceModeCard({
               type="button"
               onClick={() => onProfileChange(key)}
               className={[
-                'rounded border px-2.5 py-2 text-left text-xs font-mono transition-colors',
+                'ui-control rounded-md border px-3 py-2 text-left text-sm transition-colors',
                 profile === key
                   ? 'border-accent-info bg-bg-primary text-text-primary'
                   : 'border-border bg-bg-secondary text-text-secondary hover:border-accent-info hover:text-accent-info',
@@ -93,7 +88,7 @@ export function ExperienceModeCard({
         </div>
       </div>
 
-      <p className="mt-3 text-xs text-text-secondary">
+      <p className="lab-copy mt-3 text-sm">
         {PROFILE_HELP[profile]}
       </p>
     </section>

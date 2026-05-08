@@ -95,7 +95,7 @@ export function Modal({
   return createPortal(
     <div
       className={[
-        'fixed inset-0 z-[60] flex items-center justify-center bg-black/70 motion-fade-in',
+        'fixed inset-0 z-[60] flex items-center justify-center bg-bg-primary/78 motion-fade-in',
         overlayClassName,
       ].join(' ')}
       onClick={handleOverlayClick}
@@ -107,7 +107,7 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         className={[
-          'motion-slide-up flex w-full max-w-2xl flex-col rounded-lg border border-border bg-bg-secondary',
+          'motion-slide-up flex w-full max-w-2xl flex-col rounded-lg border border-border bg-bg-secondary shadow-[var(--lab-shadow)]',
           className,
         ].join(' ')}
       >

@@ -1,278 +1,246 @@
 # Scaffold Arena
 
-```text
-  ____   ____    _    _____ _____ ___  _     ____      _    ____  _____ _   _    _
- / ___| / ___|  / \  |  ___|  ___/ _ \| |   |  _ \    / \  |  _ \| ____| \ | |  / \
- \___ \| |     / _ \ | |_  | |_ | | | | |   | | | |  / _ \ | |_) |  _| |  \| | / _ \
-  ___) | |___ / ___ \|  _| |  _|| |_| | |___| |_| | / ___ \|  _ <| |___| |\  |/ ___ \
-|____/ \____/_/   \_\_|   |_|   \___/|_____|____/ /_/   \_\_| \_\_____|_| \_/_/   \_\
-```
-
-`SCAFFOLD ARENA`
-
 **Same model. Different scaffolding. Wildly different outcomes.**
 
-Scaffold Arena is an evaluation workbench for a practical question:
+Scaffold Arena is an enterprise-grade scaffold engineering workbench for testing the orchestration around LLMs. It answers a practical question: when quality is weak, should you buy a bigger model, or improve the scaffold around the model you already have?
 
-> Is it better to buy a larger model, or improve the orchestration around the model you already have?
-
-It runs the same benchmark input across multiple scaffold strategies, measures score/cost/time, explains failures with evidence, and supports one-click patch-and-rerun validation.
-
-![Arena Workspace](docs/assets/screenshots/arena-desktop.png)
+<p align="center">
+  <img src="docs/assets/screenshots/readme-hero.png" alt="Scaffold Arena research-lab workbench" width="1200">
+</p>
 
 ## Live Deployment
 
-- Frontend: [https://scaffold-arena.vercel.app](https://scaffold-arena.vercel.app)
-- Backend API: [https://scaffold-arena-production.up.railway.app](https://scaffold-arena-production.up.railway.app)
-- API health: [https://scaffold-arena-production.up.railway.app/api/health](https://scaffold-arena-production.up.railway.app/api/health)
+| Surface | URL |
+| --- | --- |
+| Frontend | [scaffold-arena.vercel.app](https://scaffold-arena.vercel.app) |
+| Backend API | [scaffold-arena-production.up.railway.app](https://scaffold-arena-production.up.railway.app) |
+| Health check | [/api/health](https://scaffold-arena-production.up.railway.app/api/health) |
 
-## Why This Repo Exists
+## What It Proves
 
-Most teams default to model upgrades. This project demonstrates a higher-leverage path:
+Most LLM evaluation stops at model choice. Scaffold Arena makes the surrounding system measurable:
 
-- Improve orchestration quality first.
-- Measure quality per dollar, not raw model prestige.
-- Keep decision evidence reproducible and auditable.
+- Run the same task through multiple scaffold strategies.
+- Compare quality, cost, latency, and proof artifacts side by side.
+- Diagnose failures with concrete evidence instead of subjective impressions.
+- Patch a scaffold, rerun it, and export an audit trail.
 
-## For Non-Technical and Technical Readers
+The core loop is:
 
-| Audience | Start Here | Outcome |
-|---|---|---|
-| Product / leadership | [Non-technical explainer](docs/explainers/non-technical.md) | Understand business value and decision framing |
-| Engineers | [Technical explainer](docs/explainers/technical.md) | Understand architecture, execution flow, and extension points |
-| New users | [Getting started](docs/getting-started.md) | Launch locally and complete first run |
-| New contributors | [Onboarding guide](docs/onboarding.md) | Follow first-hour checklist and role paths |
-| Operators / analysts | [User guide](docs/user-guide.md) | Navigate full compare -> diagnose -> patch -> prove loop |
-| API consumers | [API reference](docs/api-reference.md) | Integrate against backend contracts |
-
-## Product UX Model (Progressive Disclosure)
-
-Scaffold Arena is intentionally split into lanes so first-time users are not overloaded:
-
-1. `Arena -> Onboarding lane`: choose role and guided path.
-2. `Arena -> Configure lane`: select task/model and launch run.
-3. `Arena -> Live run lane`: monitor scaffold execution in real time.
-4. `Results -> Summary lane`: decision-first score/cost/time readout.
-5. `Results -> Diagnostics lane`: diff, autopsy, and proof comparison.
-6. `Settings -> Run readiness`: preflight checks, API-key storage mode, and operational controls.
-
-![Results Summary](docs/assets/screenshots/results-summary-desktop.png)
-
-## Architecture at a Glance
-
-![System Map](docs/assets/illustrations/system-map.png)
-
-```mermaid
-graph TB
-    subgraph FE["Frontend (React + TypeScript)"]
-      A["Arena / Results / History / Leaderboard / Settings"]
-      B["Typed API client + SSE hooks"]
-    end
-
-    subgraph BE["Backend (FastAPI)"]
-      C["POST /api/runs"]
-      D["GET /api/runs/{id}/events"]
-      E["Run engine + scaffold registry"]
-      F["Evaluation + autopsy + reports"]
-    end
-
-    subgraph LLM["Providers"]
-      G["Anthropic / OpenAI / Gemini / OpenRouter"]
-    end
-
-    A --> B --> C
-    C --> E --> G
-    E --> D --> A
-    E --> F --> A
+```text
+Compare -> Diagnose -> Patch -> Rerun -> Export Audit Report
 ```
 
-## Benchmark Loop
+## Product Surface
 
-![Value Flywheel](docs/assets/illustrations/value-flywheel.png)
+Scaffold Arena is designed as a research-lab workbench, not a landing page. The first screen is the product: command bar, workspace rail, center workflow stage, and evidence inspector.
 
-1. Run benchmark.
-2. Score and compare.
-3. Diagnose failures.
-4. Apply patch and rerun.
-5. Export evidence.
+| Arena | Results | History |
+| --- | --- | --- |
+| <img src="docs/assets/screenshots/design-qa/arena-desktop.png" alt="Arena workspace" width="360"> | <img src="docs/assets/screenshots/design-qa/results-desktop.png" alt="Results workspace" width="360"> | <img src="docs/assets/screenshots/design-qa/history-desktop.png" alt="History workspace" width="360"> |
 
-## What Is New In This Build
+| Leaderboard | Settings | Mobile |
+| --- | --- | --- |
+| <img src="docs/assets/screenshots/design-qa/leaderboard-desktop.png" alt="Leaderboard workspace" width="360"> | <img src="docs/assets/screenshots/design-qa/settings-desktop.png" alt="Settings workspace" width="360"> | <img src="docs/assets/screenshots/design-qa/arena-mobile.png" alt="Mobile arena workspace" width="180"> |
 
-- Run preflight checks before launch (`task/model/scaffolds/options/budget/provider`) with actionable remediation.
-- Session-first BYOK key handling with explicit opt-in persistence.
-- Replayable run timeline in Diagnostics lane for failure and ordering analysis.
-- One-click export bundle (`run.json`, `diagnostics.json`, `report.md`) for sharing.
-- Command palette (`Cmd/Ctrl+K`) for fast expert navigation and actions.
-- Evaluation profile presets (`balanced`, `strict`, `cost_first`) with deterministic-first weighting.
+## Capabilities
+
+| Capability | What it does |
+| --- | --- |
+| Arena runs | Sends the same benchmark input through multiple scaffold strategies. |
+| GET-only SSE streaming | Uses `POST /api/runs` followed by `GET /api/runs/{id}/events` for browser-native `EventSource` streaming. |
+| Deterministic-first evaluation | Keeps deterministic scoring at 70% or higher for every task family. |
+| Three-case proof comparison | Compares cheap+winning, expensive+bare, and expensive+winning runs. |
+| Autopsy to patch to rerun | Converts failure evidence into a machine-applicable patch and reruns the scaffold. |
+| Real usage costs | Computes cost from provider usage fields through the centralized model price table. |
+| Export bundles | Produces run JSON, diagnostics, and Markdown audit reports for review. |
+| Trace audit CLI | Audits saved run traces for ranked findings and regression keys. |
+
+## Architecture
 
 ```mermaid
-flowchart LR
-    A["Configure Run"] --> B["Preflight Checks"]
-    B -->|pass| C["Start Run + SSE Stream"]
-    B -->|fail| D["Actionable Blocker Guidance"]
-    C --> E["Results Summary"]
-    E --> F["Diagnostics + Timeline Replay"]
-    E --> G["Export Report / Bundle"]
+flowchart TB
+    subgraph UI["React + TypeScript Frontend"]
+        Shell["Research workbench shell"]
+        Workspaces["Arena, Results, History, Leaderboard, Settings"]
+        Client["Typed API client + SSE hooks"]
+    end
+
+    subgraph API["FastAPI Backend"]
+        Runs["Run creation and lifecycle"]
+        Stream["GET-only SSE event stream"]
+        Eval["Evaluation harness"]
+        Autopsy["Autopsy, patch, rerun"]
+        Reports["Reports and export bundles"]
+        Store["SQLite run trace store"]
+    end
+
+    subgraph Providers["Model Providers"]
+        Anthropic["Anthropic"]
+        OpenAI["OpenAI"]
+        Gemini["Gemini"]
+        OpenRouter["OpenRouter"]
+    end
+
+    Shell --> Workspaces --> Client
+    Client --> Runs
+    Runs --> Providers
+    Runs --> Stream --> Client
+    Runs --> Eval --> Autopsy --> Reports
+    Runs --> Store
+    Store --> Reports
 ```
 
-## Deterministic-First Evaluation
+## Evaluation Model
 
-Scaffold Arena enforces deterministic-heavy scoring (minimum 70% deterministic weight per task).
+Scaffold Arena treats deterministic checks as the anchor and optional judge criteria as a secondary layer.
 
-| Task | Deterministic Weight | Core deterministic signals |
-|---|---:|---|
+| Task | Deterministic weight | Core signals |
+| --- | ---: | --- |
 | Extraction | 75% | Schema validity, field accuracy |
 | Risk analysis | 85% | Must-flag hit rate, severity accuracy, false-positive control |
-| Research synthesis | 75% | Citation coverage, required findings, schema validity, word compliance |
+| Research synthesis | 85% | Citation coverage, required findings, schema validity, word compliance |
 
-Optional LLM judge criteria can be layered on top for subjective quality dimensions.
+Synthetic sources are labeled in task context, UI result views, and reports. Costs come from real token usage, not hardcoded demo values.
 
-## Quick Start (Local)
+## Trace-Driven Audit
+
+The trace audit turns saved runs into a ranked engineering backlog. It is deterministic and offline, so it can run locally or in CI without provider keys.
+
+```bash
+uv run --project backend python scripts/trace-audit.py --limit 100
+```
+
+Audit a fixture and write a report:
+
+```bash
+uv run --project backend python scripts/trace-audit.py \
+  --input backend/tests/fixtures/trace_audit/sample_runs.json \
+  --output docs/reviews/trace-driven-frontier-audit.md
+```
+
+Current sample report: [docs/reviews/trace-driven-frontier-audit.md](docs/reviews/trace-driven-frontier-audit.md)
+
+## Quick Start
 
 ### Prerequisites
 
 - Python 3.11+
 - Node 18+
 - `uv`
-- `pnpm`
-- At least one provider API key (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `OPENROUTER_API_KEY`)
+- `pnpm` 10 recommended for this lockfile
+- At least one provider key: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`, or `OPENROUTER_API_KEY`
 
 ### Install
 
 ```bash
-git clone <repo-url> "Scaffold Arena"
+git clone https://github.com/jlov7/scaffold-arena.git "Scaffold Arena"
 cd "Scaffold Arena"
 
 cd backend
 cp .env.example .env
-# add at least one provider key to backend/.env
+# Add at least one provider key to backend/.env
 uv sync
 
 cd ../frontend
-pnpm install
+npx -y pnpm@10 install
 ```
 
-### Run
+### Run Locally
 
 ```bash
 # Terminal 1
 cd backend
 uv run uvicorn main:app --reload --port 8000
+```
 
+```bash
 # Terminal 2
 cd frontend
-pnpm dev
+npx -y pnpm@10 dev
 ```
 
-Open `http://localhost:5173`.
+Open [http://localhost:5173](http://localhost:5173).
 
-## Setup + Onboarding Paths
+## Verification
 
-- First launch: [docs/getting-started.md](docs/getting-started.md)
-- Team onboarding: [docs/onboarding.md](docs/onboarding.md)
-- End-to-end usage: [docs/user-guide.md](docs/user-guide.md)
-- Documentation portal: [docs/README.md](docs/README.md)
-- API-level details: [docs/api-reference.md](docs/api-reference.md)
-
-## Repository Structure
-
-```text
-backend/      FastAPI app, run engine, evaluation, autopsy, reports, backend tests
-frontend/     React app, route/lane UX, telemetry, E2E/a11y/visual tests
-docs/         Explainers, architecture, onboarding, ops playbooks, audits
-scripts/      Repo verification and security scan utilities
-```
-
-- Backend details: [backend/README.md](backend/README.md)
-- Frontend details: [frontend/README.md](frontend/README.md)
-- Scripts: [scripts/README.md](scripts/README.md)
-
-### Structure Principles
-
-- Product artifacts live in `backend/`, `frontend/`, and `docs/`.
-- Generated runtime artifacts are ignored (`coverage`, Playwright/Lighthouse reports, local output dirs).
-- Documentation is audience-oriented (non-technical, technical, onboarding, operations).
-
-## Quality Gates
-
-GitHub Actions are configured as manual-only in this repo. Run local verification before publishing:
+Run the repo-level gate before publishing:
 
 ```bash
 ./scripts/verify-all.sh
 ```
 
-### Frontend
+That gate runs:
+
+- Secret scan over tracked and untracked non-ignored files.
+- Backend tests.
+- Trace-audit smoke test.
+- Frontend lint, unit tests, and production build.
+
+Additional visual and interaction gates:
 
 ```bash
 cd frontend
-pnpm lint
-pnpm test
-pnpm build
-pnpm test:e2e
-pnpm test:a11y
-pnpm test:visual
-pnpm perf:budget
-pnpm arch:layers
+npx -y pnpm@10 test:e2e
+npx -y pnpm@10 test:a11y
+npx -y pnpm@10 verify:visual
 ```
 
-### Backend
+Latest local verification on this branch:
 
-```bash
-cd backend
-uv run pytest
+| Gate | Result |
+| --- | --- |
+| `./scripts/verify-all.sh` | PASS |
+| `frontend test:e2e` | 76 passed |
+| `frontend test:a11y` | 11 passed |
+| `frontend verify:visual` | 14 passed |
+| `backend pytest` | 65 passed |
+| `impeccable detect --json frontend/src` | `[]` |
+
+## Repository Map
+
+```text
+backend/      FastAPI app, run engine, providers, evaluation, autopsy, reports
+frontend/     React workbench, primitives, workspaces, SSE hooks, visual tests
+docs/         Architecture, onboarding, reviews, screenshots, operations docs
+scripts/      Repo verification, secret scanning, trace-audit tooling
+specs/        Implementation specs for larger workstreams
 ```
 
-### Secret Scan
+Key docs:
 
-```bash
-./scripts/scan-secrets.sh
-```
-
-## Visual Gallery
-
-| Arena | Results Diagnostics | History |
-|---|---|---|
-| ![Arena](docs/assets/screenshots/arena-desktop.png) | ![Results Diagnostics](docs/assets/screenshots/results-diagnostics-desktop.png) | ![History](docs/assets/screenshots/history-desktop.png) |
-
-| Leaderboard | Settings | Mobile |
-|---|---|---|
-| ![Leaderboard](docs/assets/screenshots/leaderboard-desktop.png) | ![Settings](docs/assets/screenshots/settings-desktop.png) | ![Mobile](docs/assets/screenshots/arena-mobile.png) |
-
-## Executable Demos (Showboat + Rodney)
-
-- Demo index: [docs/demos/README.md](docs/demos/README.md)
-- Live production proof: [docs/demos/production-live-verified.md](docs/demos/production-live-verified.md)
-
-These documents are executable evidence artifacts. You can re-run and diff command output with:
-
-```bash
-uvx showboat verify docs/demos/production-live-verified.md
-```
-
-## Security, Ops, and Review Docs
-
+- Product context: [PRODUCT.md](PRODUCT.md)
+- Design system: [DESIGN.md](DESIGN.md)
+- Documentation portal: [docs/README.md](docs/README.md)
+- Getting started: [docs/getting-started.md](docs/getting-started.md)
+- User guide: [docs/user-guide.md](docs/user-guide.md)
+- Architecture: [docs/architecture.md](docs/architecture.md)
+- API reference: [docs/api-reference.md](docs/api-reference.md)
+- Evaluation: [docs/evaluation.md](docs/evaluation.md)
 - Security review: [docs/security/frontend-security-review.md](docs/security/frontend-security-review.md)
-- Frontend smoke + rollback: [docs/ops/frontend-smoke-and-rollback.md](docs/ops/frontend-smoke-and-rollback.md)
-- Accessibility audit: [docs/reviews/accessibility-audit.md](docs/reviews/accessibility-audit.md)
-- UX visual audit: [docs/reviews/ux-visual-audit-2026-02-21.md](docs/reviews/ux-visual-audit-2026-02-21.md)
-- Release checklist: [docs/reviews/frontend-release-checklist.md](docs/reviews/frontend-release-checklist.md)
 
-## Contributing and Policy
+## Engineering Standards
+
+- Backend: Python, FastAPI, Pydantic, `uv`, SQLite persistence.
+- Frontend: React, TypeScript, Vite, Tailwind CSS, Playwright, Vitest.
+- API contract: preserve `POST /api/runs` then GET-only SSE.
+- Package management: `uv` for Python, `pnpm` for frontend.
+- Verification: deterministic tests first, visual checks for UI changes, trace audits for saved-run quality.
+
+## Contributing
 
 - Contributing guide: [CONTRIBUTING.md](CONTRIBUTING.md)
 - Security policy: [SECURITY.md](SECURITY.md)
 - Support policy: [SUPPORT.md](SUPPORT.md)
-- Changelog: [CHANGELOG.md](CHANGELOG.md)
-- License: [MIT](LICENSE)
+- Pull request template: [.github/pull_request_template.md](.github/pull_request_template.md)
 
-## Public Release Checklist
+Before opening a PR, run:
 
-- [ ] `./scripts/verify-all.sh` passes locally.
-- [ ] `./scripts/scan-secrets.sh` passes with zero hits.
-- [ ] README links and screenshots render correctly on GitHub web + mobile.
-- [ ] Vercel frontend and Railway backend health endpoints are reachable.
-- [ ] No private/internal tokens, keys, or environment files are tracked.
+```bash
+./scripts/verify-all.sh
+cd frontend && npx -y pnpm@10 verify:visual
+```
 
----
+## Disclaimer
 
-**Disclaimer:** This is an independent personal project built outside employer scope. It does not represent any employer roadmap, strategy, endorsement, or official viewpoint.
+This is an independent personal project built outside employer scope. It does not represent any employer roadmap, strategy, endorsement, or official viewpoint.

@@ -27,7 +27,7 @@ echo "  Project:   visual"
 echo ""
 
 RESULT=0
-npx playwright test tests/visual/constellation.spec.ts \
+npx playwright test tests/visual \
   --project=visual \
   --reporter=list \
   $UPDATE_FLAG 2>&1 || RESULT=$?

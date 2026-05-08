@@ -22,7 +22,7 @@ export function WorkspaceSection({
   return (
     <section
       className={[
-        'rounded-lg border p-4',
+        'lab-panel p-4',
         classesForTemplate(template),
         classesForPriority(priority),
         className,

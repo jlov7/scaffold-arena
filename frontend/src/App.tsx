@@ -38,9 +38,7 @@ import ShortcutOverlay from './components/ShortcutOverlay'
 import CommandPalette, { type CommandPaletteItem } from './components/CommandPalette'
 import LiveRegion from './components/LiveRegion'
 import GuidedTourModal from './components/GuidedTourModal'
-import { AppFooter } from './components/shell/AppFooter'
-import { AppShellHeader } from './components/shell/AppShellHeader'
-import { MobileNextActionBar } from './components/shell/MobileNextActionBar'
+import { ResearchWorkbenchShell } from './components/shell/ResearchWorkbenchShell'
 import HelpCenterModal from './components/help/HelpCenterModal'
 import {
   getTaskPlaybook,
@@ -1069,9 +1067,11 @@ export default function App() {
           launchArenaRun()
         })
         .catch((err) => {
-          const message = `Preflight check failed: ${getErrorMessage(err)}`
+          const message = `Preflight check unavailable: ${getErrorMessage(err)}`
           setOperationError(message)
-          pushToast('error', message)
+          setLastPreflight(null)
+          pushToast('info', `${message}. Starting run and relying on run response.`)
+          launchArenaRun()
         })
     },
     [
@@ -2148,17 +2148,113 @@ export default function App() {
 
   const showTaskSelector = activeView === 'arena' && arenaLane === 'configure'
   const personaGuidance = PERSONA_GUIDANCE[userProfile]
+  const inspector = (
+    <>
+      <section className="lab-panel p-4">
+        <div className="lab-label">Experiment context</div>
+        <dl className="mt-3 space-y-3 text-sm">
+          <div className="flex items-center justify-between gap-3">
+            <dt className="text-text-muted">Task</dt>
+            <dd className="truncate text-right text-text-primary">
+              {taskOptions.find((task) => task.id === selectedTaskId)?.name ?? 'Not selected'}
+            </dd>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <dt className="text-text-muted">Model</dt>
+            <dd className="truncate text-right font-mono text-xs text-text-primary">
+              {selectedModelId || 'none'}
+            </dd>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <dt className="text-text-muted">Estimate</dt>
+            <dd className="font-mono text-text-primary">
+              {estimatedCostUsd === null ? 'pending' : `$${estimatedCostUsd.toFixed(4)}`}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      {lastPreflight && (
+        <section className="lab-panel p-4">
+          <div className="lab-label">Preflight</div>
+          <div className="mt-3 space-y-2">
+            {lastPreflight.checks.map((check) => (
+              <div key={check.id} className="lab-row px-3 py-2">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-medium text-text-primary">{check.id}</span>
+                  <span
+                    className={[
+                      'font-mono text-[10px] uppercase tracking-[0.12em]',
+                      check.status === 'pass'
+                        ? 'text-accent-winner'
+                        : check.status === 'warn'
+                          ? 'text-accent-warning'
+                          : 'text-accent-loser',
+                    ].join(' ')}
+                  >
+                    {check.status}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-text-secondary">{check.message}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="lab-panel p-4">
+        <div className="lab-label">Timeline</div>
+        <ol className="mt-3 max-h-80 space-y-2 overflow-y-auto pr-1">
+          {timelineEvents.slice(-8).map((event) => (
+            <li key={`${event.seq}-${event.event}`} className="lab-row px-3 py-2 text-xs">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-medium text-text-primary">
+                  {event.event.replaceAll('_', ' ')}
+                </span>
+                <span className="font-mono text-text-muted">#{event.seq}</span>
+              </div>
+              <p className="mt-1 text-text-secondary">{event.summary}</p>
+            </li>
+          ))}
+          {timelineEvents.length === 0 && (
+            <li className="lab-panel-inset p-3 text-sm text-text-secondary">
+              Timeline events appear here as the run streams.
+            </li>
+          )}
+        </ol>
+      </section>
+
+      {activeErrorMessage && (
+        <section className="rounded-md border border-accent-loser/45 bg-accent-loser/10 p-4">
+          <div className="lab-label text-accent-loser">Recovery</div>
+          <p className="mt-2 text-sm text-text-secondary">{activeErrorMessage}</p>
+          <p className="mt-2 text-xs text-text-muted">
+            Recommended action: {currentPlaybook.steps[0]?.text ?? 'Open help center'}
+          </p>
+        </section>
+      )}
+    </>
+  )
 
   // --- Main render ---
   return (
-    <div className="min-h-screen bg-bg-primary flex flex-col">
+    <>
       <a href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <AppShellHeader
+      <ResearchWorkbenchShell
         activeView={activeView}
         stageLabel={journey.stage}
         theme={theme}
+        isRunning={isRunning}
+        isOnline={isOnline}
+        hasApiToken={hasConfiguredApiToken()}
+        runId={runId}
+        nextActionTitle={nextActionCopy[nextActionKey].title}
+        nextActionBody={nextActionCopy[nextActionKey].body}
+        nextActionCta={nextActionCopy[nextActionKey].cta}
+        nextActionDisabled={nextActionKey === 'run_comparison' && !winnerId}
+        inspector={inspector}
         onOpenHelp={() => openHelpCenter('header')}
         onExplainScreen={() => openHelpCenter('route')}
         onOpenTour={() => setTourOpen(true)}
@@ -2167,7 +2263,8 @@ export default function App() {
           setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
         }
         onNavigate={navigateToView}
-      />
+        onRunNextAction={runNextAction}
+      >
 
       {showTaskSelector && (
         <div id="tour-task-selector">
@@ -2189,31 +2286,31 @@ export default function App() {
       )}
 
       {(runError || operationError) && (
-        <div className="mx-6 mt-4 rounded border border-accent-loser/40 bg-accent-loser/10 px-4 py-3 font-mono text-xs text-accent-loser">
+        <div className="mb-4 rounded border border-accent-loser/40 bg-accent-loser/10 px-4 py-3 text-sm text-accent-loser">
           {runError ?? operationError}
         </div>
       )}
 
       {lastPreflight && !lastPreflight.can_run && (
-        <div className="mx-6 mt-4 rounded border border-accent-warning/40 bg-accent-warning/10 px-4 py-3 font-mono text-xs text-accent-warning">
+        <div className="mb-4 rounded border border-accent-warning/40 bg-accent-warning/10 px-4 py-3 text-sm text-accent-warning">
           Preflight blocked this run. Open Settings to resolve failed checks, then rerun.
         </div>
       )}
 
       {!isOnline && (
-        <div className="mx-6 mt-4 rounded border border-accent-warning/40 bg-accent-warning/10 px-4 py-3 font-mono text-xs text-accent-warning">
+        <div className="mb-4 rounded border border-accent-warning/40 bg-accent-warning/10 px-4 py-3 text-sm text-accent-warning">
           {COPY.errors.offlineRunBlocked}
         </div>
       )}
 
       {connectionState === 'retrying' && (
-        <div className="mx-6 mt-4 rounded border border-accent-warning/40 bg-accent-warning/10 px-4 py-3 font-mono text-xs text-accent-warning">
+        <div className="mb-4 rounded border border-accent-warning/40 bg-accent-warning/10 px-4 py-3 text-sm text-accent-warning">
           Connection lost - retrying... (attempt {connectionRetryCount} of 5)
         </div>
       )}
 
       {connectionState === 'failed' && (
-        <div className="mx-6 mt-4 flex items-center justify-between gap-3 rounded border border-accent-loser/40 bg-accent-loser/10 px-4 py-3 font-mono text-xs text-accent-loser">
+        <div className="mb-4 flex items-center justify-between gap-3 rounded border border-accent-loser/40 bg-accent-loser/10 px-4 py-3 text-sm text-accent-loser">
           <span>{COPY.errors.connectionFailed}</span>
           <div className="flex items-center gap-2">
             <button
@@ -2234,7 +2331,7 @@ export default function App() {
         </div>
       )}
       {safeFallbackMode && (
-        <div className="mx-6 mt-4 flex flex-wrap items-center justify-between gap-3 rounded border border-accent-info/40 bg-accent-info/10 px-4 py-3 font-mono text-xs text-accent-info">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded border border-accent-info/40 bg-accent-info/10 px-4 py-3 text-sm text-accent-info">
           <span>
             Safe fallback mode is active. Live runs are paused while you continue with
             history, results, and reporting workflows.
@@ -2249,12 +2346,7 @@ export default function App() {
         </div>
       )}
 
-      <main
-        id="main-content"
-        role="main"
-        tabIndex={-1}
-        className="flex-1 space-y-6 p-6 pb-24 sm:pb-6"
-      >
+      <div className="space-y-6">
         {(activeView === 'arena' || activeView === 'results') && (
           <section className="space-y-3">
             <ExperienceModeCard
@@ -2432,17 +2524,8 @@ export default function App() {
             lastPreflight={lastPreflight}
           />
         )}
-      </main>
-
-      {activeView !== 'arena' && (
-        <MobileNextActionBar
-          ctaLabel={nextActionCopy[nextActionKey].cta}
-          disabled={nextActionKey === 'run_comparison' && !winnerId}
-          onClick={runNextAction}
-        />
-      )}
-
-      <AppFooter version={__APP_VERSION__} />
+      </div>
+      </ResearchWorkbenchShell>
 
       <LiveRegion
         message={liveAnnouncement?.message ?? null}
@@ -2508,6 +2591,6 @@ export default function App() {
         onRun={runFromCurrentSelection}
       />
       <ToastStack toasts={toasts} onDismiss={dismissToast} />
-    </div>
+    </>
   )
 }

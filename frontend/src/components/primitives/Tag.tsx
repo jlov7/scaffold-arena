@@ -16,7 +16,7 @@ export function Tag({ tone = 'neutral', children }: TagProps) {
           : 'border-border text-text-secondary bg-bg-primary'
 
   return (
-    <span className={['rounded border px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider', toneClass].join(' ')}>
+    <span className={['inline-flex items-center rounded-sm border px-2 py-0.5 text-[10px] font-mono uppercase tracking-[0.12em]', toneClass].join(' ')}>
       {children}
     </span>
   )

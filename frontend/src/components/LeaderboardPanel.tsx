@@ -31,11 +31,11 @@ function LeaderboardPanel({
   const runCount = stats?.run_count ?? 0
   if (!stats || runCount < 3) {
     return (
-      <Card title="Leaderboard" className="font-mono">
-        <div className="mt-2 text-xs text-text-muted">
+      <Card title="Leaderboard">
+        <div className="mt-2 text-sm text-text-secondary">
           Run at least 3 arenas to see stats
         </div>
-        <div className="mt-1 text-[11px] text-text-muted">
+        <div className="mt-1 text-sm text-text-muted">
           Once you have enough runs, this view highlights consistent winners by score and cost.
         </div>
         {onStartRun && (
@@ -43,7 +43,7 @@ function LeaderboardPanel({
             type="button"
             onClick={onStartRun}
             tone="primary"
-            className="mt-3 text-[11px]"
+            className="mt-3"
           >
             Run arena now
           </Button>
@@ -53,34 +53,34 @@ function LeaderboardPanel({
   }
 
   return (
-    <Card className="font-mono">
+    <Card>
       <div className="mb-3 flex items-center justify-between">
-        <div className="text-xs uppercase tracking-widest text-text-secondary">
+        <div className="lab-label">
           Leaderboard
         </div>
-        <div className="text-[10px] text-text-muted">
+        <div className="font-mono text-xs text-text-muted">
           {runCount} runs
         </div>
       </div>
 
       <div className="space-y-3">
         {stats.scaffolds.map((row) => (
-          <div key={row.scaffold_id} className="rounded border border-border/60 bg-bg-primary p-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-text-primary">
+          <div key={row.scaffold_id} className="lab-row p-3">
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="font-semibold text-text-primary">
                 {scaffoldNames[row.scaffold_id] ?? row.scaffold_id}
               </span>
-              <span className="text-text-secondary">
+              <span className="font-mono text-xs text-text-secondary">
                 Win rate {row.win_rate.toFixed(1)}%
               </span>
             </div>
-            <div className="mt-2 h-2 rounded bg-bg-secondary">
+            <div className="mt-3 h-2 rounded bg-bg-secondary">
               <div
                 className="h-2 rounded bg-accent-winner"
                 style={{ width: `${Math.min(100, row.avg_score)}%` }}
               />
             </div>
-            <div className="mt-1 flex items-center justify-between text-[11px] text-text-muted">
+            <div className="mt-2 flex items-center justify-between font-mono text-xs text-text-muted">
               <span>Avg score {row.avg_score.toFixed(1)}</span>
               <span>Avg cost ${row.avg_cost.toFixed(4)}</span>
             </div>
@@ -88,21 +88,21 @@ function LeaderboardPanel({
         ))}
       </div>
 
-      <div className="mt-4 rounded border border-border/60 bg-bg-primary p-3">
-        <div className="text-[11px] uppercase tracking-widest text-text-secondary">
+      <div className="lab-panel-inset mt-4 p-3">
+        <div className="lab-label">
           Avg Score By Task
         </div>
         <div className="mt-2 space-y-2">
           {Object.entries(stats.by_task).map(([taskId, rows]) => (
             <div key={taskId}>
-              <div className="text-[11px] text-text-muted">{displayTaskName(taskId)}</div>
+              <div className="text-sm text-text-muted">{displayTaskName(taskId)}</div>
               <div className="mt-1 grid gap-1">
                 {rows.map((row) => (
-                  <div key={`${taskId}-${row.scaffold_id}`} className="flex items-center justify-between text-[11px]">
+                  <div key={`${taskId}-${row.scaffold_id}`} className="flex items-center justify-between gap-3 text-sm">
                     <span className="text-text-secondary">
                       {scaffoldNames[row.scaffold_id] ?? row.scaffold_id}
                     </span>
-                    <span className="text-text-primary">
+                    <span className="font-mono text-xs text-text-primary">
                       {row.avg_score.toFixed(1)} ({row.samples})
                     </span>
                   </div>
@@ -113,8 +113,8 @@ function LeaderboardPanel({
         </div>
       </div>
 
-      <div className="mt-4 rounded border border-border/60 bg-bg-primary p-3">
-        <div className="text-[11px] uppercase tracking-widest text-text-secondary">
+      <div className="lab-panel-inset mt-4 p-3">
+        <div className="lab-label">
           Score Distribution
         </div>
         <div className="mt-2 space-y-3">
@@ -122,7 +122,7 @@ function LeaderboardPanel({
             const maxCount = Math.max(1, ...dist.bins.map((bin) => bin.count))
             return (
               <div key={dist.scaffold_id}>
-                <div className="text-[11px] text-text-secondary">
+                <div className="text-sm text-text-secondary">
                   {scaffoldNames[dist.scaffold_id] ?? dist.scaffold_id}
                 </div>
                 <div className="mt-1 grid grid-cols-5 gap-1">
@@ -134,7 +134,7 @@ function LeaderboardPanel({
                           style={{ height: `${(bin.count / maxCount) * 100}%` }}
                         />
                       </div>
-                      <div className="mt-1 text-center text-[10px] text-text-muted">{bin.label}</div>
+                      <div className="mt-1 text-center font-mono text-[10px] text-text-muted">{bin.label}</div>
                     </div>
                   ))}
                 </div>

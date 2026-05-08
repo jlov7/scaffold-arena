@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import StreamingText from './StreamingText'
+import { StatusBadge } from './primitives/StatusBadge'
 import type { PanelState } from '../types'
 import { emitAppToast } from '../utils/toast'
 
@@ -26,26 +27,26 @@ function formatTime(ms: number): string {
 const SCAFFOLD_INFO: Record<string, { strategy: string; description: string; calls: string; strength: string }> = {
   bare: {
     strategy: 'Zero Scaffolding',
-    description: 'Single API call. No planning, no validation, no self-correction. The control group — every other scaffold is measured against this.',
+    description: 'Single API call. No planning, no validation, no self-correction. The control group; every other scaffold is measured against this.',
     calls: '1 API call',
     strength: 'Speed & cost',
   },
   plan_execute_verify: {
     strategy: 'Plan \u2192 Execute \u2192 Verify',
-    description: 'Creates an execution plan, follows it to produce output, then self-verifies against requirements. Three phases that prevent the "generate and pray" pattern.',
+    description: 'Creates an execution plan, follows it to produce output, then self-verifies against requirements. Three phases that prevent the generate-and-pray pattern.',
     calls: '3 API calls',
     strength: 'Structured accuracy',
   },
   tool_error_recovery: {
     strategy: 'Validate + Auto-Repair',
     description: 'Generates output, validates against the JSON schema, and automatically repairs any errors. Loops until valid or max retries reached.',
-    calls: '2\u20135 API calls',
+    calls: '2-5 API calls',
     strength: 'Schema compliance',
   },
   memory_critique: {
     strategy: 'Decompose \u2192 Critique \u2192 Refine',
     description: 'Breaks the task into subtasks, solves each independently, synthesizes results, self-critiques for weaknesses, then refines the final output.',
-    calls: '5\u20137 API calls',
+    calls: '5-7 API calls',
     strength: 'Output quality',
   },
 }
@@ -54,9 +55,9 @@ const STATUS_BORDER: Record<PanelState['status'], string> = {
   idle: 'border-border',
   running: 'border-accent-info',
   completed: 'border-border',
-  winner: 'border-accent-winner shadow-[0_0_15px_rgba(16,185,129,0.3)]',
+  winner: 'border-accent-winner/70',
   loser: 'border-accent-loser/30',
-  failed: 'border-red-500',
+  failed: 'border-accent-loser',
 }
 
 function ArenaPanelComponent({ panel }: ArenaPanelProps) {
@@ -109,7 +110,7 @@ function ArenaPanelComponent({ panel }: ArenaPanelProps) {
       role="region"
       aria-label={scaffoldName}
       className={[
-        'group relative flex flex-col bg-bg-secondary border rounded-lg p-4 min-h-[420px] transition-all duration-300',
+        'group lab-panel relative flex min-h-[420px] flex-col p-4 transition-all duration-200',
         STATUS_BORDER[status],
       ].join(' ')}
     >
@@ -120,38 +121,34 @@ function ArenaPanelComponent({ panel }: ArenaPanelProps) {
         <button
           type="button"
           onClick={() => void handleCopy()}
-          className="absolute right-3 top-3 rounded border border-border bg-bg-primary px-2 py-1 text-[10px] font-mono text-text-secondary opacity-0 transition-opacity hover:border-accent-info hover:text-accent-info focus:opacity-100 group-hover:opacity-100"
+          className="ui-control absolute right-3 top-3 rounded-md border border-border bg-bg-primary px-2 py-1 text-[11px] text-text-secondary opacity-0 transition-opacity hover:border-accent-info hover:text-accent-info focus:opacity-100 group-hover:opacity-100"
         >
           Copy
         </button>
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2 min-w-0">
           {isRunning && (
             <span className="shrink-0 w-2 h-2 rounded-full bg-accent-info animate-pulse" />
           )}
-          <span className="font-semibold text-text-primary truncate">{scaffoldName}</span>
+          <span className="truncate font-semibold text-text-primary">{scaffoldName}</span>
         </div>
 
         {status === 'winner' && (
-          <span className="shrink-0 ml-2 text-xs font-bold text-accent-winner bg-accent-winner/10 border border-accent-winner/30 rounded px-2 py-0.5">
-            WINNER
-          </span>
+          <StatusBadge tone="success">WINNER</StatusBadge>
         )}
         {status === 'failed' && (
-          <span className="shrink-0 ml-2 text-xs font-bold text-red-400 bg-red-400/10 border border-red-400/30 rounded px-2 py-0.5">
-            FAILED
-          </span>
+          <StatusBadge tone="danger">FAILED</StatusBadge>
         )}
       </div>
 
       {/* Phase */}
-      <div className="text-xs text-text-secondary mb-3 font-mono">
+      <div className="mb-3 font-mono text-xs text-text-secondary">
         {isRunning ? (
           <span className="text-accent-info">
-            Phase: {phase || 'initializing'} &mdash; Streaming...
+            Phase: {phase || 'initializing'} / streaming
           </span>
         ) : phase ? (
           <span>Phase: {phase}</span>
@@ -159,14 +156,14 @@ function ArenaPanelComponent({ panel }: ArenaPanelProps) {
       </div>
 
       {/* Streaming output / Idle scaffold info */}
-      <div className="flex-1 overflow-hidden mb-3">
+      <div className="mb-3 flex-1 overflow-hidden">
         {status === 'idle' ? (
           info ? (
             <div className="flex flex-col justify-center h-full px-1 py-2 space-y-3">
-              <div className="text-[10px] text-accent-info uppercase tracking-widest font-mono font-bold">
+              <div className="lab-label text-accent-info">
                 {info.strategy}
               </div>
-              <p className="text-xs text-text-secondary/80 leading-relaxed">
+              <p className="lab-copy text-sm">
                 {info.description}
               </p>
               <div className="flex items-center gap-3 text-[10px] text-text-muted font-mono mt-auto">
@@ -176,10 +173,10 @@ function ArenaPanelComponent({ panel }: ArenaPanelProps) {
               </div>
             </div>
           ) : (
-            <div className="text-text-secondary text-xs font-mono opacity-40 p-3">Ready</div>
+            <div className="p-3 text-sm text-text-secondary opacity-60">Ready</div>
           )
         ) : showNoOutputState ? (
-          <div className="rounded border border-border/70 bg-bg-primary p-3 text-xs text-text-secondary leading-relaxed">
+          <div className="lab-panel-inset p-3 text-sm leading-relaxed text-text-secondary">
             {noOutputMessage}
           </div>
         ) : (
@@ -189,14 +186,14 @@ function ArenaPanelComponent({ panel }: ArenaPanelProps) {
 
       {/* Error message */}
       {status === 'failed' && error && (
-        <div className="text-xs text-red-400 font-mono bg-red-400/10 rounded p-2 mb-3 break-words">
+        <div className="mb-3 break-words rounded-md border border-accent-loser/35 bg-accent-loser/10 p-2 font-mono text-xs text-accent-loser">
           {error}
         </div>
       )}
 
       {/* Metrics row */}
       {showMetrics && metrics && (
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs font-mono text-text-secondary border-t border-border pt-3 mb-2 tabular-nums animate-in fade-in slide-in-from-bottom-1 duration-300">
+        <div className="mb-2 flex flex-wrap gap-x-4 gap-y-1 border-t border-border pt-3 font-mono text-xs text-text-secondary tabular-nums animate-in fade-in slide-in-from-bottom-1 duration-300">
           <span>
             <span className="text-text-secondary/60">tokens </span>
             <span className="text-text-primary">

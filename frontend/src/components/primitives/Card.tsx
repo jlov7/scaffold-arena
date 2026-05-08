@@ -10,12 +10,12 @@ export function Card({ title, children, className = '', ...props }: CardProps) {
     <section
       {...props}
       className={[
-        'rounded-lg border border-border bg-bg-secondary p-4 shadow-[var(--elevation-1)]',
+        'lab-panel p-4',
         className,
       ].join(' ')}
     >
       {title && (
-        <div className="mb-2 text-[10px] uppercase tracking-widest text-text-secondary">
+        <div className="lab-label mb-2">
           {title}
         </div>
       )}

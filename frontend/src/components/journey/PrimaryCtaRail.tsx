@@ -49,7 +49,7 @@ export function PrimaryCtaRail({
           onClick={onRun}
           disabled={!canRun}
           title={canRun ? undefined : runDisabledReason}
-          className="rounded border border-accent-info bg-accent-info/10 min-h-11 px-3.5 py-2 text-xs font-mono text-accent-info transition-colors hover:bg-accent-info hover:text-white disabled:cursor-not-allowed disabled:opacity-40 sm:min-h-0 sm:px-3 sm:py-1.5"
+          className="rounded border border-accent-info bg-accent-info/10 min-h-11 px-3.5 py-2 text-xs font-mono text-accent-info transition-colors hover:bg-accent-info hover:text-bg-primary disabled:cursor-not-allowed disabled:opacity-40 sm:min-h-0 sm:px-3 sm:py-1.5"
         >
           {stage === 'running'
             ? 'Run in progress'

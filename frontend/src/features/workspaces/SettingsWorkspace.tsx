@@ -107,25 +107,25 @@ export function SettingsWorkspace({
   lastPreflight,
 }: SettingsWorkspaceProps) {
   return (
-    <section className="max-w-5xl rounded-lg border border-border bg-bg-secondary p-4 font-mono text-sm">
-      <div className="text-[10px] uppercase tracking-widest text-text-secondary">
+    <section className="max-w-5xl space-y-4 text-sm">
+      <div className="lab-label">
         Settings &amp; Preferences
       </div>
-      <div className="mt-3 rounded border border-border/70 bg-bg-primary p-3">
-        <div className="text-[11px] text-text-secondary">Workspace profile</div>
-        <div className="mt-1 text-text-primary">
+      <div className="lab-panel p-4">
+        <div className="lab-label">Workspace profile</div>
+        <div className="mt-2 text-base font-semibold text-text-primary">
           {userProfileLabel} ·{' '}
           {experienceMode === 'guided' ? 'Guided mode' : 'Advanced mode'}
         </div>
-        <div className="mt-2 text-[11px] text-text-muted">
+        <div className="mt-2 text-sm text-text-muted">
           Change these in the quick-start card on the Arena page.
         </div>
       </div>
 
-      <div className="mt-3 rounded border border-accent-info/30 bg-bg-primary p-3">
-        <div className="text-[11px] font-semibold text-accent-info">LLM API Key (BYOK)</div>
-        <div className="mt-1 text-[11px] text-text-muted">
-          Enter your own API key to run benchmarks. Stored in your browser only — never sent to our server for storage.
+      <div className="lab-panel border-accent-info/30 p-4">
+        <div className="text-sm font-semibold text-accent-info">LLM API Key (BYOK)</div>
+        <div className="mt-1 text-sm text-text-muted">
+          Enter your own API key to run benchmarks. Stored in your browser only; never sent to our server for storage.
         </div>
         <div className="mt-2 flex items-center gap-2">
           <input
@@ -135,12 +135,12 @@ export function SettingsWorkspace({
             placeholder="sk-... or your provider API key"
             autoComplete="off"
             spellCheck={false}
-            className="flex-1 rounded border border-border bg-bg-secondary px-2 py-1.5 text-[11px] text-text-primary placeholder:text-text-muted focus:border-accent-info focus:outline-none"
+            className="ui-control flex-1 rounded-md border border-border bg-bg-secondary px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-info focus:outline-none"
           />
           <button
             type="button"
             onClick={onToggleShowLlmKey}
-            className="rounded border border-border px-2 py-1.5 text-[11px] text-text-secondary hover:border-accent-info hover:text-accent-info"
+            className="ui-control rounded-md border border-border px-3 py-2 text-sm text-text-secondary hover:border-accent-info hover:text-accent-info"
           >
             {showLlmKey ? 'Hide' : 'Show'}
           </button>
@@ -148,17 +148,17 @@ export function SettingsWorkspace({
             <button
               type="button"
               onClick={onClearLlmKey}
-              className="rounded border border-border px-2 py-1.5 text-[11px] text-red-400 hover:border-red-400"
+              className="ui-control rounded-md border border-border px-3 py-2 text-sm text-accent-loser hover:border-accent-loser"
             >
               Clear
             </button>
           )}
         </div>
         <div className="mt-1.5 text-[10px] text-text-muted">
-          {llmApiKey ? '✓ Key configured — sent per-request via encrypted header' : 'No key set — server-side keys will be used if available'}
+          {llmApiKey ? 'Key configured; sent per-request via encrypted header' : 'No key set; server-side keys will be used if available'}
         </div>
-        <div className="mt-2 rounded border border-border/70 bg-bg-secondary p-2">
-          <div className="text-[10px] uppercase tracking-widest text-text-muted">
+        <div className="lab-panel-inset mt-2 p-3">
+          <div className="lab-label">
             Key storage mode
           </div>
           <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-text-secondary">
@@ -211,14 +211,14 @@ export function SettingsWorkspace({
       )}
 
       <details
-        className="mt-3 rounded border border-border/60 bg-bg-primary p-3"
+        className="lab-panel p-4"
         open={experienceMode === 'advanced'}
       >
-        <summary className="cursor-pointer text-[11px] text-text-secondary">
+        <summary className="cursor-pointer text-sm font-medium text-text-secondary">
           Advanced run controls
         </summary>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <span className="text-text-secondary uppercase tracking-widest text-[10px]">Run Mode</span>
+          <span className="lab-label">Run Mode</span>
           <button
             type="button"
             onClick={() => onRunModeChange('scaffold')}

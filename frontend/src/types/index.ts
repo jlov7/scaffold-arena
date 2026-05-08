@@ -26,7 +26,18 @@ export interface AppMeta {
   models: ModelMeta[]
   tasks: TaskMeta[]
   scaffolds: ScaffoldMeta[]
-  features: { llm_judge: boolean; pdf_export: boolean }
+  features: {
+    llm_judge: boolean
+    pdf_export: boolean
+    evaluation_profiles?: Array<'balanced' | 'strict' | 'cost_first'>
+  }
+  budget?: {
+    daily_budget_usd?: number
+    spent_today_usd?: number
+    remaining_today_usd?: number
+    max_cost_per_run_usd?: number
+    [key: string]: unknown
+  }
 }
 
 // --- Run types ---
@@ -109,6 +120,15 @@ export interface RunCompleteEvent {
   results: RunResults
 }
 
+export type ArenaSseEvent =
+  | { type: 'run_started'; data: RunStartedEvent }
+  | { type: 'scaffold_phase'; data: ScaffoldPhaseEvent }
+  | { type: 'scaffold_delta'; data: ScaffoldDeltaEvent }
+  | { type: 'scaffold_completed'; data: ScaffoldCompletedEvent }
+  | { type: 'evaluation_completed'; data: EvaluationCompletedEvent }
+  | { type: 'run_complete'; data: RunCompleteEvent }
+  | { type: 'heartbeat'; data: { run_id?: string; ts_ms?: number } }
+
 export interface RunTimelineEvent {
   seq: number
   event: string
@@ -149,6 +169,42 @@ export interface PanelState {
   metrics: RunMetrics | null
   evaluation: EvalResult | null
   error: string | null
+}
+
+export type RunLifecycleState =
+  | 'idle'
+  | 'preflight'
+  | 'streaming'
+  | 'completed'
+  | 'failed'
+  | 'cancelled'
+  | 'cached'
+
+export interface RunSession {
+  runId: string | null
+  lifecycle: RunLifecycleState
+  taskId: string
+  modelId: string
+  winnerId: string | null
+  isCached: boolean
+  timeline: RunTimelineEvent[]
+}
+
+export interface WorkspaceState {
+  view: 'arena' | 'results' | 'history' | 'leaderboard' | 'settings'
+  stage: 'setup' | 'running' | 'review' | 'iterate'
+  nextActionKey: string
+}
+
+export interface InspectorContext {
+  title: string
+  body: string
+  cta: string
+  runSession: RunSession
+  preflight?: {
+    can_run: boolean
+    checks: Array<{ id: string; status: string; message: string }>
+  } | null
 }
 
 // --- Comparison types ---

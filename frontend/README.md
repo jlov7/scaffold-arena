@@ -11,7 +11,7 @@ Scaffold Arena frontend application (React + TypeScript + Vite + Tailwind CSS).
 
 ## Stack
 
-- React 18 + TypeScript
+- React 19 + TypeScript
 - Vite 7
 - Tailwind CSS 4
 - Playwright (E2E, a11y, visual)
@@ -21,8 +21,8 @@ Scaffold Arena frontend application (React + TypeScript + Vite + Tailwind CSS).
 
 ```bash
 cd frontend
-pnpm install
-pnpm dev
+npx -y pnpm@10 install
+npx -y pnpm@10 dev
 ```
 
 The app runs at `http://localhost:5173`.
@@ -31,18 +31,19 @@ The app runs at `http://localhost:5173`.
 
 ```bash
 cd frontend
-pnpm lint
-pnpm test
-pnpm build
-pnpm test:e2e
-pnpm test:a11y
-pnpm test:visual
+npx -y pnpm@10 lint
+npx -y pnpm@10 test
+npx -y pnpm@10 build
+npx -y pnpm@10 test:e2e
+npx -y pnpm@10 test:a11y
+npx -y pnpm@10 verify:visual
 ```
 
 ## Key Directories
 
 - `src/features/workspaces/`: route-level Arena/Results/History/Leaderboard/Settings containers
 - `src/components/`: reusable UI and journey primitives
+- `src/components/shell/`: research workbench shell and mobile navigation
 - `src/hooks/`: streaming and runtime hooks (`useArenaRun`, `useSSE`, etc.)
 - `src/styles/`: design tokens and theme system
 - `tests/`: Playwright suites (`e2e`, `a11y`, `visual`)

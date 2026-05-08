@@ -63,7 +63,7 @@ export default function StateCallout({
         <button
           type="button"
           onClick={onAction}
-          className="mt-3 rounded border border-current px-3 py-1.5 text-xs hover:bg-black/10"
+          className="mt-3 rounded border border-current px-3 py-1.5 text-xs hover:bg-bg-primary/70"
         >
           {actionLabel}
         </button>

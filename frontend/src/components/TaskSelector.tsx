@@ -1,3 +1,4 @@
+import { TriangleAlert } from 'lucide-react'
 import type { TaskMeta, ModelMeta } from '../types'
 import { COPY } from '../content/copy'
 import { Button } from './primitives/Button'
@@ -58,11 +59,11 @@ export function TaskSelector({
 
   return (
     <section
-      className="border-b border-border bg-bg-secondary font-mono"
+      className="lab-panel overflow-hidden"
       aria-label="Task and model selection"
     >
-      <div className="flex flex-col gap-3 p-3 pb-20 sm:pb-3">
-        <div className="text-[10px] uppercase tracking-widest text-text-secondary">
+      <div className="flex flex-col gap-3 p-4 pb-20 sm:pb-4">
+        <div className="lab-label">
           Benchmark setup
         </div>
       {/* Task cards */}
@@ -77,7 +78,7 @@ export function TaskSelector({
               disabled={isRunning}
               aria-label={`Select task ${task.name}`}
               className={[
-                'relative flex min-w-[180px] snap-start flex-col items-start rounded border px-3 py-2 text-left transition-colors sm:min-w-0',
+                'ui-control relative flex min-w-[180px] snap-start flex-col items-start rounded-md border px-3 py-2 text-left transition-colors sm:min-w-0',
                 isSelected
                   ? 'border-accent-info bg-accent-info/10 text-text-primary'
                   : 'border-border bg-bg-tertiary text-text-muted hover:border-border-hover hover:text-text-secondary',
@@ -85,19 +86,18 @@ export function TaskSelector({
               ].join(' ')}
             >
               <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold leading-tight">{task.name}</span>
+                <span className="text-sm font-semibold leading-tight">{task.name}</span>
                 {task.synthetic_sources && (
-                  <span
-                    title="Uses synthetic sources"
-                    className="text-accent-warning text-xs leading-none"
-                    aria-label="synthetic sources"
-                  >
-                    ⚠
+                  <span title="Uses synthetic sources" aria-label="synthetic sources">
+                    <TriangleAlert
+                      className="h-3.5 w-3.5 text-accent-warning"
+                      strokeWidth={1.8}
+                    />
                   </span>
                 )}
               </div>
               {task.subtitle && (
-                <span className="text-[10px] text-text-muted leading-tight mt-0.5 max-w-[160px] truncate">
+                <span className="mt-1 max-w-[180px] truncate text-xs leading-tight text-text-muted">
                   {task.subtitle}
                 </span>
               )}
@@ -113,14 +113,14 @@ export function TaskSelector({
 
       <div className="grid gap-2 sm:grid-cols-[1fr_auto_auto] sm:items-center">
         {/* Model dropdown */}
-        <label className="text-[11px] text-text-secondary">
+        <label className="text-sm text-text-secondary">
           Model
           <Select
             aria-label="Select model"
             value={selectedModelId}
             onChange={(e) => onSelectModel(e.target.value)}
             disabled={isRunning}
-            className="mt-1 w-full cursor-pointer bg-bg-tertiary px-2 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="mt-1 w-full cursor-pointer bg-bg-tertiary disabled:cursor-not-allowed disabled:opacity-50"
           >
             {models.map((model) => (
               <option key={model.id} value={model.id}>
@@ -131,7 +131,7 @@ export function TaskSelector({
         </label>
 
         <div
-          className="rounded border border-border/60 px-2 py-2 text-[11px] text-text-secondary"
+          className="lab-row px-3 py-2 text-sm text-text-secondary"
           title="Estimated token cost for one arena run (approximate)."
         >
           Est. {estimatedCostUsd === null ? '—' : `$${estimatedCostUsd.toFixed(4)}`}
@@ -157,7 +157,7 @@ export function TaskSelector({
 
       {/* Sticky action bar (mobile) */}
       {showMobileActionBar && showRunControls && (
-        <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-bg-secondary/95 px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-50 border-t border-border bg-bg-secondary px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:hidden">
           <Button
             type="button"
             onClick={handleRunOrCancel}

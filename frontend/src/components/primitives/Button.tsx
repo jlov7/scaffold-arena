@@ -1,23 +1,25 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  tone?: 'primary' | 'secondary' | 'danger'
+  tone?: 'primary' | 'secondary' | 'danger' | 'ghost'
   children: ReactNode
 }
 
 export function Button({ tone = 'secondary', className = '', children, ...props }: ButtonProps) {
   const toneClass =
     tone === 'primary'
-      ? 'border-accent-info bg-accent-info text-bg-primary hover:opacity-90'
+      ? 'lab-button-primary'
       : tone === 'danger'
-        ? 'border-accent-loser bg-accent-loser text-white hover:opacity-90'
-        : 'border-border bg-bg-primary text-text-secondary hover:border-accent-info hover:text-accent-info'
+        ? 'border-accent-loser bg-accent-loser/12 text-accent-loser hover:bg-accent-loser/18'
+        : tone === 'ghost'
+          ? 'border-transparent bg-transparent text-text-secondary hover:border-border hover:text-text-primary'
+          : 'lab-button-secondary'
 
   return (
     <button
       {...props}
       className={[
-        'ui-control rounded border px-3 py-1.5 text-xs font-mono disabled:cursor-not-allowed disabled:opacity-40',
+        'ui-control inline-flex min-h-9 items-center justify-center gap-2 rounded-md border px-3 py-1.5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-40',
         toneClass,
         className,
       ].join(' ')}

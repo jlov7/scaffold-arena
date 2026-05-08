@@ -1,0 +1,99 @@
+{
+  "runs": [
+    {
+      "run_id": "run_audit_001",
+      "kind": "arena",
+      "task_id": "extraction",
+      "model_id": "claude-sonnet-4-6",
+      "scaffold_ids": ["bare", "plan_execute_verify"],
+      "options": {
+        "evaluation_profile": "strict"
+      },
+      "created_at": 1.0,
+      "completed_at": 2.0,
+      "winner_id": "bare",
+      "status": "completed",
+      "results": {
+        "bare": {
+          "output": "{\"vendor_name\":\"Acme Corp\"}",
+          "metrics": {
+            "input_tokens": 1200,
+            "output_tokens": 360,
+            "cost_usd": 0,
+            "num_api_calls": 2,
+            "wall_time_ms": 1200
+          },
+          "evaluation": {
+            "total_score": 42,
+            "breakdown": {
+              "schema_validity": 45,
+              "field_accuracy": 30,
+              "completeness": 20
+            },
+            "notes": [
+              "Missing required fields: effective_date, renewal_term",
+              "Incorrect value: notice period"
+            ]
+          }
+        },
+        "plan_execute_verify": {
+          "output": "{\"vendor_name\":\"Acme Corp\",\"effective_date\":\"2026-01-01\",\"renewal_term\":\"12 months\"}",
+          "metrics": {
+            "input_tokens": 1800,
+            "output_tokens": 520,
+            "cost_usd": 0.041,
+            "num_api_calls": 2,
+            "wall_time_ms": 1500
+          },
+          "evaluation": {
+            "total_score": 88,
+            "breakdown": {
+              "schema_validity": 100,
+              "field_accuracy": 86,
+              "completeness": 82
+            },
+            "notes": []
+          }
+        }
+      }
+    },
+    {
+      "run_id": "run_audit_002",
+      "kind": "arena",
+      "task_id": "research_synthesis",
+      "model_id": "claude-sonnet-4-6",
+      "scaffold_ids": ["tool_error_recovery"],
+      "options": {
+        "evaluation_profile": "balanced"
+      },
+      "created_at": 3.0,
+      "completed_at": 4.0,
+      "winner_id": "tool_error_recovery",
+      "status": "completed",
+      "results": {
+        "tool_error_recovery": {
+          "output": "{\"summary\":\"Claims are made without enough sources.\"}",
+          "metrics": {
+            "input_tokens": 2100,
+            "output_tokens": 700,
+            "cost_usd": 0.052,
+            "num_api_calls": 2,
+            "wall_time_ms": 2100
+          },
+          "evaluation": {
+            "total_score": 63,
+            "breakdown": {
+              "citation_coverage": 35,
+              "required_findings_coverage": 58,
+              "schema_validity": 100,
+              "word_count_compliance": 90
+            },
+            "notes": [
+              "Missing citations for two market-size claims"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@ export function Input(props: InputHTMLAttributes<HTMLInputElement>) {
     <input
       {...props}
       className={[
-        'ui-control w-full rounded border border-border bg-bg-primary px-2 py-1 text-xs text-text-primary',
+        'ui-control w-full rounded-md border border-border bg-bg-primary px-3 py-2 text-sm text-text-primary placeholder:text-text-muted',
         props.className ?? '',
       ].join(' ')}
     />

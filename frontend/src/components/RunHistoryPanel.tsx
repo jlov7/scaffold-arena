@@ -3,6 +3,7 @@ import { memo } from 'react'
 import { COPY } from '../content/copy'
 import { Button } from './primitives/Button'
 import { Card } from './primitives/Card'
+import { StatusBadge } from './primitives/StatusBadge'
 
 interface RunHistoryItem {
   run_id: string
@@ -23,7 +24,7 @@ interface RunHistoryPanelProps {
 }
 
 function formatRelativeTime(ts?: number): string {
-  if (!ts) return '—'
+  if (!ts) return '-'
   const now = Date.now()
   const diffMs = now - ts * 1000
   const diffSec = Math.floor(diffMs / 1000)
@@ -58,11 +59,11 @@ function RunHistoryPanel({
   onStartFirstRun,
 }: RunHistoryPanelProps) {
   return (
-    <Card title="Run History" className="font-mono">
+    <Card title="Run History">
       {runs.length === 0 ? (
-        <div className="rounded border border-border/60 bg-bg-primary p-3">
-          <div className="text-xs text-text-secondary">{COPY.labels.noRuns}</div>
-          <div className="mt-1 text-[11px] text-text-muted">
+        <div className="lab-panel-inset p-4">
+          <div className="text-sm font-semibold text-text-primary">{COPY.labels.noRuns}</div>
+          <div className="mt-1 text-sm text-text-secondary">
             Start an arena run to capture your first benchmark and compare scaffold performance over time.
           </div>
           {onStartFirstRun && (
@@ -70,7 +71,7 @@ function RunHistoryPanel({
               type="button"
               onClick={onStartFirstRun}
               tone="primary"
-              className="mt-3 text-[11px]"
+              className="mt-3"
             >
               Start first run
             </Button>
@@ -85,34 +86,39 @@ function RunHistoryPanel({
                 key={run.run_id}
                 type="button"
                 onClick={() => onLoadRun(run.run_id)}
-                className="w-full rounded border border-border/70 bg-bg-primary px-3 py-2 text-left hover:border-accent-info"
+                className="ui-control w-full rounded-md border border-border/70 bg-bg-primary px-3 py-3 text-left hover:border-accent-info"
               >
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-text-primary font-semibold">{run.task_id.replace(/_/g, ' ')}</span>
-                  <span className={[
-                    'text-[10px] uppercase tracking-wider rounded px-1.5 py-0.5 border',
-                    run.status === 'completed'
-                      ? 'text-accent-winner border-accent-winner/30 bg-accent-winner/10'
-                      : run.status === 'failed'
-                        ? 'text-accent-loser border-accent-loser/30 bg-accent-loser/10'
-                        : 'text-text-muted border-border',
-                  ].join(' ')}>{run.status}</span>
+                <div className="flex items-center justify-between gap-3 text-sm">
+                  <span className="truncate font-semibold capitalize text-text-primary">
+                    {run.task_id.replace(/_/g, ' ')}
+                  </span>
+                  <StatusBadge
+                    tone={
+                      run.status === 'completed'
+                        ? 'success'
+                        : run.status === 'failed'
+                          ? 'danger'
+                          : 'neutral'
+                    }
+                  >
+                    {run.status}
+                  </StatusBadge>
                 </div>
-                <div className="mt-1.5 flex items-center gap-2 text-[11px] text-text-muted">
+                <div className="mt-2 flex items-center gap-2 font-mono text-xs text-text-muted">
                   <span>{run.model_id}</span>
                   <span className="text-border">&middot;</span>
                   <time title={new Date((run.completed_at ?? run.created_at ?? 0) * 1000).toLocaleString()}>
                     {formatRelativeTime(run.completed_at ?? run.created_at)}
                   </time>
                 </div>
-                <div className="mt-1.5 flex items-center justify-between text-[11px]">
+                <div className="mt-2 flex items-center justify-between text-xs">
                   {run.winner_id ? (
                     <span className="text-accent-winner">Winner: {run.winner_id}</span>
                   ) : (
                     <span className="text-text-muted">No winner</span>
                   )}
                   {bestScore !== null && (
-                    <span className="tabular-nums text-text-primary font-semibold">{bestScore.toFixed(1)}</span>
+                    <span className="font-mono tabular-nums font-semibold text-text-primary">{bestScore.toFixed(1)}</span>
                   )}
                 </div>
               </button>
