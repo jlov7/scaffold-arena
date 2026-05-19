@@ -32,7 +32,7 @@ def test_all_models_meta_contains_price_keys() -> None:
 
 
 def test_get_provider_uses_model_registry() -> None:
-    provider = get_provider("claude-sonnet-4-6")
+    provider = get_provider("claude-sonnet-4-6", api_key_override="test-anthropic-key")
     assert provider.__class__.__name__ == "AnthropicProvider"
 
 

@@ -63,7 +63,7 @@ async def test_complete_retries_on_429_with_exponential_backoff(monkeypatch: pyt
 
     monkeypatch.setattr("core.provider.asyncio.sleep", _fake_sleep)
 
-    provider = AnthropicProvider()
+    provider = AnthropicProvider(api_key="fake")
     messages = FakeMessages(
         [
             FakeStatusError(429),
@@ -93,7 +93,7 @@ async def test_complete_retries_on_5xx(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr("core.provider.asyncio.sleep", _fake_sleep)
 
-    provider = AnthropicProvider()
+    provider = AnthropicProvider(api_key="fake")
     messages = FakeMessages(
         [
             FakeStatusError(503),
@@ -119,7 +119,7 @@ async def test_complete_fails_fast_on_401(monkeypatch: pytest.MonkeyPatch) -> No
 
     monkeypatch.setattr("core.provider.asyncio.sleep", _fake_sleep)
 
-    provider = AnthropicProvider()
+    provider = AnthropicProvider(api_key="fake")
     messages = FakeMessages([FakeStatusError(401)])
     provider._client = FakeClient(messages)  # type: ignore[assignment]
 
@@ -141,7 +141,7 @@ async def test_complete_respects_max_retry_count(monkeypatch: pytest.MonkeyPatch
 
     monkeypatch.setattr("core.provider.asyncio.sleep", _fake_sleep)
 
-    provider = AnthropicProvider()
+    provider = AnthropicProvider(api_key="fake")
     messages = FakeMessages([FakeStatusError(429), FakeStatusError(429)])
     provider._client = FakeClient(messages)  # type: ignore[assignment]
 
