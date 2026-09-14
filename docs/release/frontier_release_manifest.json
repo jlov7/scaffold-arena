@@ -13,7 +13,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "b72183e94fbaf79bc083c47185508ef756b75c781f341dceee6d591843f26c70"
+      "sha256": "ade5452b4fc307d65ac2ccef63147ee2d75456b8e665dea7b7c12a637122d3f9"
     },
     {
       "path": "docs/protocol/scaffold-arena-protocol.md",
@@ -337,7 +337,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "d3ccbe99d25c077c22525325f25db2032634189f70642f4b8ce0a45883b14158"
+      "sha256": "17c7dfb571bb7602668abf318c7589c8f195475e539870b0ffdba663cd84d111"
     },
     {
       "path": "CODE_OF_CONDUCT.md",

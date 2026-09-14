@@ -135,3 +135,5 @@ The API process does not own attempt execution. Workers lease durable jobs, pers
 The release gate includes the isolated real-backend offline browser smoke at desktop and mobile widths. It retains temporary local screenshots, CSV exports, and typed provenance for that run. Those captures are local fixture-journey evidence only.
 
 [Release verification](docs/ops/release-verification.md) · [Changelog](CHANGELOG.md) · [Security policy](SECURITY.md) · [Contributing](CONTRIBUTING.md)
+
+<sub>This is a personal research and development project. It is not affiliated with, endorsed by, or sponsored by my employer. Any views expressed are my own.</sub>
