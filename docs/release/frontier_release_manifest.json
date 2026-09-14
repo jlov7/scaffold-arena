@@ -261,7 +261,7 @@
     },
     {
       "path": "outputs/huggingface_package_manifest.json",
-      "sha256": "6e2cb07678ca5249d6abdcb34dd8724eadf37d7bfb50d3cd2b09683c4d641b0d"
+      "sha256": "ab115074c47a13f02405847acbf72ff2151f2e24e5ee60177741e4ee45c2e3f8"
     },
     {
       "path": "outputs/live_evidence_audit.json",
@@ -277,7 +277,7 @@
     },
     {
       "path": "outputs/release_bundle_audit.json",
-      "sha256": "ee57b9719128e0f5dee183d6187f986dad250cbfef1aa1502f1c158f3d185e48"
+      "sha256": "28881c62a8a40e51dc08801103be163887c0d51ddd7d0cc36f8f9072f736ca37"
     },
     {
       "path": "outputs/statistical_audit.json",
@@ -321,7 +321,7 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "16dc08ce7aed712758ed7a05a1f2d60ddc3ff460943683cee71fb88f96b410c8"
+      "sha256": "6f7752dc7ec67c2aee151574e2faa873619cab058279df1f55aa37db0f3f4765"
     },
     {
       "path": ".github/workflows/codeql.yml",
@@ -337,7 +337,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "8b75a73bc024e7c7df58af16a310c80e2ddc12600e6397d5be643884e7655af6"
+      "sha256": "d3ccbe99d25c077c22525325f25db2032634189f70642f4b8ce0a45883b14158"
     },
     {
       "path": "CODE_OF_CONDUCT.md",
@@ -3742,6 +3742,10 @@
     {
       "path": "scripts/tests/test_check_public_repo_hygiene.py",
       "sha256": "91fe5eca48c4d7897ceca6035296b6ab16e714fdadd14de321b5ed8c03b57abc"
+    },
+    {
+      "path": "scripts/tests/test_ci_docker_build_privacy.py",
+      "sha256": "39ce3768af5e46bda10a134d5d67f33a44e5de813dddfc17afa873fbcd08ac3c"
     },
     {
       "path": "scripts/tests/test_generate_genome_integration_matrix.py",

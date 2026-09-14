@@ -81,7 +81,7 @@
       },
       {
         "label": "release_bundle",
-        "contains": "checked 1086 release artifacts; status=release_bundle_audit_passed_not_archive_not_clean_clone"
+        "contains": "checked 1087 release artifacts; status=release_bundle_audit_passed_not_archive_not_clean_clone"
       },
       {
         "label": "hf_package",
@@ -97,7 +97,7 @@
       },
       {
         "label": "release_manifest",
-        "contains": "checked 1086 release artifact hashes"
+        "contains": "checked 1087 release artifact hashes"
       }
     ],
     "key_required_followup": [
@@ -212,7 +212,7 @@
     {
       "path": "outputs/release_bundle_audit.json",
       "bytes": 1630,
-      "sha256": "ee57b9719128e0f5dee183d6187f986dad250cbfef1aa1502f1c158f3d185e48"
+      "sha256": "28881c62a8a40e51dc08801103be163887c0d51ddd7d0cc36f8f9072f736ca37"
     },
     {
       "path": "outputs/external_validation.json",

@@ -3,10 +3,10 @@
   "status": "release_bundle_audit_passed_not_archive_not_clean_clone",
   "release_manifest": "docs/release/frontier_release_manifest.json",
   "root_manifest_included_as_bundle_root": true,
-  "artifact_count": 1086,
-  "unique_artifact_count": 1086,
-  "bundle_file_count": 1087,
-  "coverage_required_count": 1031,
+  "artifact_count": 1087,
+  "unique_artifact_count": 1087,
+  "bundle_file_count": 1088,
+  "coverage_required_count": 1032,
   "missing_manifest_coverage_count": 0,
   "duplicate_path_count": 0,
   "invalid_path_count": 0,
@@ -28,7 +28,7 @@
     ".mjs": 10,
     ".mts": 1,
     ".png": 42,
-    ".py": 409,
+    ".py": 410,
     ".sh": 15,
     ".svg": 1,
     ".toml": 2,
@@ -44,7 +44,7 @@
     "claim_boundary_markdown": 10,
     "generated_release_reports": 1,
     "release_gate_scripts": 11,
-    "v1_surface_paths": 1015
+    "v1_surface_paths": 1016
   },
   "violations": {
     "duplicate_paths": [],
