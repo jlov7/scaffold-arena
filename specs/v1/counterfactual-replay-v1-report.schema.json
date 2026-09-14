@@ -1,0 +1,548 @@
+{
+  "$defs": {
+    "ConditionalMeasure": {
+      "additionalProperties": false,
+      "description": "Causal-family measures stay unestimated until their own assumptions bind.",
+      "properties": {
+        "measure": {
+          "enum": [
+            "intention_to_treat",
+            "opportunity",
+            "activation",
+            "fidelity_failure",
+            "treatment_on_the_treated"
+          ],
+          "title": "Measure",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "unknown",
+            "ineligible"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "value": {
+          "default": null,
+          "title": "Value",
+          "type": "null"
+        }
+      },
+      "required": [
+        "measure",
+        "state",
+        "reason"
+      ],
+      "title": "ConditionalMeasure",
+      "type": "object"
+    },
+    "EffectEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "base_mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Mean"
+        },
+        "candidate_mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Mean"
+        },
+        "ci95_high": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95 High"
+        },
+        "ci95_low": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95 Low"
+        },
+        "metric": {
+          "enum": [
+            "quality",
+            "cost_usd",
+            "latency_ms"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "paired_samples": {
+          "minimum": 0,
+          "title": "Paired Samples",
+          "type": "integer"
+        },
+        "point_estimate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Point Estimate"
+        },
+        "reason": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric",
+        "state",
+        "paired_samples",
+        "reason"
+      ],
+      "title": "EffectEstimate",
+      "type": "object"
+    },
+    "MaturityAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "maturity": {
+          "enum": [
+            "temporal_correlation",
+            "diagnostic_divergence",
+            "paired_replay",
+            "replicated_intervention",
+            "confirmatory_eligibility"
+          ],
+          "title": "Maturity",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "observed",
+            "unknown",
+            "ineligible"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "maturity",
+        "state",
+        "reason"
+      ],
+      "title": "MaturityAssessment",
+      "type": "object"
+    },
+    "MechanismIntervention": {
+      "additionalProperties": false,
+      "properties": {
+        "applied_control_receipt_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Applied Control Receipt Digest",
+          "type": "string"
+        },
+        "base_mechanism_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Base Mechanism Digest",
+          "type": "string"
+        },
+        "candidate_mechanism_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Candidate Mechanism Digest",
+          "type": "string"
+        },
+        "declared_change_count": {
+          "const": 1,
+          "default": 1,
+          "title": "Declared Change Count",
+          "type": "integer"
+        },
+        "intervention_spec_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Intervention Spec Digest",
+          "type": "string"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mechanism_id",
+        "base_mechanism_digest",
+        "candidate_mechanism_digest",
+        "intervention_spec_digest",
+        "applied_control_receipt_digest"
+      ],
+      "title": "MechanismIntervention",
+      "type": "object"
+    },
+    "ReplayPairReference": {
+      "additionalProperties": false,
+      "properties": {
+        "base_result_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Base Result Digest",
+          "type": "string"
+        },
+        "base_trace_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Base Trace Digest",
+          "type": "string"
+        },
+        "base_usage_state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "Base Usage State",
+          "type": "string"
+        },
+        "candidate_result_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Candidate Result Digest",
+          "type": "string"
+        },
+        "candidate_trace_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Candidate Trace Digest",
+          "type": "string"
+        },
+        "candidate_usage_state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "Candidate Usage State",
+          "type": "string"
+        },
+        "pair_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Pair Id",
+          "type": "string"
+        },
+        "task_item_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Task Item Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pair_id",
+        "task_item_digest",
+        "base_result_digest",
+        "candidate_result_digest",
+        "base_trace_digest",
+        "candidate_trace_digest",
+        "base_usage_state",
+        "candidate_usage_state"
+      ],
+      "title": "ReplayPairReference",
+      "type": "object"
+    },
+    "SemanticMechanismDiff": {
+      "additionalProperties": false,
+      "properties": {
+        "changed_mechanism_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "title": "Changed Mechanism Ids",
+          "type": "array"
+        },
+        "recommended_packs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Recommended Packs",
+          "type": "array"
+        },
+        "source_diff_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Source Diff Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_diff_digest",
+        "changed_mechanism_ids"
+      ],
+      "title": "SemanticMechanismDiff",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/counterfactual-replay-v1-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "binding_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Binding Digest",
+      "type": "string"
+    },
+    "claim_ceiling": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "conditional_measures": {
+      "items": {
+        "$ref": "#/$defs/ConditionalMeasure"
+      },
+      "title": "Conditional Measures",
+      "type": "array"
+    },
+    "effects": {
+      "items": {
+        "$ref": "#/$defs/EffectEstimate"
+      },
+      "title": "Effects",
+      "type": "array"
+    },
+    "evidence_maturity": {
+      "enum": [
+        "temporal_correlation",
+        "diagnostic_divergence",
+        "paired_replay",
+        "replicated_intervention",
+        "confirmatory_eligibility"
+      ],
+      "title": "Evidence Maturity",
+      "type": "string"
+    },
+    "execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Execution Started",
+      "type": "boolean"
+    },
+    "fidelity_level": {
+      "anyOf": [
+        {
+          "enum": [
+            "declared",
+            "assigned",
+            "available",
+            "triggered",
+            "applied",
+            "activated",
+            "observed",
+            "downstream_pathway_detected"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fidelity Level"
+    },
+    "idempotent_replay": {
+      "default": false,
+      "title": "Idempotent Replay",
+      "type": "boolean"
+    },
+    "intervention": {
+      "$ref": "#/$defs/MechanismIntervention"
+    },
+    "limitations": {
+      "items": {
+        "maxLength": 512,
+        "minLength": 1,
+        "type": "string"
+      },
+      "maxItems": 64,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "maturity_ladder": {
+      "items": {
+        "$ref": "#/$defs/MaturityAssessment"
+      },
+      "title": "Maturity Ladder",
+      "type": "array"
+    },
+    "mode": {
+      "enum": [
+        "fixture",
+        "recorded",
+        "live"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "network_requested": {
+      "const": false,
+      "default": false,
+      "title": "Network Requested",
+      "type": "boolean"
+    },
+    "new_severe_failures": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+        "type": "string"
+      },
+      "title": "New Severe Failures",
+      "type": "array"
+    },
+    "pair_count": {
+      "minimum": 1,
+      "title": "Pair Count",
+      "type": "integer"
+    },
+    "pair_references": {
+      "items": {
+        "$ref": "#/$defs/ReplayPairReference"
+      },
+      "title": "Pair References",
+      "type": "array"
+    },
+    "planned_repetitions": {
+      "minimum": 1,
+      "title": "Planned Repetitions",
+      "type": "integer"
+    },
+    "process_safety": {
+      "enum": [
+        "pass",
+        "fail",
+        "unknown"
+      ],
+      "title": "Process Safety",
+      "type": "string"
+    },
+    "provider_execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Provider Execution Started",
+      "type": "boolean"
+    },
+    "report_artifact_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Artifact Digest",
+      "type": "string"
+    },
+    "report_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Digest",
+      "type": "string"
+    },
+    "report_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "request_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Request Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.counterfactual-replay-report/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "semantic_diff": {
+      "$ref": "#/$defs/SemanticMechanismDiff"
+    },
+    "usage_state": {
+      "enum": [
+        "observed",
+        "unknown"
+      ],
+      "title": "Usage State",
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "HOLD",
+        "FAIL"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "report_digest",
+    "report_artifact_digest",
+    "request_digest",
+    "binding_digest",
+    "mode",
+    "verdict",
+    "evidence_maturity",
+    "maturity_ladder",
+    "pair_count",
+    "planned_repetitions",
+    "pair_references",
+    "intervention",
+    "semantic_diff",
+    "effects",
+    "conditional_measures",
+    "new_severe_failures",
+    "usage_state",
+    "process_safety",
+    "claim_ceiling"
+  ],
+  "title": "CounterfactualReplayReport",
+  "type": "object"
+}

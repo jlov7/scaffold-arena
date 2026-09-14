@@ -1,0 +1,94 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/grader-spec.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A data-only grader declaration owned by a StudyPack.",
+  "properties": {
+    "config": {
+      "additionalProperties": true,
+      "title": "Config",
+      "type": "object"
+    },
+    "digest": {
+      "description": "Built-ins use the canonical declaration digest. Installed plugins use the separately supplied trusted artifact or code digest.",
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Digest",
+      "type": "string"
+    },
+    "grader_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Grader Id",
+      "type": "string"
+    },
+    "implementation": {
+      "anyOf": [
+        {
+          "enum": [
+            "schema",
+            "exact_field",
+            "source_provenance",
+            "forbidden_token",
+            "state_oracle",
+            "manipulation_fidelity",
+            "context_handoff_delivery"
+          ],
+          "type": "string"
+        },
+        {
+          "const": "installed_plugin",
+          "type": "string"
+        }
+      ],
+      "title": "Implementation"
+    },
+    "kind": {
+      "enum": [
+        "deterministic",
+        "qualitative"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "metric_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Metric Id"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    },
+    "weight": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Weight"
+    }
+  },
+  "required": [
+    "grader_id",
+    "version",
+    "implementation",
+    "kind",
+    "digest"
+  ],
+  "title": "GraderSpec",
+  "type": "object"
+}

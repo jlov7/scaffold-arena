@@ -1,0 +1,75 @@
+{
+  "$defs": {
+    "ReadinessIssue": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Code",
+          "type": "string"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "scope": {
+          "minLength": 1,
+          "title": "Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "scope",
+        "message"
+      ],
+      "title": "ReadinessIssue",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/protocol-readiness-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "issues": {
+      "items": {
+        "$ref": "#/$defs/ReadinessIssue"
+      },
+      "title": "Issues",
+      "type": "array"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "task_family_deterministic_weights": {
+      "patternProperties": {
+        "^[a-z][a-z0-9_-]{1,127}$": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        }
+      },
+      "title": "Task Family Deterministic Weights",
+      "type": "object"
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "HOLD"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "verdict",
+    "task_family_deterministic_weights",
+    "issues"
+  ],
+  "title": "ProtocolReadinessReport",
+  "type": "object"
+}

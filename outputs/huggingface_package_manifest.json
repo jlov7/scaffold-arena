@@ -1,0 +1,546 @@
+{
+  "schema_version": "1.0",
+  "package_name": "Scaffold Arena 0.9 fixture package",
+  "status": "hf_ready_fixture_package_not_published_not_live_benchmark",
+  "dataset_card": "docs/huggingface/README.md",
+  "license": "mit",
+  "task_families": [
+    "extraction",
+    "privacy",
+    "research",
+    "risk",
+    "strategy",
+    "tool_use"
+  ],
+  "counts": {
+    "scenario_contracts": 18,
+    "fixture_run_artifacts": 54,
+    "package_artifacts": 31
+  },
+  "splits": [
+    {
+      "name": "fixture_runs",
+      "path": "outputs/benchmark_runs/*.json",
+      "row_count": 54,
+      "claim_boundary": "Fixture controls only; not live provider benchmark results."
+    },
+    {
+      "name": "scenario_contracts",
+      "path": "docs/benchmarking/scenario_pack_v0.1.json",
+      "row_count": 18,
+      "claim_boundary": "Synthetic scenario contracts for protocol validation."
+    },
+    {
+      "name": "calibration_readiness",
+      "path": "outputs/human_calibration_packet.json",
+      "row_count": 18,
+      "claim_boundary": "Protocol-v1 annotation readiness only; no completed human calibration or authority attestation."
+    }
+  ],
+  "required_public_claim_boundaries": [
+    "No live provider benchmark results are included.",
+    "Synthetic sources are not real publications.",
+    "Human calibration has not been completed.",
+    "External validation ledger contains zero completed evidence records.",
+    "Preflight artifacts are readiness checks, not model-performance evidence."
+  ],
+  "reviewer_reproduction": {
+    "no_key_command": "./scripts/verify-all.sh",
+    "expected_gate_evidence": [
+      {
+        "label": "backend_tests",
+        "contains": "passed"
+      },
+      {
+        "label": "benchmark_evidence",
+        "contains": "checked 54 benchmark run artifacts and 18 scenario contracts"
+      },
+      {
+        "label": "prior_art",
+        "contains": "checked 5 source-backed comparisons"
+      },
+      {
+        "label": "benchmark_leakage",
+        "contains": "checked 18 scenario prompts and 54 fixture outputs"
+      },
+      {
+        "label": "human_calibration_packet",
+        "contains": "checked 18 packet targets; completed annotation targets=0"
+      },
+      {
+        "label": "external_validation",
+        "contains": "checked 0 external evidence records; status=blocked_no_external_validation"
+      },
+      {
+        "label": "live_preflight",
+        "contains": "checked 72 planned live runs; provider=anthropic"
+      },
+      {
+        "label": "live_evidence",
+        "contains": "checked 0 live artifacts; status=blocked_no_live_artifacts"
+      },
+      {
+        "label": "release_bundle",
+        "contains": "checked 1086 release artifacts; status=release_bundle_audit_passed_not_archive_not_clean_clone"
+      },
+      {
+        "label": "hf_package",
+        "contains": "checked 54 fixture runs and 18 scenario contracts"
+      },
+      {
+        "label": "claim_boundaries",
+        "contains": "machine ledgers"
+      },
+      {
+        "label": "frontend_tests",
+        "contains": "passed"
+      },
+      {
+        "label": "release_manifest",
+        "contains": "checked 1086 release artifact hashes"
+      }
+    ],
+    "key_required_followup": [
+      "uv run --project backend python scripts/check-live-benchmark-readiness.py --check",
+      "uv run --project backend python scripts/run-benchmark-pack.py --mode live --model-id claude-haiku-4-5 --tasks extraction,risk,research,tool_use,privacy,strategy --scaffolds bare,plan_execute_verify,tool_error_recovery,memory_critique --repeats 3",
+      "./scripts/verify-all.sh"
+    ],
+    "required_external_evidence_after_live_runs": [
+      "Commit raw outputs/live_benchmark_runs artifacts and outputs/live_benchmark_summary.json.",
+      "Collect at least three independent blind Protocol-v1 annotations per sampled artifact.",
+      "Publish agreement, required conflict adjudications, immutable completion, and authority-attestation artifacts before updating outputs/external_validation.json.",
+      "Obtain at least one independent clean-room reproduction or serious external critique."
+    ],
+    "claim_boundary": "A no-key reproduction can verify package integrity, fixture separation, and release gates. It cannot validate model performance, human calibration, independent reproduction, or published archive integrity."
+  },
+  "package_artifacts": [
+    {
+      "path": "docs/huggingface/README.md",
+      "bytes": 2028,
+      "sha256": "4987db761945fa774eba4d7eb248fc13507916e02bfee5b57787a59b6177fc3b"
+    },
+    {
+      "path": "docs/protocol/scaffold-arena-protocol.md",
+      "bytes": 4417,
+      "sha256": "efa16b5941f1161baad107ff8b910713e62b88a99a744aab16e63846b4f065fb"
+    },
+    {
+      "path": "docs/benchmarking/benchmark_card.md",
+      "bytes": 1444,
+      "sha256": "5da1a27bb926e54f2fcec18f145a7a1ceee202d5f41f02773e304d875427cd30"
+    },
+    {
+      "path": "docs/benchmarking/reproducibility.md",
+      "bytes": 7467,
+      "sha256": "4a4ceddd633489c9988bce41504564cc6b12e5d7b1547cd335f68d253e1cbe11"
+    },
+    {
+      "path": "docs/benchmarking/comparison_to_existing_tools.md",
+      "bytes": 5048,
+      "sha256": "ec534b565623cd94400218f7e2b0845d80890658a3c01d4b72806b6fb0abef1e"
+    },
+    {
+      "path": "docs/benchmarking/scenario_pack_v0.1.json",
+      "bytes": 25752,
+      "sha256": "7d3fdcb11b7bdf2d02b447c319f668aab9240d661c60291a8dd9b53c367c8609"
+    },
+    {
+      "path": "docs/benchmarking/sample_eval_card.json",
+      "bytes": 1498,
+      "sha256": "6fcf09a7a9f72caaf9c5df9969b9e7ac431d08a1c7597567c7a63d567cdecbea"
+    },
+    {
+      "path": "docs/benchmarking/sample_scaffold_card.json",
+      "bytes": 1178,
+      "sha256": "bea3357119a1772aa05299e6c2ef83867276b30494885ed9b6417b6f545d23f2"
+    },
+    {
+      "path": "docs/benchmarking/failure_taxonomy.json",
+      "bytes": 3112,
+      "sha256": "5cd215fec53d6893981fb68447ac5dd006e2e8bb63457e8227f6791cb88ebcc5"
+    },
+    {
+      "path": "docs/benchmarking/annotation_rubric.md",
+      "bytes": 2227,
+      "sha256": "df16f7b62d0dd9bdafaacee05e09c56a3a22e872bf8a58b0144397cc27f7f2b7"
+    },
+    {
+      "path": "outputs/benchmark_summary.json",
+      "bytes": 2787,
+      "sha256": "f88db574167f02ee3504e978e37957312c9420541dc12a8bd48aefdbe9c5aaa5"
+    },
+    {
+      "path": "outputs/baseline_separation_report.json",
+      "bytes": 1360,
+      "sha256": "c9bf64e1d83cc25148022820879a72c2f2d9dc762a45e59546853a8e8865ee30"
+    },
+    {
+      "path": "outputs/benchmark_leakage_audit.json",
+      "bytes": 947,
+      "sha256": "b3b9f96797dc471ee7d517e9d1baf78a2c3572d085785e04fcc2ef28e41fd34e"
+    },
+    {
+      "path": "outputs/external_validation_audit.json",
+      "bytes": 1040,
+      "sha256": "87426cbbf2ec1c67eed499823bd46120f368fc86b480767bf31148447ecf9626"
+    },
+    {
+      "path": "outputs/statistical_audit.json",
+      "bytes": 2763,
+      "sha256": "cfe56482babe95a392a2066ff6ad57c06da06120323fcf2028077a6f46b1d318"
+    },
+    {
+      "path": "outputs/human_calibration_audit.json",
+      "bytes": 2568,
+      "sha256": "5bdc1a1cdbac4550b25a40afdc2419ccc93a50e078d0b057ecdcfca5ea4528b8"
+    },
+    {
+      "path": "outputs/human_calibration_packet.json",
+      "bytes": 58778,
+      "sha256": "7bf5b061b6d83dd616572c3cd1998a52e3f341141858068a720d4fca75d4496e"
+    },
+    {
+      "path": "outputs/live_benchmark_preflight.json",
+      "bytes": 2846,
+      "sha256": "a8a3d9a686545e0bde9323638d70dd31f5de60495e49309e716929a27987b6a7"
+    },
+    {
+      "path": "outputs/live_evidence_audit.json",
+      "bytes": 1328,
+      "sha256": "5dcd62a879f9d37c37e2ebc829cf4bab21dd243eb40df25bea412d2f8d84faa9"
+    },
+    {
+      "path": "outputs/release_bundle_audit.json",
+      "bytes": 1630,
+      "sha256": "ee57b9719128e0f5dee183d6187f986dad250cbfef1aa1502f1c158f3d185e48"
+    },
+    {
+      "path": "outputs/external_validation.json",
+      "bytes": 670,
+      "sha256": "aefdd326af1011e15ee2184c262454c9ffb656bb8159bbb355b815a1208a8a6e"
+    },
+    {
+      "path": "outputs/prior_art_positioning_audit.json",
+      "bytes": 4938,
+      "sha256": "2e49e53850d2b66bd583d0bb694502629ec7464fb3bfc581adb68100940f4dc9"
+    },
+    {
+      "path": "specs/scenario.schema.json",
+      "bytes": 1778,
+      "sha256": "575b39571a55aab065e02049e26dc9f2f57a53bd42d06571b1e9d24c24a21106"
+    },
+    {
+      "path": "specs/run-artifact.schema.json",
+      "bytes": 4893,
+      "sha256": "efd152561214e602615fa49733075979c471eb5c1c34bc26de986d43a9cb8c48"
+    },
+    {
+      "path": "specs/eval-card.schema.json",
+      "bytes": 1963,
+      "sha256": "3c21e6e109c93f7d621fcfcd7b629278346c9af3dcb8cef24fd471d71fc99cef"
+    },
+    {
+      "path": "specs/scaffold-card.schema.json",
+      "bytes": 1364,
+      "sha256": "edcfc9fd92cdaea6edd3dbb62f1b21e503be9e32f8dbcb4fc8de9b91ccd19980"
+    },
+    {
+      "path": "specs/failure-taxonomy.schema.json",
+      "bytes": 1439,
+      "sha256": "69e0ea757c74e61b3d544a2bc57a6f6646fce444c7a10a6aaa5353a2cf2e4f5a"
+    },
+    {
+      "path": "specs/annotation.schema.json",
+      "bytes": 2056,
+      "sha256": "761513ba9720ec6e7e690237e15150fed48b255913dd8a27cb2a8140163851cd"
+    },
+    {
+      "path": "specs/external-validation.schema.json",
+      "bytes": 3403,
+      "sha256": "0d66842c843a8f154b6d9e7819349e559aa1934c3e443964290a3d916084669a"
+    },
+    {
+      "path": "specs/v1/review-v1-calibration-annotation-result.schema.json",
+      "bytes": 1331,
+      "sha256": "d7ce78a42c960dab38a8560321caa281df2119c27feda0cf02945bee171f06ed"
+    },
+    {
+      "path": "specs/v1/review-v1-calibration-adjudication-result.schema.json",
+      "bytes": 1472,
+      "sha256": "ce1826bceb7e5eec4a843efc57738d956af6f69dae98909354ec86120565b6cd"
+    }
+  ],
+  "fixture_artifacts": [
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_missing_required_fields_r1.json",
+      "bytes": 3269,
+      "sha256": "4a38a88f5dbdba23443b78e79971a5ec47e713f00b4fdebc82d90095bc68f001"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_missing_required_fields_r2.json",
+      "bytes": 3269,
+      "sha256": "01ec18b67bfae70f8b348ce0906abed710a6e25914559afb19f32137e6553fe9"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_missing_required_fields_r3.json",
+      "bytes": 3269,
+      "sha256": "720ae3007f122bc1575a648afaae757096940011e6a9147df7e8292e1f317cc1"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_positive_control_r1.json",
+      "bytes": 3404,
+      "sha256": "bfbe4e7efcf1bf8d2960dd0e65f94c44c25070aafabb8d643b212d8640a7729b"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_positive_control_r2.json",
+      "bytes": 3404,
+      "sha256": "207a4f2921660df898e1a4a4404f04f8bcfd5079232a7798c8ae0de7c47f7270"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_positive_control_r3.json",
+      "bytes": 3404,
+      "sha256": "eaa7317b603beabcbd504d227eecee23efb178a70466fcc2f58bb0257891534e"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_wrong_financial_values_r1.json",
+      "bytes": 3629,
+      "sha256": "685cc704f571e8c6e59fcb8b41c33562e2e7f51f9365aeaf52825fde2fa8bf7b"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_wrong_financial_values_r2.json",
+      "bytes": 3629,
+      "sha256": "6bcfb5f76182e2e7a197e79ed25b8026677a3d8e6ddb00eea4d44a2a8916e111"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_extraction_wrong_financial_values_r3.json",
+      "bytes": 3629,
+      "sha256": "dcd3b020f99973fe9002525e15b5ea1ecef7574fdfaf79dd83a5c3d36b5d09c1"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_positive_control_r1.json",
+      "bytes": 2740,
+      "sha256": "8addc3c0edb133813eabf86268218958b9fc5b5da3c3079036268c9ed4b5af28"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_positive_control_r2.json",
+      "bytes": 2740,
+      "sha256": "0f784d6a28c9ed8ee8d1973a8cceaa793528400792820e46594cbac6caca06aa"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_positive_control_r3.json",
+      "bytes": 2740,
+      "sha256": "11cf532909ca28286b8bcaf7a074370f1e29ad054cbaedd0d62aa2661bf9e465"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_raw_identifier_leak_r1.json",
+      "bytes": 2769,
+      "sha256": "6240c6d1f7bbb9467453198cf6f2925486add0721b62922e8a83987ad55aab3b"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_raw_identifier_leak_r2.json",
+      "bytes": 2769,
+      "sha256": "68b807fcb6b46435861203964bf956d72945104bf229cf32f350ebeca4bd00f4"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_raw_identifier_leak_r3.json",
+      "bytes": 2769,
+      "sha256": "46967b3a14da504251c7f5c2744472ea799d9f5468e251a53fca85be79cf1e0b"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_secret_token_repeated_r1.json",
+      "bytes": 2790,
+      "sha256": "215c10d0d448831a330061d18e12238c966639393280bdea860d677770b7f583"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_secret_token_repeated_r2.json",
+      "bytes": 2790,
+      "sha256": "6aff8fc43f5c5ebc4f4dea4cba09e9a0a1a44ad7b894af43ecab1c16c7d9df4b"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_privacy_secret_token_repeated_r3.json",
+      "bytes": 2790,
+      "sha256": "fcaff0d4e8caaee9388845f846abac6ce98875ef059d500b9f7601a6591df3da"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_missing_source_labels_r1.json",
+      "bytes": 4736,
+      "sha256": "3b9e470a4de0562cee32e727f3a950a2260d4e5bd43e53ec64b9ad21f2d65fde"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_missing_source_labels_r2.json",
+      "bytes": 4736,
+      "sha256": "c7d43cbe1ff3b834906acccefbd7fe4fdb8e146c64ef72069a8ae5054662257c"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_missing_source_labels_r3.json",
+      "bytes": 4736,
+      "sha256": "641f1dd6d7cea12e848fd7ee9604a8b1f0bbb2c8546f6d74ee736e4a0b583a1f"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_positive_control_r1.json",
+      "bytes": 5957,
+      "sha256": "2a7ac2e335a357de89c4ae0626f063c79a87840406c4702c327aadcba7c9a698"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_positive_control_r2.json",
+      "bytes": 5957,
+      "sha256": "a3df48965400edb3279d03be090299fa54e44ce45b114d8d6d58cf83763e9938"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_positive_control_r3.json",
+      "bytes": 5957,
+      "sha256": "5506685507d1e747b29b733caf6da7188f41ccf9bc2dd9672001d15957dcb0a0"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_unsupported_market_claim_r1.json",
+      "bytes": 3845,
+      "sha256": "a7a825beb70e218ddb64aeb438eb351924daf711a15e1d136f2ab25c38da916f"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_unsupported_market_claim_r2.json",
+      "bytes": 3845,
+      "sha256": "19f5acf039567b9b551ade5509a3cba3eb6576bd1d10140b75aa3714749917b9"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_research_unsupported_market_claim_r3.json",
+      "bytes": 3845,
+      "sha256": "d670055fbbe89ef95ad0875f9d155deda50aafa18635318c5634b5c82b8e836f"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_false_positive_noise_r1.json",
+      "bytes": 3375,
+      "sha256": "912e96dbaeb7d7490ddd0389a82477edd922f2bf2b6c81e744a44d30cf904156"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_false_positive_noise_r2.json",
+      "bytes": 3375,
+      "sha256": "e41fd37f67dca44dd5ae41c2d95f95cb348119e930918dcb85b0f56dfb28fe61"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_false_positive_noise_r3.json",
+      "bytes": 3375,
+      "sha256": "8b66bb33043879e5f21a85621c9c246c1e2281000ba264393951c187fce7c785"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_missed_liability_cap_r1.json",
+      "bytes": 2777,
+      "sha256": "148e18864e2b9d3cbc22dd554a2af6f94b704c1c7c88b720216f9eebce8b9856"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_missed_liability_cap_r2.json",
+      "bytes": 2777,
+      "sha256": "0153c02fa6c590487157a73d061c4c269f93efbde3d529e110ac7898a56b8115"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_missed_liability_cap_r3.json",
+      "bytes": 2777,
+      "sha256": "b07faf7bb14ce2ffc93426f0ef3c64107b09c1723b95de88965ed0d6806fccb3"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_positive_control_r1.json",
+      "bytes": 5386,
+      "sha256": "7fe8c6b6fd03c1b38960e7df219a111f4cff8ac40bb166e129157a12f831e0c2"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_positive_control_r2.json",
+      "bytes": 5386,
+      "sha256": "698551958026401cebc25a22c771458270df5c390a33a04e9779457a2800989d"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_risk_positive_control_r3.json",
+      "bytes": 5386,
+      "sha256": "390f4dd789387ac19c7e82266f0b751056140c77550810afcf5e061cd58f4057"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_missing_eval_plan_r1.json",
+      "bytes": 3269,
+      "sha256": "73adb8fb8e5d051d252bc8a5d8dbba5c8188260e34eab86321fb711526d1dd36"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_missing_eval_plan_r2.json",
+      "bytes": 3269,
+      "sha256": "c0087d6dfacc790a483963c51705c7505c45d725eafe12d888384f71e1a99038"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_missing_eval_plan_r3.json",
+      "bytes": 3269,
+      "sha256": "7aa8aa6b0f05ce78643eb553301834f8b225b55b1e257df59643f96a921f755c"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_positive_control_r1.json",
+      "bytes": 3066,
+      "sha256": "ce557402ea397203bbc42e064110c35f60deabee6476543a063cf89cb22faf5c"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_positive_control_r2.json",
+      "bytes": 3066,
+      "sha256": "1bca17e827b8807bc115579b45551b46fcb4c153c1d30d29d5e6a2a3f002fa08"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_positive_control_r3.json",
+      "bytes": 3066,
+      "sha256": "652a85e1389e0712e06ed245364a4c8ad1bee782083e2eb36ec61b62ec35a47e"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_unsupported_roi_claim_r1.json",
+      "bytes": 3387,
+      "sha256": "d5cb3a315f04e03c4ee9aae72b5e6edd656f98db280336d23f225a9428a03da4"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_unsupported_roi_claim_r2.json",
+      "bytes": 3387,
+      "sha256": "a3b64b92bc23186f20b9177d5f35b1ca30c90f9ffce22eca08189531d0356e96"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_strategy_unsupported_roi_claim_r3.json",
+      "bytes": 3387,
+      "sha256": "6bf5224b15e2b5dd4c3fa6e40473163292c33682518a6b0ce2e2c9c446e9d8e2"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_direct_forbidden_email_r1.json",
+      "bytes": 3053,
+      "sha256": "fda6636dbb5635abfd99a716c3a5d0b381cacddcd816a02b8ad8c813b1502b35"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_direct_forbidden_email_r2.json",
+      "bytes": 3053,
+      "sha256": "ebeb7cc4025143710c9f5745fe48d355c2b3a2d692b0f5f4a24050bbc51b20b7"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_direct_forbidden_email_r3.json",
+      "bytes": 3053,
+      "sha256": "1dd29d48e59d5cba55df462b49731e82b3fa62fb57492f540387558add997631"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_positive_control_r1.json",
+      "bytes": 2883,
+      "sha256": "76c521a99b2be40f73e46ceabc15808bf83a18baed3d692e045e4ad4c9e45f8f"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_positive_control_r2.json",
+      "bytes": 2883,
+      "sha256": "08a01ff3606be77b576b9b54f033c2cd4f5b381e8443e2fb3e9e986d5eaf2c35"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_positive_control_r3.json",
+      "bytes": 2883,
+      "sha256": "7b052fd7b8abea01185d96783a461c62edfc53a363d32195c77c1903d9fba2c9"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_unavailable_refund_tool_r1.json",
+      "bytes": 3234,
+      "sha256": "43fe25e3d2c5c09314d194bb5156f4270de9a372c49ed547d11587778156a144"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_unavailable_refund_tool_r2.json",
+      "bytes": 3234,
+      "sha256": "612e8a474d23c2ed7b61d96865d9bc2ee2d6fce81e3eaa8aadb97c8333b162bb"
+    },
+    {
+      "path": "outputs/benchmark_runs/fixture_tool_use_unavailable_refund_tool_r3.json",
+      "bytes": 3234,
+      "sha256": "5010d824562821a54990d0942a2f146730030a3465e16321546f8b4e4437bedf"
+    }
+  ],
+  "claim_boundary": "This is a Hugging Face-ready local package manifest for fixture artifacts and protocol contracts. It is not a published Hugging Face dataset and it does not contain live provider benchmark results."
+}

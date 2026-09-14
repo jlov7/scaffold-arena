@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://scaffold-arena.local/specs/external-validation.schema.json",
+  "title": "Scaffold Arena External Validation Ledger",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "status",
+    "independent_reproductions",
+    "public_critiques",
+    "human_annotation_batches",
+    "claim_boundary",
+    "blockers"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^0\\.1$" },
+    "generated_at": { "type": "string", "minLength": 10 },
+    "status": {
+      "type": "string",
+      "enum": ["no_external_validation_completed", "external_validation_completed"]
+    },
+    "independent_reproductions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "reviewer", "date", "scope", "artifact_uri", "result"],
+        "properties": {
+          "id": { "type": "string", "minLength": 3 },
+          "reviewer": { "type": "string", "minLength": 2 },
+          "date": { "type": "string", "minLength": 10 },
+          "scope": { "type": "string", "minLength": 5 },
+          "artifact_uri": { "type": "string", "minLength": 5 },
+          "result": { "type": "string", "enum": ["pass", "partial", "fail"] }
+        }
+      }
+    },
+    "public_critiques": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "source", "date", "url", "summary"],
+        "properties": {
+          "id": { "type": "string", "minLength": 3 },
+          "source": { "type": "string", "minLength": 2 },
+          "date": { "type": "string", "minLength": 10 },
+          "url": { "type": "string", "minLength": 5 },
+          "summary": { "type": "string", "minLength": 5 }
+        }
+      }
+    },
+    "human_annotation_batches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "date",
+          "protocol_version",
+          "annotator_count",
+          "artifact_count",
+          "agreement_statistic",
+          "agreement_artifact_uri",
+          "adjudication_artifact_uri",
+          "review_completion_artifact_uri",
+          "authority_attestation_uri",
+          "resolved_conflicts"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 3 },
+          "date": { "type": "string", "minLength": 10 },
+          "protocol_version": { "type": "string", "const": "1.0" },
+          "annotator_count": { "type": "integer", "minimum": 3 },
+          "artifact_count": { "type": "integer", "minimum": 1 },
+          "agreement_statistic": { "type": "string", "minLength": 3 },
+          "agreement_artifact_uri": { "type": "string", "minLength": 5 },
+          "adjudication_artifact_uri": { "type": "string", "minLength": 5 },
+          "review_completion_artifact_uri": { "type": "string", "minLength": 5 },
+          "authority_attestation_uri": { "type": "string", "minLength": 5 },
+          "resolved_conflicts": { "type": "boolean", "const": true }
+        }
+      }
+    },
+    "claim_boundary": { "type": "string", "minLength": 20 },
+    "blockers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 5 }
+    }
+  }
+}

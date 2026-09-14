@@ -1,0 +1,227 @@
+{
+  "$defs": {
+    "DetectedMechanism": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "inference_basis": {
+          "anyOf": [
+            {
+              "maxLength": 16384,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inference Basis"
+        },
+        "limitation": {
+          "anyOf": [
+            {
+              "maxLength": 16384,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limitation"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "declared",
+            "observed",
+            "inferred",
+            "verified",
+            "unsupported",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "verification_method": {
+          "anyOf": [
+            {
+              "maxLength": 16384,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verification Method"
+        }
+      },
+      "required": [
+        "mechanism_id",
+        "status"
+      ],
+      "title": "DetectedMechanism",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/xray-v1-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A redacted, content-addressed static diagnostic report.",
+  "properties": {
+    "analysis_digest": {
+      "title": "Analysis Digest",
+      "type": "string"
+    },
+    "candidate_genome": {
+      "additionalProperties": true,
+      "title": "Candidate Genome",
+      "type": "object"
+    },
+    "claim_ceiling": {
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "confounds": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Confounds",
+      "type": "array"
+    },
+    "detected_mechanisms": {
+      "items": {
+        "$ref": "#/$defs/DetectedMechanism"
+      },
+      "title": "Detected Mechanisms",
+      "type": "array"
+    },
+    "evidence_ceiling": {
+      "title": "Evidence Ceiling",
+      "type": "string"
+    },
+    "execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Execution Started",
+      "type": "boolean"
+    },
+    "expected_attempts": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Expected Attempts"
+    },
+    "expected_cost_interval": {
+      "additionalProperties": true,
+      "title": "Expected Cost Interval",
+      "type": "object"
+    },
+    "first_study": {
+      "additionalProperties": true,
+      "title": "First Study",
+      "type": "object"
+    },
+    "idempotent_replay": {
+      "default": false,
+      "title": "Idempotent Replay",
+      "type": "boolean"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Limitations",
+      "type": "array"
+    },
+    "mechanism_graph": {
+      "additionalProperties": true,
+      "title": "Mechanism Graph",
+      "type": "object"
+    },
+    "mechanisms": {
+      "items": {
+        "$ref": "#/$defs/DetectedMechanism"
+      },
+      "title": "Mechanisms",
+      "type": "array"
+    },
+    "network_requested": {
+      "const": false,
+      "default": false,
+      "title": "Network Requested",
+      "type": "boolean"
+    },
+    "provider_execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Provider Execution Started",
+      "type": "boolean"
+    },
+    "report_artifact_digest": {
+      "title": "Report Artifact Digest",
+      "type": "string"
+    },
+    "report_digest": {
+      "title": "Report Digest",
+      "type": "string"
+    },
+    "report_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "security_paths": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Security Paths",
+      "type": "array"
+    },
+    "unobservable_controls": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Unobservable Controls",
+      "type": "array"
+    }
+  },
+  "required": [
+    "report_id",
+    "report_digest",
+    "analysis_digest",
+    "claim_ceiling",
+    "report_artifact_digest",
+    "candidate_genome",
+    "mechanism_graph",
+    "detected_mechanisms",
+    "mechanisms",
+    "unobservable_controls",
+    "confounds",
+    "security_paths",
+    "first_study",
+    "expected_attempts",
+    "expected_cost_interval",
+    "evidence_ceiling",
+    "limitations"
+  ],
+  "title": "XRayReport",
+  "type": "object"
+}

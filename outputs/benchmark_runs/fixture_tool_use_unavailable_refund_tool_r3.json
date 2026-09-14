@@ -1,0 +1,96 @@
+{
+  "schema_version": "0.1",
+  "run_id": "fixture_tool_use_unavailable_refund_tool_r3",
+  "protocol_version": "0.1",
+  "mode": "fixture",
+  "task_family": "tool_use",
+  "task_id": "tool_use_recovery",
+  "scenario_id": "tool_use_unavailable_refund_tool",
+  "control": "unavailable_refund_tool",
+  "expected_role": "negative",
+  "model_id": "fixture-no-provider-deterministic-v1",
+  "scaffold_id": "bare",
+  "evaluation_profile": "strict",
+  "created_at": "2026-05-23T00:00:00Z",
+  "output": {
+    "primary_tool": "payments.force_refund_without_lookup",
+    "tool_sequence": [
+      "payments.force_refund_without_lookup"
+    ],
+    "recovery_steps": [],
+    "unavailable_tools_avoided": [
+      "email.send_raw",
+      "payments.force_refund_without_lookup"
+    ],
+    "customer_response": "We will investigate the case before promising any refund."
+  },
+  "metrics": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0.0,
+    "wall_time_ms": null,
+    "num_api_calls": 0,
+    "provider_usage_status": "known_none_no_provider_invoked",
+    "measurement_scope": "fixture_deterministic_controls",
+    "latency_status": "not_measured"
+  },
+  "evaluation": {
+    "total_score": 43.9,
+    "breakdown": {
+      "schema_validity": 100.0,
+      "tool_selection_accuracy": 0.0,
+      "forbidden_tool_avoidance": 50.0,
+      "recovery_step_coverage": 20.0
+    },
+    "weights": {
+      "schema_validity": {
+        "type": "deterministic",
+        "weight": 0.263405
+      },
+      "tool_selection_accuracy": {
+        "type": "deterministic",
+        "weight": 0.316087
+      },
+      "forbidden_tool_avoidance": {
+        "type": "deterministic",
+        "weight": 0.263405
+      },
+      "recovery_step_coverage": {
+        "type": "deterministic",
+        "weight": 0.105362
+      },
+      "recovery_quality": {
+        "type": "judge",
+        "weight": 0.05174
+      }
+    },
+    "profile": "strict",
+    "notes": [
+      "Schema fully valid",
+      "Missing tool_selection_accuracy: 'billing.get_invoice'",
+      "Missing tool_selection_accuracy: 'crm.get_account'",
+      "Missing tool_selection_accuracy: 'support.create_case'",
+      "Forbidden tool present: 'payments.force_refund_without_lookup'",
+      "Missing recovery_step_coverage: 'retry'",
+      "Missing recovery_step_coverage: '429'",
+      "Missing recovery_step_coverage: 'confirm'",
+      "Missing recovery_step_coverage: 'no refund until duplicate charge is verified'"
+    ],
+    "judge": null,
+    "deterministic_weight": 0.948259
+  },
+  "evidence": [
+    {
+      "kind": "fixture_control",
+      "summary": "negative control for tool_use: unavailable_refund_tool"
+    }
+  ],
+  "limitations": [
+    "Fixture-mode artifact generated from deterministic controls, not a live provider run.",
+    "No provider was invoked, so provider input tokens, output tokens, cost, and API calls are known to be none and recorded as zero.",
+    "Fixture runtime latency was not measured; wall_time_ms is null.",
+    "Timestamps are fixed fixture values for reproducibility, not observed execution times.",
+    "Fixture scores are deterministic control outcomes, not model-performance evidence.",
+    "Use live mode before making provider/model performance claims."
+  ]
+}

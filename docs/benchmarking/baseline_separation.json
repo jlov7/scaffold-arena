@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1",
+  "status": "fixture_calibration_not_live_provider_benchmark",
+  "minimum_expected_separation_points": 20,
+  "calibration_cases": [
+    {
+      "task_family": "extraction",
+      "scenario_id": "extraction_contract_amendment",
+      "positive_control": "schema_valid_gold_output",
+      "negative_controls": ["missing_required_fields", "wrong_financial_values"],
+      "expected_separation_points": 30,
+      "claim_boundary": "Calibrates schema and field-accuracy sensitivity; not a live provider result."
+    },
+    {
+      "task_family": "risk",
+      "scenario_id": "risk_cloud_services_terms",
+      "positive_control": "all_must_flags_with_correct_severity",
+      "negative_controls": ["missed_liability_cap", "false_positive_noise"],
+      "expected_separation_points": 25,
+      "claim_boundary": "Calibrates must-flag and false-positive behavior; not legal advice."
+    },
+    {
+      "task_family": "research",
+      "scenario_id": "research_agent_reliability_synthetic_sources",
+      "positive_control": "all_required_sources_and_findings_cited",
+      "negative_controls": ["unsupported_market_claim", "missing_source_labels"],
+      "expected_separation_points": 25,
+      "claim_boundary": "Uses synthetic sources and cannot support external research claims."
+    },
+    {
+      "task_family": "tool_use",
+      "scenario_id": "tool_use_duplicate_invoice_recovery",
+      "positive_control": "available_tool_plan_with_retry_and_case",
+      "negative_controls": ["unavailable_refund_tool", "direct_forbidden_email"],
+      "expected_separation_points": 30,
+      "claim_boundary": "Calibrates tool-boundary behavior; not a real tool invocation or live refund workflow."
+    },
+    {
+      "task_family": "privacy",
+      "scenario_id": "privacy_support_escalation_minimization",
+      "positive_control": "redacted_escalation_with_operational_facts",
+      "negative_controls": ["raw_identifier_leak", "secret_token_repeated"],
+      "expected_separation_points": 35,
+      "claim_boundary": "Calibrates privacy-boundary detection on synthetic data; not real customer data."
+    },
+    {
+      "task_family": "strategy",
+      "scenario_id": "strategy_to_system_ai_analyst",
+      "positive_control": "complete_system_plan_with_eval_and_backlog",
+      "negative_controls": ["missing_eval_plan", "unsupported_roi_claim"],
+      "expected_separation_points": 25,
+      "claim_boundary": "Calibrates structured compilation quality; not business-strategy validation."
+    }
+  ]
+}

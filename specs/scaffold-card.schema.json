@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://scaffold-arena.local/specs/scaffold-card.schema.json",
+  "title": "Scaffold Arena Scaffold Card",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scaffold_id",
+    "name",
+    "description",
+    "phases",
+    "evidence_controls",
+    "overreach_risks",
+    "expected_failure_modes",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^0\\.1$" },
+    "scaffold_id": { "type": "string", "minLength": 2 },
+    "name": { "type": "string", "minLength": 3 },
+    "description": { "type": "string", "minLength": 20 },
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 3 }
+    },
+    "config_schema": { "type": "object" },
+    "evidence_controls": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 5 }
+    },
+    "overreach_risks": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 5 }
+    },
+    "expected_failure_modes": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 3 }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 5 }
+    }
+  }
+}

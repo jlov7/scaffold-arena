@@ -1,0 +1,73 @@
+name: Harness CI
+description: Run provider-free, base-versus-candidate Harness CI and retain its JSON and PR-comment body.
+
+inputs:
+  replay-contract:
+    description: Path to the strict checkpointed paired replay contract JSON.
+    required: true
+  base:
+    description: Path to the base source/configuration file.
+    required: true
+  candidate:
+    description: Path to the candidate source/configuration file.
+    required: true
+  policy:
+    description: Path to the Harness CI policy JSON.
+    required: true
+  result-path:
+    description: Relative output path for the machine-readable report.
+    required: false
+    default: harness-ci-report.json
+  comment-path:
+    description: Relative output path for a PR-comment body artifact; this action never posts it.
+    required: false
+    default: harness-ci-pr-comment.md
+  artifact-name:
+    description: Artifact name for the report and comment body.
+    required: false
+    default: harness-ci-report
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      with:
+        python-version: "3.12"
+    - name: Set up uv
+      uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+      with:
+        version: "0.12.5"
+    - name: Install locked Harness CI dependencies
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: uv sync --project backend --frozen --extra dev
+    - name: Run bounded Harness CI
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      env:
+        ARENA_PROVIDER_EXECUTION: disabled
+        REPLAY_CONTRACT: ${{ inputs.replay-contract }}
+        BASE_PATH: ${{ inputs.base }}
+        CANDIDATE_PATH: ${{ inputs.candidate }}
+        POLICY_PATH: ${{ inputs.policy }}
+        RESULT_PATH: ${{ inputs.result-path }}
+        COMMENT_PATH: ${{ inputs.comment-path }}
+      run: |
+        set -euo pipefail
+        uv run --project backend arena harness-ci \
+          --replay "$REPLAY_CONTRACT" \
+          --base "$BASE_PATH" \
+          --candidate "$CANDIDATE_PATH" \
+          --policy "$POLICY_PATH" \
+          --output "$RESULT_PATH" \
+          --comment-output "$COMMENT_PATH"
+    - name: Upload Harness CI report and PR-comment body
+      if: always()
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: |
+          ${{ inputs.result-path }}
+          ${{ inputs.comment-path }}
+        if-no-files-found: warn

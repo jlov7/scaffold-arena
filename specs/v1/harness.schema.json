@@ -1,0 +1,259 @@
+{
+  "$defs": {
+    "HarnessCapabilities": {
+      "additionalProperties": false,
+      "properties": {
+        "checkpoint": {
+          "default": false,
+          "title": "Checkpoint",
+          "type": "boolean"
+        },
+        "delegation": {
+          "default": false,
+          "title": "Delegation",
+          "type": "boolean"
+        },
+        "memory": {
+          "default": false,
+          "title": "Memory",
+          "type": "boolean"
+        },
+        "sandboxing": {
+          "default": false,
+          "title": "Sandboxing",
+          "type": "boolean"
+        },
+        "state": {
+          "default": false,
+          "title": "State",
+          "type": "boolean"
+        },
+        "streaming": {
+          "default": false,
+          "title": "Streaming",
+          "type": "boolean"
+        },
+        "tools": {
+          "default": false,
+          "title": "Tools",
+          "type": "boolean"
+        },
+        "usage": {
+          "default": false,
+          "title": "Usage",
+          "type": "boolean"
+        }
+      },
+      "title": "HarnessCapabilities",
+      "type": "object"
+    },
+    "HarnessSchemaHashes": {
+      "additionalProperties": false,
+      "properties": {
+        "config_schema_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Config Schema Hash"
+        },
+        "input_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Hash"
+        },
+        "output_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Hash"
+        },
+        "trace_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Trace Hash"
+        }
+      },
+      "title": "HarnessSchemaHashes",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/harness.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adapter": {
+      "enum": [
+        "http",
+        "cli",
+        "recorded",
+        "in_process"
+      ],
+      "title": "Adapter",
+      "type": "string"
+    },
+    "adapter_digest": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Adapter Digest"
+    },
+    "adapter_identity": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Adapter Identity"
+    },
+    "allowed_tools": {
+      "default": [],
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+        "type": "string"
+      },
+      "title": "Allowed Tools",
+      "type": "array"
+    },
+    "capabilities": {
+      "$ref": "#/$defs/HarnessCapabilities"
+    },
+    "claim_eligibility": {
+      "default": "fixture_only",
+      "enum": [
+        "fixture_only",
+        "protocol_only",
+        "live_provider",
+        "externally_validated"
+      ],
+      "title": "Claim Eligibility",
+      "type": "string"
+    },
+    "configuration": {
+      "additionalProperties": true,
+      "title": "Configuration",
+      "type": "object"
+    },
+    "effective_configuration_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Effective Configuration Hash"
+    },
+    "execution_mode": {
+      "default": "recorded",
+      "enum": [
+        "local",
+        "container",
+        "remote",
+        "recorded"
+      ],
+      "title": "Execution Mode",
+      "type": "string"
+    },
+    "extensions": {
+      "additionalProperties": true,
+      "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+      "title": "Extensions",
+      "type": "object"
+    },
+    "harness_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Harness Id",
+      "type": "string"
+    },
+    "isolation": {
+      "default": "none",
+      "enum": [
+        "none",
+        "process",
+        "container",
+        "remote_sandbox"
+      ],
+      "title": "Isolation",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "retries": {
+      "default": 0,
+      "maximum": 10,
+      "minimum": 0,
+      "title": "Retries",
+      "type": "integer"
+    },
+    "schema_hashes": {
+      "$ref": "#/$defs/HarnessSchemaHashes"
+    },
+    "timeout_seconds": {
+      "default": 120,
+      "maximum": 3600,
+      "minimum": 1,
+      "title": "Timeout Seconds",
+      "type": "integer"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "harness_id",
+    "version",
+    "adapter"
+  ],
+  "title": "HarnessSpec",
+  "type": "object"
+}

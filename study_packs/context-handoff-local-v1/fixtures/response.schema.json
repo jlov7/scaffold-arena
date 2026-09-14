@@ -1,0 +1,1 @@
+{"type":"object","required":["answer","evidence"],"properties":{"answer":{"type":"string"},"evidence":{"type":"string"}},"additionalProperties":false}

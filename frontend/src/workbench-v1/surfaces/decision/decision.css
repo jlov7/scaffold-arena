@@ -1,0 +1,12 @@
+.sa-decision { display: grid; gap: var(--sa-space-4); }
+.sa-decision-question { max-width: 44rem; margin: 0 0 var(--sa-space-4); color: var(--lab-text); font-size: clamp(1.2rem, 2vw, 1.55rem); font-weight: 620; line-height: 1.25; }
+.sa-decision-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sa-space-3); margin-bottom: var(--sa-space-3); }
+.sa-decision-preview > div { display: grid; gap: var(--sa-space-1); min-height: 7rem; padding: var(--sa-space-3); border: 1px solid var(--lab-hairline); border-radius: var(--lab-radius-sm); background: var(--lab-surface-2); }
+.sa-decision-preview strong { color: var(--lab-text); font-size: 0.75rem; }
+.sa-decision-preview span, .sa-decision-boundary { color: var(--lab-text-soft); font-size: 0.8125rem; line-height: 1.5; }
+.sa-decision-boundary { max-width: 52rem; }
+.sa-decision-hold { display: grid; gap: var(--sa-space-2); margin: 0; }
+.sa-decision-hold div { display: grid; grid-template-columns: minmax(7rem, auto) 1fr; gap: var(--sa-space-2); }
+.sa-decision-hold dt { font-weight: 700; }
+.sa-decision-hold dd { margin: 0; }
+@media (max-width: 44rem) { .sa-decision-preview { grid-template-columns: 1fr; } .sa-decision-hold div { grid-template-columns: 1fr; gap: 0; } }

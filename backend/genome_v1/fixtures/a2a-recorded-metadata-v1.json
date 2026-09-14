@@ -1,0 +1,10 @@
+{
+  "fixture_schema": "scaffold-arena.genome-fixture/1",
+  "protocol": "a2a",
+  "synthetic": true,
+  "recorded_metadata_only": true,
+  "source_date": "2026-08-18",
+  "agent_card": {"name": "Synthetic A2A fixture", "version": "1.0.0", "capabilities": {"streaming": false}},
+  "task": {"id": "fixture-task", "state": "submitted"},
+  "claim_ceiling": "synthetic Agent Card and task metadata only; no remote task execution, authentication, or interoperability claim"
+}

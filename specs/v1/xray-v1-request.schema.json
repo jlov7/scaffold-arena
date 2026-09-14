@@ -1,0 +1,45 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/xray-v1-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A bounded, already-captured artifact to inspect without executing it.",
+  "properties": {
+    "profile_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Profile Id"
+    },
+    "source_artifact_digest": {
+      "pattern": "^(?:sha256:)?[a-f0-9]{64}$",
+      "title": "Source Artifact Digest",
+      "type": "string"
+    },
+    "source_kind": {
+      "default": "auto",
+      "enum": [
+        "auto",
+        "repository",
+        "acp",
+        "cli",
+        "sdk",
+        "otel_bundle",
+        "recorded_run"
+      ],
+      "title": "Source Kind",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_artifact_digest"
+  ],
+  "title": "XRayRequest",
+  "type": "object"
+}

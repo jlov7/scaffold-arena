@@ -1,0 +1,72 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/forge-v1-approval.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Human or policy decision; it cannot grant execution or promotion.",
+  "properties": {
+    "approver_identity": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Approver Identity",
+      "type": "string"
+    },
+    "authority_kind": {
+      "enum": [
+        "human",
+        "policy"
+      ],
+      "title": "Authority Kind",
+      "type": "string"
+    },
+    "decision": {
+      "enum": [
+        "APPROVED",
+        "REJECTED"
+      ],
+      "title": "Decision",
+      "type": "string"
+    },
+    "decision_evidence_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Decision Evidence Digest",
+      "type": "string"
+    },
+    "execution_authorized": {
+      "const": false,
+      "default": false,
+      "title": "Execution Authorized",
+      "type": "boolean"
+    },
+    "merge_authorized": {
+      "const": false,
+      "default": false,
+      "title": "Merge Authorized",
+      "type": "boolean"
+    },
+    "policy_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Policy Digest",
+      "type": "string"
+    },
+    "proposal_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Proposal Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.forge-approval/1",
+      "default": "scaffold-arena.forge-approval/1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "proposal_digest",
+    "approver_identity",
+    "authority_kind",
+    "decision",
+    "policy_digest",
+    "decision_evidence_digest"
+  ],
+  "title": "ForgeApproval",
+  "type": "object"
+}

@@ -1,0 +1,147 @@
+{
+  "$defs": {
+    "InitialStateRef": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Snapshot Hash",
+          "type": "string"
+        },
+        "state_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "State Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state_id",
+        "snapshot_hash"
+      ],
+      "title": "InitialStateRef",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/trace-event.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "actor": {
+      "enum": [
+        "harness",
+        "model",
+        "tool",
+        "evaluator",
+        "system"
+      ],
+      "title": "Actor",
+      "type": "string"
+    },
+    "attempt_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "episode_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "event_type": {
+      "enum": [
+        "request",
+        "response",
+        "tool_call",
+        "tool_result",
+        "state",
+        "error"
+      ],
+      "title": "Event Type",
+      "type": "string"
+    },
+    "monotonic_time": {
+      "minimum": 0.0,
+      "title": "Monotonic Time",
+      "type": "number"
+    },
+    "payload": {
+      "additionalProperties": true,
+      "title": "Payload",
+      "type": "object"
+    },
+    "payload_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Payload Hash",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "redaction": {
+      "default": "none",
+      "enum": [
+        "none",
+        "partial",
+        "full"
+      ],
+      "title": "Redaction",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 0,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "source_time": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Time"
+    },
+    "state_ref": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/InitialStateRef"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "timestamp": {
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    },
+    "trace_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Trace Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "trace_id",
+    "episode_id",
+    "attempt_id",
+    "sequence",
+    "actor",
+    "event_type",
+    "timestamp",
+    "monotonic_time",
+    "payload",
+    "payload_hash"
+  ],
+  "title": "TraceEvent",
+  "type": "object"
+}

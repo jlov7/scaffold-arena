@@ -1,0 +1,18 @@
+{
+  "dev-helpful": {
+    "answer": "hold",
+    "evidence": "rollback-receipt"
+  },
+  "dev-distractor": {
+    "answer": "stable",
+    "evidence": "current-baseline"
+  },
+  "analysis-holdout-helpful": {
+    "answer": "hold",
+    "evidence": "provenance-receipt"
+  },
+  "analysis-holdout-distractor": {
+    "answer": "hold",
+    "evidence": "current-baseline"
+  }
+}

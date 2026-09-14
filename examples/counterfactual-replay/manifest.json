@@ -1,0 +1,29 @@
+{
+  "schema_version": "scaffold-arena.public-example/1",
+  "example_id": "counterfactual-replay",
+  "status": "HOLD",
+  "run": {
+    "cwd": "repository-root",
+    "command": "uv run --project backend arena harness-ci --replay examples/counterfactual-replay/fixture-replay.json --base examples/counterfactual-replay/fixture-base.json --candidate examples/counterfactual-replay/fixture-candidate.json --policy examples/counterfactual-replay/fixture-policy.json --output /tmp/scaffold-arena-counterfactual-replay-report.json",
+    "expected_exit_code": 2,
+    "output": "/tmp/scaffold-arena-counterfactual-replay-report.json"
+  },
+  "inputs": [
+    {"path": "examples/counterfactual-replay/fixture-replay.json", "role": "checkpointed paired replay"},
+    {"path": "examples/counterfactual-replay/fixture-base.json", "role": "base source"},
+    {"path": "examples/counterfactual-replay/fixture-candidate.json", "role": "candidate source"},
+    {"path": "examples/counterfactual-replay/fixture-policy.json", "role": "Harness CI policy"}
+  ],
+  "expected": {
+    "verdict": "HOLD",
+    "usage_state": "unknown",
+    "provider_execution_started": false,
+    "execution_started": false,
+    "network_requested": false,
+    "comment_posted": false
+  },
+  "evidence_ceiling": "Synthetic checkpointed paired replay and bounded policy mechanics only; not a benchmark, causal estimate, model result, or live replay.",
+  "focused_test": "backend/tests/examples_v1/test_public_examples.py::test_counterfactual_replay_example_preserves_hold",
+  "cleanup": ["rm -f /tmp/scaffold-arena-counterfactual-replay-report.json"],
+  "pinned_screenshot": {"status": "HOLD", "reason": "No dedicated Trace / Counterfactual Lab capture is claimed in this example-only change."}
+}

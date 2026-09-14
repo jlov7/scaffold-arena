@@ -1,0 +1,29 @@
+{
+  "schema_version": "scaffold-arena.public-example/1",
+  "example_id": "local-model-harness-comparison",
+  "status": "HOLD",
+  "run": {
+    "cwd": "repository-root",
+    "command": "uv run --project backend pytest backend/tests/adapters_v1/openai_compatible/test_adapter.py backend/tests/adapters_v1/certification/test_kit.py -q",
+    "expected_exit_code": 0,
+    "output": "stdout (pytest report)"
+  },
+  "inputs": [
+    {"path": "backend/adapters_v1/openai_compatible", "role": "loopback protocol adapter"},
+    {"path": "backend/adapters_v1/certification", "role": "certification kit"},
+    {"path": "backend/tests/adapters_v1/openai_compatible/test_adapter.py", "role": "mocked adapter tests"},
+    {"path": "backend/tests/adapters_v1/certification/test_kit.py", "role": "certification boundary tests"},
+    {"path": "docs/adapters/certification.md", "role": "support and claim boundary"}
+  ],
+  "expected": {
+    "tests_pass": true,
+    "provider_started": false,
+    "model_output_produced": false,
+    "comparison_emitted": false,
+    "runtime_claim": "protocol_only HOLD"
+  },
+  "evidence_ceiling": "Protocol-only/fixture adapter conformance and endpoint pinning; not Ollama/LM Studio availability, model quality, cost, latency, sandbox, or harness comparison.",
+  "focused_test": "backend/tests/adapters_v1/openai_compatible/test_adapter.py and backend/tests/adapters_v1/certification/test_kit.py",
+  "cleanup": [],
+  "pinned_screenshot": {"status": "HOLD", "reason": "No local model runtime is configured; no local-provider screenshot is claimed."}
+}

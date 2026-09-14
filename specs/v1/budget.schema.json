@@ -1,0 +1,48 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/budget.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "max_attempts": {
+      "minimum": 1,
+      "title": "Max Attempts",
+      "type": "integer"
+    },
+    "max_context_tokens": {
+      "description": "Maximum input context consumption, measured in provider-reported tokens.",
+      "minimum": 1,
+      "title": "Max Context Tokens",
+      "type": "integer"
+    },
+    "max_cost_usd": {
+      "minimum": 0.0,
+      "title": "Max Cost Usd",
+      "type": "number"
+    },
+    "max_latency_seconds": {
+      "exclusiveMinimum": 0.0,
+      "title": "Max Latency Seconds",
+      "type": "number"
+    },
+    "max_tokens": {
+      "minimum": 1,
+      "title": "Max Tokens",
+      "type": "integer"
+    },
+    "max_tool_calls": {
+      "minimum": 0,
+      "title": "Max Tool Calls",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "max_attempts",
+    "max_cost_usd",
+    "max_latency_seconds",
+    "max_tokens",
+    "max_tool_calls",
+    "max_context_tokens"
+  ],
+  "title": "BudgetSpec",
+  "type": "object"
+}

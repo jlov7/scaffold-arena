@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1",
+  "taxonomy_version": "v0.1",
+  "failure_types": [
+    {
+      "id": "low_total_score",
+      "default_severity": "medium",
+      "description": "Evaluation score falls below the release threshold for the scenario.",
+      "signals": ["total_score below threshold"],
+      "recommendation": "Queue autopsy, patch, and rerun before using the result as evidence.",
+      "regression_key_pattern": "{task}.{scaffold}.low_total_score",
+      "suggested_fixture": "Run artifact with total_score below 70."
+    },
+    {
+      "id": "schema_missing_required_fields",
+      "default_severity": "high",
+      "description": "Output or evaluation notes indicate required schema fields are missing.",
+      "signals": ["missing required field", "schema_validity below threshold"],
+      "recommendation": "Add a fixture that asserts required fields are present.",
+      "regression_key_pattern": "{task}.{scaffold}.schema_missing_required_fields",
+      "suggested_fixture": "Structured extraction output with missing required fields."
+    },
+    {
+      "id": "unsupported_claims",
+      "default_severity": "high",
+      "description": "Output makes claims not grounded in scenario evidence or required sources.",
+      "signals": ["unsupported claim note", "missing source id"],
+      "recommendation": "Require source-backed claim checks before report export.",
+      "regression_key_pattern": "{task}.{scaffold}.unsupported_claims",
+      "suggested_fixture": "Research output with market claim and no citation."
+    },
+    {
+      "id": "privacy_boundary_violation",
+      "default_severity": "critical",
+      "description": "Output includes data that the scenario explicitly requires minimizing or excluding.",
+      "signals": ["forbidden field present", "raw identifier leaked"],
+      "recommendation": "Block public reporting and add a privacy-boundary regression fixture.",
+      "regression_key_pattern": "{task}.{scaffold}.privacy_boundary_violation",
+      "suggested_fixture": "Privacy task output that repeats forbidden personal data."
+    },
+    {
+      "id": "scaffold_overreach",
+      "default_severity": "high",
+      "description": "Scaffold adds assumptions, tools, actions, or claims outside the scenario contract.",
+      "signals": ["invented tool", "extra policy", "new requirement"],
+      "recommendation": "Constrain scaffold instructions and add an overreach negative-control fixture.",
+      "regression_key_pattern": "{task}.{scaffold}.scaffold_overreach",
+      "suggested_fixture": "Tool-selection output that calls an unavailable tool."
+    },
+    {
+      "id": "weak_evidence_trail",
+      "default_severity": "medium",
+      "description": "Run artifact lacks enough evidence to audit the score or claim.",
+      "signals": ["empty evidence array", "missing metric notes", "missing trace ids"],
+      "recommendation": "Persist evidence records for every public claim and score component.",
+      "regression_key_pattern": "{task}.{scaffold}.weak_evidence_trail",
+      "suggested_fixture": "Run artifact with score but no evidence records."
+    }
+  ]
+}

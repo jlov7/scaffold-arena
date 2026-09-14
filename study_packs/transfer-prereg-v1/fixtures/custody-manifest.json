@@ -1,0 +1,10 @@
+{
+  "artifact_type": "offline-preregistration-custody-v1",
+  "study_id": "transfer-prereg-v1",
+  "files": [
+    {"path": "preregistration.md", "sha256": "58623267b4255832945d3d3576ab32ea02a0138479bb476d5240ac20a4ba91a2"},
+    {"path": "scientific-study.json", "sha256": "64ff3f03918e5de31e9b3a4a7c03df587457880712ed0187d101e555f304636a"}
+  ],
+  "publication_state": "hold_not_public",
+  "integrity_not_truth": true
+}

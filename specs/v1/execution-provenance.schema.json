@@ -1,0 +1,103 @@
+{
+  "$defs": {
+    "ProvenanceSourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "content_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "source_uri": {
+          "minLength": 1,
+          "title": "Source Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_uri",
+        "content_hash"
+      ],
+      "title": "ProvenanceSourceRef",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/execution-provenance.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "captured_at": {
+      "format": "date-time",
+      "title": "Captured At",
+      "type": "string"
+    },
+    "code_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Code Hash",
+      "type": "string"
+    },
+    "code_revision": {
+      "minLength": 1,
+      "title": "Code Revision",
+      "type": "string"
+    },
+    "context_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Context Hash",
+      "type": "string"
+    },
+    "environment_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Environment Hash",
+      "type": "string"
+    },
+    "prompt_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Prompt Hash",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "runtime_image": {
+      "minLength": 1,
+      "title": "Runtime Image",
+      "type": "string"
+    },
+    "runtime_image_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Runtime Image Hash",
+      "type": "string"
+    },
+    "source_refs": {
+      "items": {
+        "$ref": "#/$defs/ProvenanceSourceRef"
+      },
+      "minItems": 1,
+      "title": "Source Refs",
+      "type": "array"
+    },
+    "tool_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Tool Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "code_revision",
+    "code_hash",
+    "runtime_image",
+    "runtime_image_hash",
+    "environment_hash",
+    "prompt_hash",
+    "context_hash",
+    "tool_hash",
+    "source_refs",
+    "captured_at"
+  ],
+  "title": "ExecutionProvenance",
+  "type": "object"
+}

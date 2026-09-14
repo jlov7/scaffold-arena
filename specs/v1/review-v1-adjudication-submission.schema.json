@@ -1,0 +1,53 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/review-v1-adjudication-submission.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adjudicator_pseudonym": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Adjudicator Pseudonym",
+      "type": "string"
+    },
+    "decision": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Decision",
+      "type": "string"
+    },
+    "evidence_artifact_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Evidence Artifact Digest",
+      "type": "string"
+    },
+    "final_scores": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "minProperties": 1,
+      "title": "Final Scores",
+      "type": "object"
+    },
+    "item_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Item Id",
+      "type": "string"
+    },
+    "rationale": {
+      "minLength": 1,
+      "title": "Rationale",
+      "type": "string"
+    }
+  },
+  "required": [
+    "item_id",
+    "adjudicator_pseudonym",
+    "final_scores",
+    "decision",
+    "rationale",
+    "evidence_artifact_digest"
+  ],
+  "title": "AdjudicationSubmission",
+  "type": "object"
+}

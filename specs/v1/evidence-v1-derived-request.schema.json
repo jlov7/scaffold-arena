@@ -1,0 +1,24 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/evidence-v1-derived-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Public request contract for evidence derived from a durable execution.",
+  "properties": {
+    "execution_id": {
+      "minLength": 1,
+      "title": "Execution Id",
+      "type": "string"
+    },
+    "request_key": {
+      "minLength": 1,
+      "title": "Request Key",
+      "type": "string"
+    }
+  },
+  "required": [
+    "execution_id",
+    "request_key"
+  ],
+  "title": "DerivedEvidenceRequest",
+  "type": "object"
+}

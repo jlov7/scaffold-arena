@@ -1,0 +1,185 @@
+{
+  "$defs": {
+    "StandardCatalogEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "display_name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "license_spdx": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Spdx"
+        },
+        "limitations": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Limitations",
+          "type": "array"
+        },
+        "migration_alias_to": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Migration Alias To"
+        },
+        "observed_version": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed Version"
+        },
+        "revision_discoverability": {
+          "default": "not_captured",
+          "enum": [
+            "pinned",
+            "not_discoverable",
+            "not_captured"
+          ],
+          "title": "Revision Discoverability",
+          "type": "string"
+        },
+        "source_content_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Content Digest"
+        },
+        "source_date": {
+          "format": "date",
+          "title": "Source Date",
+          "type": "string"
+        },
+        "source_revision": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Revision"
+        },
+        "source_urls": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 8,
+          "minItems": 1,
+          "title": "Source Urls",
+          "type": "array"
+        },
+        "standard_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Standard Id",
+          "type": "string"
+        },
+        "support_level": {
+          "enum": [
+            "catalog_only",
+            "descriptor_only",
+            "import_only",
+            "schema_validated",
+            "fixture_conformance",
+            "allowlisted_spawn"
+          ],
+          "title": "Support Level",
+          "type": "string"
+        }
+      },
+      "required": [
+        "standard_id",
+        "display_name",
+        "source_urls",
+        "source_date",
+        "support_level",
+        "limitations"
+      ],
+      "title": "StandardCatalogEntry",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/genome-standards-catalog.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Versioned, source-dated catalog metadata; never runtime support proof.",
+  "properties": {
+    "catalog_schema": {
+      "const": "scaffold-arena.genome-standards/1",
+      "default": "scaffold-arena.genome-standards/1",
+      "title": "Catalog Schema",
+      "type": "string"
+    },
+    "claim_ceiling": {
+      "const": "source-dated catalog metadata only",
+      "default": "source-dated catalog metadata only",
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/StandardCatalogEntry"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Entries",
+      "type": "array"
+    },
+    "source_date": {
+      "format": "date",
+      "title": "Source Date",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_date",
+    "entries"
+  ],
+  "title": "StandardsCatalog",
+  "type": "object"
+}

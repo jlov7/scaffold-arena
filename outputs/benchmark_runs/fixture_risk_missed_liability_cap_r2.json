@@ -1,0 +1,96 @@
+{
+  "schema_version": "0.1",
+  "run_id": "fixture_risk_missed_liability_cap_r2",
+  "protocol_version": "0.1",
+  "mode": "fixture",
+  "task_family": "risk",
+  "task_id": "risk",
+  "scenario_id": "risk_missed_liability_cap",
+  "control": "missed_liability_cap",
+  "expected_role": "negative",
+  "model_id": "fixture-no-provider-deterministic-v1",
+  "scaffold_id": "bare",
+  "evaluation_profile": "strict",
+  "created_at": "2026-05-23T00:00:00Z",
+  "output": {
+    "overall_risk_score": 82,
+    "top_3_priorities": [
+      "liability",
+      "data use",
+      "indemnity"
+    ],
+    "negotiation_leverage_points": [
+      "enterprise buying power"
+    ],
+    "risk_items": []
+  },
+  "metrics": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0.0,
+    "wall_time_ms": null,
+    "num_api_calls": 0,
+    "provider_usage_status": "known_none_no_provider_invoked",
+    "measurement_scope": "fixture_deterministic_controls",
+    "latency_status": "not_measured"
+  },
+  "evaluation": {
+    "total_score": 11.8,
+    "breakdown": {
+      "must_flag_hit_rate": 0.0,
+      "false_positive_rate": 100.0,
+      "risk_level_accuracy": 0.0,
+      "structure_compliance": 0.0
+    },
+    "weights": {
+      "must_flag_hit_rate": {
+        "type": "deterministic",
+        "weight": 0.487192
+      },
+      "risk_level_accuracy": {
+        "type": "deterministic",
+        "weight": 0.21653
+      },
+      "false_positive_rate": {
+        "type": "deterministic",
+        "weight": 0.108265
+      },
+      "structure_compliance": {
+        "type": "deterministic",
+        "weight": 0.108265
+      },
+      "recommendation_quality": {
+        "type": "judge",
+        "weight": 0.079749
+      }
+    },
+    "profile": "strict",
+    "notes": [
+      "Missing clause: '2'",
+      "Missing clause: '3'",
+      "Missing clause: '4'",
+      "Missing clause: '6'",
+      "Missing clause: '9'",
+      "Missing clause: '1'",
+      "Missing clause: '2'",
+      "Missing clause: '7'",
+      "Missing clause: '8'"
+    ],
+    "judge": null,
+    "deterministic_weight": 0.920252
+  },
+  "evidence": [
+    {
+      "kind": "fixture_control",
+      "summary": "negative control for risk: missed_liability_cap"
+    }
+  ],
+  "limitations": [
+    "Fixture-mode artifact generated from deterministic controls, not a live provider run.",
+    "No provider was invoked, so provider input tokens, output tokens, cost, and API calls are known to be none and recorded as zero.",
+    "Fixture runtime latency was not measured; wall_time_ms is null.",
+    "Timestamps are fixed fixture values for reproducibility, not observed execution times.",
+    "Fixture scores are deterministic control outcomes, not model-performance evidence.",
+    "Use live mode before making provider/model performance claims."
+  ]
+}

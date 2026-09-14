@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "generated_at": "2026-06-01T00:00:00Z",
+  "status": "benchmark_leakage_audit_passed_fixture_contract_not_hidden_test",
+  "scenario_pack": "docs/benchmarking/scenario_pack_v0.1.json",
+  "fixture_run_glob": "outputs/benchmark_runs/*.json",
+  "scenario_prompt_count": 18,
+  "task_prompt_count": 6,
+  "fixture_output_count": 54,
+  "scenario_prompt_leak_count": 0,
+  "task_prompt_leak_count": 0,
+  "artifact_output_leak_count": 0,
+  "scenario_role_mismatch_count": 0,
+  "violations": {
+    "scenario_prompts": [],
+    "task_prompts": [],
+    "fixture_outputs": [],
+    "scenario_role_mismatches": []
+  },
+  "claim_boundary": "This audit checks obvious benchmark leakage in scenario prompts, built-in task prompts, fixture outputs, and scenario-role alignment. It is not a guarantee against all benchmark contamination, not live benchmark evidence, not human calibration evidence, and not external validation evidence."
+}

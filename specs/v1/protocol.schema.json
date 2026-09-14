@@ -1,0 +1,158 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/protocol.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Stable public index generated from active Protocol v1, evidence, review, X-Ray, and Observatory contracts.",
+  "oneOf": [
+    {
+      "$ref": "analysis-v1-decision-admission-request.schema.json"
+    },
+    {
+      "$ref": "aggregate-budget.schema.json"
+    },
+    {
+      "$ref": "attempt-envelope.schema.json"
+    },
+    {
+      "$ref": "budget.schema.json"
+    },
+    {
+      "$ref": "episode.schema.json"
+    },
+    {
+      "$ref": "evaluation-record.schema.json"
+    },
+    {
+      "$ref": "evidence-v1-admission-request.schema.json"
+    },
+    {
+      "$ref": "evidence-v1-derived-request.schema.json"
+    },
+    {
+      "$ref": "evidence-v1-evidence-receipt.schema.json"
+    },
+    {
+      "$ref": "evidence-v1-reproduction-receipt.schema.json"
+    },
+    {
+      "$ref": "evidence-v1-reproduction-request.schema.json"
+    },
+    {
+      "$ref": "execution-provenance.schema.json"
+    },
+    {
+      "$ref": "experiment.schema.json"
+    },
+    {
+      "$ref": "factor.schema.json"
+    },
+    {
+      "$ref": "grader-spec.schema.json"
+    },
+    {
+      "$ref": "genome-descriptor.schema.json"
+    },
+    {
+      "$ref": "genome-graph-projection.schema.json"
+    },
+    {
+      "$ref": "genome-standards-catalog.schema.json"
+    },
+    {
+      "$ref": "harness-mechanism-atlas.schema.json"
+    },
+    {
+      "$ref": "harness-mechanism-atlas-citation-manifest.schema.json"
+    },
+    {
+      "$ref": "harness-mechanism-atlas-release-digest.schema.json"
+    },
+    {
+      "$ref": "harness.schema.json"
+    },
+    {
+      "$ref": "outcome-vector.schema.json"
+    },
+    {
+      "$ref": "protocol-readiness-report.schema.json"
+    },
+    {
+      "$ref": "review-v1-adjudication-submission.schema.json"
+    },
+    {
+      "$ref": "review-v1-annotation-batch.schema.json"
+    },
+    {
+      "$ref": "review-v1-annotation-submission.schema.json"
+    },
+    {
+      "$ref": "review-v1-calibration-adjudication-result.schema.json"
+    },
+    {
+      "$ref": "review-v1-calibration-annotation-result.schema.json"
+    },
+    {
+      "$ref": "review-v1-human-rubric.schema.json"
+    },
+    {
+      "$ref": "scenario.schema.json"
+    },
+    {
+      "$ref": "study-pack.schema.json"
+    },
+    {
+      "$ref": "trace-event.schema.json"
+    },
+    {
+      "$ref": "xray-v1-request.schema.json"
+    },
+    {
+      "$ref": "xray-v1-report.schema.json"
+    },
+    {
+      "$ref": "xray-v1-source-snapshot.schema.json"
+    },
+    {
+      "$ref": "observatory-v1-request.schema.json"
+    },
+    {
+      "$ref": "observatory-v1-report.schema.json"
+    },
+    {
+      "$ref": "counterfactual-replay-v1-request.schema.json"
+    },
+    {
+      "$ref": "counterfactual-replay-v1-report.schema.json"
+    },
+    {
+      "$ref": "harness-ci-v1-request.schema.json"
+    },
+    {
+      "$ref": "harness-ci-v1-report.schema.json"
+    },
+    {
+      "$ref": "forge-v1-proposal.schema.json"
+    },
+    {
+      "$ref": "forge-v1-approval.schema.json"
+    },
+    {
+      "$ref": "forge-v1-evaluation.schema.json"
+    },
+    {
+      "$ref": "forge-v1-evolution-receipt.schema.json"
+    },
+    {
+      "$ref": "next-best-experiment-v1-request.schema.json"
+    },
+    {
+      "$ref": "next-best-experiment-v1-report.schema.json"
+    },
+    {
+      "$ref": "process-safety-v1-request.schema.json"
+    },
+    {
+      "$ref": "process-safety-v1-report.schema.json"
+    }
+  ],
+  "title": "Scaffold Arena Protocol v1"
+}

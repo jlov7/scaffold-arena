@@ -1,0 +1,15 @@
+{
+  "study_pack_id": "flagship-prereg-v1",
+  "version": "1.0.0",
+  "title": "Flagship Protocol-v1 preregistration readiness pack",
+  "license_spdx": "MIT",
+  "authors": [{"name": "Scaffold Arena"}],
+  "compatibility": {"protocol_min": "1.0", "protocol_max": "1.0"},
+  "allowed_claims": ["Protocol and recorded-fixture readiness only."],
+  "limitations": ["Preregistration is not publicly immutable and no provider request is authorized."],
+  "preregistration": {"reference_uri": "fixtures/preregistration.md", "content_hash": "ddffe9ba9c96086449e076909b5821ac4216938efdd50ae11435be0f9addd4bd"},
+  "scenarios": [{"scenario_id": "flagship-synthetic", "title": "Synthetic flagship task", "task_family": "scientific", "prompt": "Synthetic recorded-fixture task; no real provider call.", "source_label": "synthetic", "data_classification": "synthetic"}],
+  "harnesses": [{"harness_id": "recorded-fixture", "version": "1", "adapter": "recorded", "execution_mode": "recorded", "claim_eligibility": "fixture_only"}],
+  "experiments": [{"experiment_id": "flagship-protocol-v1", "study_pack_id": "flagship-prereg-v1", "scenario_ids": ["flagship-synthetic"], "harness_ids": ["recorded-fixture"], "model_endpoints": [{"endpoint_id": "local-model-a", "provider": "local", "model": "local-model-a", "endpoint_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, {"endpoint_id": "local-model-b", "provider": "local", "model": "local-model-b", "endpoint_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}], "sampling": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 256}, "repetitions": 1, "budgets": {"max_attempts": 1, "max_cost_usd": 0.0, "max_latency_seconds": 30.0, "max_tokens": 256, "max_tool_calls": 0, "max_context_tokens": 1024}, "aggregate_budget": {"max_total_cost_usd": 0.0, "max_total_tokens": 256, "max_total_tool_calls": 0, "max_wall_time_seconds": 30.0, "max_attempts": 1}, "deterministic_weight": 1.0, "claim_ceiling": "Protocol and recorded-fixture readiness only; no live-provider claim.", "claim_bearing": false, "owner_approval": "approved"}],
+  "extensions": {"org.scaffold-arena.scientific-v1": {"contract_uri": "fixtures/scientific-study.json", "contract_hash": "b4831d0d5165367906e03a76ea98b0287313332e38fc29d0a95be20782384d97", "publication_state": "hold_not_public", "no_retuning": false}}
+}

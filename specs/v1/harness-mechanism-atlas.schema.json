@@ -1,0 +1,1147 @@
+{
+  "$defs": {
+    "AgentProtocolProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "cancellation_semantics": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Cancellation Semantics",
+          "type": "string"
+        },
+        "lifecycle_objects": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 2,
+          "title": "Lifecycle Objects",
+          "type": "array"
+        },
+        "permission_semantics": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Permission Semantics",
+          "type": "string"
+        },
+        "profile_kind": {
+          "const": "agent_protocol",
+          "default": "agent_protocol",
+          "title": "Profile Kind",
+          "type": "string"
+        },
+        "protocol_distinction": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Protocol Distinction",
+          "type": "string"
+        },
+        "streaming_semantics": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Streaming Semantics",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lifecycle_objects",
+        "streaming_semantics",
+        "cancellation_semantics",
+        "permission_semantics",
+        "protocol_distinction"
+      ],
+      "title": "AgentProtocolProfile",
+      "type": "object"
+    },
+    "AtlasEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifact Digest"
+        },
+        "artifact_path": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifact Path"
+        },
+        "authority_ceiling": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Authority Ceiling",
+          "type": "string"
+        },
+        "citation_ids": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Citation Ids",
+          "type": "array"
+        },
+        "claim_ceiling": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Claim Ceiling",
+          "type": "string"
+        },
+        "evidence_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "integrity_not_truth": {
+          "const": true,
+          "default": true,
+          "title": "Integrity Not Truth",
+          "type": "boolean"
+        },
+        "kind": {
+          "enum": [
+            "official_source_metadata",
+            "local_source_snapshot",
+            "descriptor_contract",
+            "synthetic_fixture_metadata"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "known_unknown_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Known Unknown Ids",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Limitations",
+          "type": "array"
+        },
+        "maturity": {
+          "enum": [
+            "source_metadata",
+            "descriptor",
+            "synthetic_fixture",
+            "local_observation",
+            "live_observation",
+            "independent_reproduction"
+          ],
+          "title": "Maturity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "kind",
+        "maturity",
+        "authority_ceiling",
+        "claim_ceiling",
+        "limitations",
+        "known_unknown_ids"
+      ],
+      "title": "AtlasEvidence",
+      "type": "object"
+    },
+    "AtlasFamily": {
+      "additionalProperties": false,
+      "properties": {
+        "citation_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Citation Ids",
+          "type": "array"
+        },
+        "display_name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "family_id": {
+          "enum": [
+            "native_scaffold",
+            "graph_orchestrator",
+            "sdk_runtime",
+            "coding_cli",
+            "tool_protocol",
+            "agent_protocol",
+            "telemetry_surface"
+          ],
+          "title": "Family Id",
+          "type": "string"
+        },
+        "known_unknown_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Known Unknown Ids",
+          "type": "array"
+        },
+        "mechanism_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]{2,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Mechanism Ids",
+          "type": "array"
+        },
+        "semantic_contract": {
+          "discriminator": {
+            "mapping": {
+              "agent_protocol": "#/$defs/AgentProtocolProfile",
+              "coding_cli": "#/$defs/CodingCliProfile",
+              "graph_orchestrator": "#/$defs/GraphOrchestratorProfile",
+              "native_scaffold": "#/$defs/NativeScaffoldProfile",
+              "sdk_runtime": "#/$defs/SdkRuntimeProfile",
+              "telemetry_surface": "#/$defs/TelemetrySurfaceProfile",
+              "tool_protocol": "#/$defs/ToolProtocolProfile"
+            },
+            "propertyName": "profile_kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/NativeScaffoldProfile"
+            },
+            {
+              "$ref": "#/$defs/GraphOrchestratorProfile"
+            },
+            {
+              "$ref": "#/$defs/SdkRuntimeProfile"
+            },
+            {
+              "$ref": "#/$defs/CodingCliProfile"
+            },
+            {
+              "$ref": "#/$defs/ToolProtocolProfile"
+            },
+            {
+              "$ref": "#/$defs/AgentProtocolProfile"
+            },
+            {
+              "$ref": "#/$defs/TelemetrySurfaceProfile"
+            }
+          ],
+          "title": "Semantic Contract"
+        },
+        "semantic_namespace": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Semantic Namespace",
+          "type": "string"
+        }
+      },
+      "required": [
+        "family_id",
+        "display_name",
+        "semantic_namespace",
+        "semantic_contract",
+        "mechanism_ids",
+        "citation_ids",
+        "known_unknown_ids"
+      ],
+      "title": "AtlasFamily",
+      "type": "object"
+    },
+    "AtlasKnownUnknown": {
+      "additionalProperties": false,
+      "properties": {
+        "blocked_claims": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Blocked Claims",
+          "type": "array"
+        },
+        "related_citation_ids": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Related Citation Ids",
+          "type": "array"
+        },
+        "resolution_predicate": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Resolution Predicate",
+          "type": "string"
+        },
+        "statement": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        },
+        "subject_id": {
+          "title": "Subject Id",
+          "type": "string"
+        },
+        "subject_kind": {
+          "enum": [
+            "atlas",
+            "family",
+            "mechanism",
+            "citation",
+            "evidence",
+            "observation"
+          ],
+          "title": "Subject Kind",
+          "type": "string"
+        },
+        "unknown_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Unknown Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unknown_id",
+        "subject_kind",
+        "subject_id",
+        "statement",
+        "blocked_claims",
+        "resolution_predicate"
+      ],
+      "title": "AtlasKnownUnknown",
+      "type": "object"
+    },
+    "CatalogReference": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "const": "backend/genome_v1/data/standards_catalog_v1.json",
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "source_date": {
+          "title": "Source Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "source_date"
+      ],
+      "title": "CatalogReference",
+      "type": "object"
+    },
+    "CodingCliProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "approval_permission_mode": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Approval Permission Mode",
+          "type": "string"
+        },
+        "cli_session": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Cli Session",
+          "type": "string"
+        },
+        "containment_invariant": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Containment Invariant",
+          "type": "string"
+        },
+        "profile_kind": {
+          "const": "coding_cli",
+          "default": "coding_cli",
+          "title": "Profile Kind",
+          "type": "string"
+        },
+        "tool_filesystem_terminal_surface": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Tool Filesystem Terminal Surface",
+          "type": "string"
+        }
+      },
+      "required": [
+        "cli_session",
+        "approval_permission_mode",
+        "tool_filesystem_terminal_surface",
+        "containment_invariant"
+      ],
+      "title": "CodingCliProfile",
+      "type": "object"
+    },
+    "GraphOrchestratorProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "checkpoint_scope": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Checkpoint Scope",
+          "type": "string"
+        },
+        "interrupt_resume_semantics": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Interrupt Resume Semantics",
+          "type": "string"
+        },
+        "node_edge_model": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Node Edge Model",
+          "type": "string"
+        },
+        "profile_kind": {
+          "const": "graph_orchestrator",
+          "default": "graph_orchestrator",
+          "title": "Profile Kind",
+          "type": "string"
+        },
+        "state_graph_model": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "State Graph Model",
+          "type": "string"
+        },
+        "store_scope": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Store Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state_graph_model",
+        "node_edge_model",
+        "checkpoint_scope",
+        "store_scope",
+        "interrupt_resume_semantics"
+      ],
+      "title": "GraphOrchestratorProfile",
+      "type": "object"
+    },
+    "MechanismDeclaration": {
+      "additionalProperties": false,
+      "properties": {
+        "citation_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Citation Ids",
+          "type": "array"
+        },
+        "compatibility_requirements": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Compatibility Requirements",
+          "type": "array"
+        },
+        "configuration_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Configuration Digest"
+        },
+        "configuration_status": {
+          "enum": [
+            "captured",
+            "not_captured"
+          ],
+          "title": "Configuration Status",
+          "type": "string"
+        },
+        "declaration_status": {
+          "const": "declared",
+          "default": "declared",
+          "title": "Declaration Status",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "evidence_maturity": {
+          "enum": [
+            "source_metadata",
+            "descriptor",
+            "synthetic_fixture",
+            "local_observation",
+            "live_observation",
+            "independent_reproduction"
+          ],
+          "title": "Evidence Maturity",
+          "type": "string"
+        },
+        "family_id": {
+          "enum": [
+            "native_scaffold",
+            "graph_orchestrator",
+            "sdk_runtime",
+            "coding_cli",
+            "tool_protocol",
+            "agent_protocol",
+            "telemetry_surface"
+          ],
+          "title": "Family Id",
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/MechanismIdentity"
+        },
+        "implementation_identity": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Implementation Identity",
+          "type": "string"
+        },
+        "known_unknown_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Known Unknown Ids",
+          "type": "array"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_.-]{2,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        },
+        "mutability": {
+          "enum": [
+            "immutable",
+            "mutable",
+            "unknown"
+          ],
+          "title": "Mutability",
+          "type": "string"
+        },
+        "observability_surfaces": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Observability Surfaces",
+          "type": "array"
+        },
+        "security_responsibilities": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Security Responsibilities",
+          "type": "array"
+        }
+      },
+      "required": [
+        "mechanism_id",
+        "family_id",
+        "identity",
+        "implementation_identity",
+        "configuration_status",
+        "mutability",
+        "observability_surfaces",
+        "security_responsibilities",
+        "compatibility_requirements",
+        "evidence_maturity",
+        "citation_ids",
+        "evidence_ids",
+        "known_unknown_ids"
+      ],
+      "title": "MechanismDeclaration",
+      "type": "object"
+    },
+    "MechanismIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "arena_name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Arena Name",
+          "type": "string"
+        },
+        "catalog_standard_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Catalog Standard Id"
+        },
+        "citation_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Citation Ids",
+          "type": "array"
+        },
+        "identity_kind": {
+          "enum": [
+            "native_source",
+            "external_catalog"
+          ],
+          "title": "Identity Kind",
+          "type": "string"
+        },
+        "license_spdx": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Spdx"
+        },
+        "source_revision_state": {
+          "enum": [
+            "pinned",
+            "not_discoverable",
+            "not_captured"
+          ],
+          "title": "Source Revision State",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        }
+      },
+      "required": [
+        "arena_name",
+        "identity_kind",
+        "source_revision_state",
+        "citation_ids"
+      ],
+      "title": "MechanismIdentity",
+      "type": "object"
+    },
+    "MechanismObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "activation_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Activation Id",
+          "type": "string"
+        },
+        "artifact_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifact Digest"
+        },
+        "artifact_path": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Artifact Path"
+        },
+        "claim_ceiling": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Claim Ceiling",
+          "type": "string"
+        },
+        "evidence_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Evidence Ids",
+          "type": "array"
+        },
+        "integrity_not_truth": {
+          "const": true,
+          "default": true,
+          "title": "Integrity Not Truth",
+          "type": "boolean"
+        },
+        "known_unknown_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Known Unknown Ids",
+          "type": "array"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_.-]{2,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        },
+        "metadata_shape_only": {
+          "title": "Metadata Shape Only",
+          "type": "boolean"
+        },
+        "observed_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed At"
+        },
+        "status": {
+          "enum": [
+            "not_observed",
+            "synthetic_metadata_fixture",
+            "local_observed",
+            "live_observed",
+            "independently_reproduced"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "activation_id",
+        "mechanism_id",
+        "status",
+        "metadata_shape_only",
+        "evidence_ids",
+        "known_unknown_ids",
+        "claim_ceiling"
+      ],
+      "title": "MechanismObservation",
+      "type": "object"
+    },
+    "NativeScaffoldProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "configuration_knobs": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Configuration Knobs",
+          "type": "array"
+        },
+        "local_validation_repair": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Local Validation Repair",
+          "type": "string"
+        },
+        "phase_sequence": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Phase Sequence",
+          "type": "array"
+        },
+        "profile_kind": {
+          "const": "native_scaffold",
+          "default": "native_scaffold",
+          "title": "Profile Kind",
+          "type": "string"
+        },
+        "provider_call_shape": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Provider Call Shape",
+          "type": "string"
+        }
+      },
+      "required": [
+        "phase_sequence",
+        "provider_call_shape",
+        "local_validation_repair",
+        "configuration_knobs"
+      ],
+      "title": "NativeScaffoldProfile",
+      "type": "object"
+    },
+    "SdkRuntimeProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_loop": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Agent Loop",
+          "type": "string"
+        },
+        "guardrail_phase_tripwire": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Guardrail Phase Tripwire",
+          "type": "string"
+        },
+        "handoff_ownership": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Handoff Ownership",
+          "type": "string"
+        },
+        "profile_kind": {
+          "const": "sdk_runtime",
+          "default": "sdk_runtime",
+          "title": "Profile Kind",
+          "type": "string"
+        },
+        "session_tracing_surfaces": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Session Tracing Surfaces",
+          "type": "array"
+        }
+      },
+      "required": [
+        "agent_loop",
+        "handoff_ownership",
+        "guardrail_phase_tripwire",
+        "session_tracing_surfaces"
+      ],
+      "title": "SdkRuntimeProfile",
+      "type": "object"
+    },
+    "TelemetrySurfaceProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "profile_kind": {
+          "const": "telemetry_surface",
+          "default": "telemetry_surface",
+          "title": "Profile Kind",
+          "type": "string"
+        },
+        "schema_url": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Schema Url",
+          "type": "string"
+        },
+        "semantic_convention_namespace": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Semantic Convention Namespace",
+          "type": "string"
+        },
+        "signal": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Signal",
+          "type": "string"
+        },
+        "span_linkage": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Span Linkage",
+          "type": "string"
+        }
+      },
+      "required": [
+        "signal",
+        "semantic_convention_namespace",
+        "schema_url",
+        "span_linkage"
+      ],
+      "title": "TelemetrySurfaceProfile",
+      "type": "object"
+    },
+    "ToolProtocolProfile": {
+      "additionalProperties": false,
+      "properties": {
+        "authorization_consent": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Authorization Consent",
+          "type": "string"
+        },
+        "cancellation_task_support": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Cancellation Task Support",
+          "type": "string"
+        },
+        "control_owner": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Control Owner",
+          "type": "string"
+        },
+        "profile_kind": {
+          "const": "tool_protocol",
+          "default": "tool_protocol",
+          "title": "Profile Kind",
+          "type": "string"
+        },
+        "prompts_primitive": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Prompts Primitive",
+          "type": "string"
+        },
+        "resources_primitive": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Resources Primitive",
+          "type": "string"
+        },
+        "schemas": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Schemas",
+          "type": "string"
+        },
+        "tools_primitive": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Tools Primitive",
+          "type": "string"
+        }
+      },
+      "required": [
+        "prompts_primitive",
+        "resources_primitive",
+        "tools_primitive",
+        "control_owner",
+        "schemas",
+        "cancellation_task_support",
+        "authorization_consent"
+      ],
+      "title": "ToolProtocolProfile",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/harness-mechanism-atlas.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "atlas_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Atlas Digest",
+      "type": "string"
+    },
+    "atlas_id": {
+      "const": "harness-mechanism-atlas-v1",
+      "default": "harness-mechanism-atlas-v1",
+      "title": "Atlas Id",
+      "type": "string"
+    },
+    "atlas_schema": {
+      "const": "scaffold-arena.harness-mechanism-atlas/1",
+      "default": "scaffold-arena.harness-mechanism-atlas/1",
+      "title": "Atlas Schema",
+      "type": "string"
+    },
+    "canonicalization": {
+      "const": "arena-json-v1",
+      "default": "arena-json-v1",
+      "title": "Canonicalization",
+      "type": "string"
+    },
+    "catalog_ref": {
+      "$ref": "#/$defs/CatalogReference"
+    },
+    "citation_manifest_path": {
+      "const": "backend/genome_v1/data/harness_mechanism_atlas_citations_v1.json",
+      "title": "Citation Manifest Path",
+      "type": "string"
+    },
+    "claim_ceiling": {
+      "maxLength": 4096,
+      "minLength": 1,
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "declarations": {
+      "items": {
+        "$ref": "#/$defs/MechanismDeclaration"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Declarations",
+      "type": "array"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/AtlasEvidence"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "title": "Evidence",
+      "type": "array"
+    },
+    "families": {
+      "items": {
+        "$ref": "#/$defs/AtlasFamily"
+      },
+      "maxItems": 7,
+      "minItems": 7,
+      "title": "Families",
+      "type": "array"
+    },
+    "known_unknowns": {
+      "items": {
+        "$ref": "#/$defs/AtlasKnownUnknown"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "title": "Known Unknowns",
+      "type": "array"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/MechanismObservation"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Observations",
+      "type": "array"
+    },
+    "source_date": {
+      "title": "Source Date",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_date",
+    "catalog_ref",
+    "citation_manifest_path",
+    "families",
+    "declarations",
+    "observations",
+    "evidence",
+    "known_unknowns",
+    "claim_ceiling",
+    "atlas_digest"
+  ],
+  "title": "HarnessMechanismAtlas",
+  "type": "object"
+}

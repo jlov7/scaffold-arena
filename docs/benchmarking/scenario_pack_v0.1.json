@@ -1,0 +1,338 @@
+{
+  "schema_version": "0.1",
+  "pack_id": "scaffold_arena_fixture_controls_v0_1",
+  "name": "Scaffold Arena Fixture Control Scenario Pack v0.1",
+  "status": "fixture_scenario_contract_not_live_provider_results",
+  "methodology": [
+    "Each task family has one positive control and two negative controls.",
+    "Controls are synthetic and designed to exercise deterministic scoring, baseline separation, and trace-audit failure modes.",
+    "Scenario ids map directly to fixture run artifacts under outputs/benchmark_runs.",
+    "This pack validates benchmark mechanics only; it does not claim live model or provider performance."
+  ],
+  "scenarios": [
+    {
+      "schema_version": "0.1",
+      "scenario_id": "extraction_positive_control",
+      "name": "Contract amendment extraction positive control",
+      "task_family": "extraction",
+      "prompt": "Extract all required commercial, party, date, and risk fields from the synthetic service-agreement amendment.",
+      "output_schema": { "type": "object", "required": ["document_type", "parties", "effective_date", "financial_summary", "risk_flags"] },
+      "gold_reference": { "control_type": "positive", "must_match_gold": true, "source_task": "backend/tasks/extraction.py" },
+      "deterministic_metrics": [
+        { "metric_id": "schema_validity", "weight": 0.35, "method": "Validate all required structured fields against the extraction schema." },
+        { "metric_id": "field_accuracy", "weight": 0.45, "method": "Compare extracted commercial values and parties against the gold reference." },
+        { "metric_id": "risk_flag_coverage", "weight": 0.1, "method": "Check that required contractual risk flags are present." }
+      ],
+      "evidence_requirements": ["Schema validation result", "Gold field comparison", "Risk-flag comparison"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates the extraction scorer on a known-good synthetic artifact."],
+      "limitations": ["Not a live provider result.", "Synthetic contract text cannot support legal or commercial claims."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "extraction_missing_required_fields",
+      "name": "Contract extraction missing required fields negative control",
+      "task_family": "extraction",
+      "prompt": "Evaluate an extraction output against the synthetic service-agreement amendment.",
+      "output_schema": { "type": "object", "required": ["document_type", "parties", "effective_date", "financial_summary", "risk_flags"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "schema_failures", "omitted_fields": ["parties", "effective_date", "financial_summary", "risk_flags"] },
+      "deterministic_metrics": [
+        { "metric_id": "schema_validity", "weight": 0.45, "method": "Fail outputs that omit required extraction fields." },
+        { "metric_id": "field_accuracy", "weight": 0.35, "method": "Penalize missing gold-reference fields." },
+        { "metric_id": "evidence_completeness", "weight": 0.1, "method": "Check whether extracted facts can be traced to the scenario text." }
+      ],
+      "evidence_requirements": ["Missing-field list", "Schema validation result", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates missing-field sensitivity in the extraction scorer."],
+      "limitations": ["Not a live provider result.", "The negative control is intentionally incomplete."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "extraction_wrong_financial_values",
+      "name": "Contract extraction wrong financial values negative control",
+      "task_family": "extraction",
+      "prompt": "Evaluate an extraction output for semantic fidelity against the synthetic amendment.",
+      "output_schema": { "type": "object", "required": ["document_type", "parties", "effective_date", "financial_summary", "risk_flags"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "field_accuracy", "mutated_fields": ["monthly_retainer_new", "insurance_minimum"] },
+      "deterministic_metrics": [
+        { "metric_id": "schema_validity", "weight": 0.25, "method": "Allow schema-valid but semantically wrong outputs to be scored separately." },
+        { "metric_id": "financial_accuracy", "weight": 0.55, "method": "Compare numeric commercial fields against the gold reference." },
+        { "metric_id": "evidence_completeness", "weight": 0.1, "method": "Check whether commercial values are grounded in scenario text." }
+      ],
+      "evidence_requirements": ["Numeric field comparison", "Gold-reference diff", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates that schema-valid wrong values are still penalized."],
+      "limitations": ["Not a live provider result.", "The mutated values are synthetic controls."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "risk_positive_control",
+      "name": "Cloud-services terms risk positive control",
+      "task_family": "risk",
+      "prompt": "Identify and prioritize all required risk items from the synthetic cloud-services terms scenario.",
+      "output_schema": { "type": "object", "required": ["overall_risk_score", "risk_items", "top_3_priorities", "negotiation_leverage_points"] },
+      "gold_reference": { "control_type": "positive", "must_flag_all_gold_risks": true, "source_task": "backend/tasks/risk_analysis.py" },
+      "deterministic_metrics": [
+        { "metric_id": "must_flag_recall", "weight": 0.45, "method": "Check that all required clauses and risk issues are present." },
+        { "metric_id": "severity_accuracy", "weight": 0.25, "method": "Compare risk levels against gold severity labels." },
+        { "metric_id": "false_positive_control", "weight": 0.2, "method": "Penalize invented risk items outside the scenario." }
+      ],
+      "evidence_requirements": ["Gold risk coverage", "Severity comparison", "False-positive count"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates known-good risk-analysis scoring on synthetic terms."],
+      "limitations": ["Not legal advice.", "Not a live provider result."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "risk_missed_liability_cap",
+      "name": "Risk analysis missed liability cap negative control",
+      "task_family": "risk",
+      "prompt": "Evaluate a risk-analysis output against the synthetic cloud-services terms scenario.",
+      "output_schema": { "type": "object", "required": ["overall_risk_score", "risk_items", "top_3_priorities", "negotiation_leverage_points"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "low_recall", "missed_issue": "liability cap" },
+      "deterministic_metrics": [
+        { "metric_id": "must_flag_recall", "weight": 0.55, "method": "Penalize missing required risk issues." },
+        { "metric_id": "priority_coverage", "weight": 0.2, "method": "Check whether top priorities include the missed issue." },
+        { "metric_id": "actionability", "weight": 0.1, "method": "Check for specific negotiation recommendations." }
+      ],
+      "evidence_requirements": ["Missing required-risk list", "Priority comparison", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates that omitted material risk issues are penalized."],
+      "limitations": ["Not legal advice.", "Not a live provider result.", "The omission is an intentional negative control."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "risk_false_positive_noise",
+      "name": "Risk analysis false-positive noise negative control",
+      "task_family": "risk",
+      "prompt": "Evaluate a risk-analysis output for groundedness against the synthetic terms scenario.",
+      "output_schema": { "type": "object", "required": ["overall_risk_score", "risk_items", "top_3_priorities", "negotiation_leverage_points"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "false_positive_noise", "forbidden_clause_numbers": ["99", "100"] },
+      "deterministic_metrics": [
+        { "metric_id": "false_positive_control", "weight": 0.5, "method": "Penalize risk items with no support in the scenario." },
+        { "metric_id": "must_flag_recall", "weight": 0.25, "method": "Check whether real required risks are still present." },
+        { "metric_id": "evidence_grounding", "weight": 0.15, "method": "Check that each risk item references scenario evidence." }
+      ],
+      "evidence_requirements": ["False-positive count", "Unsupported clause list", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates unsupported-risk detection."],
+      "limitations": ["Not legal advice.", "Not a live provider result.", "The invented clauses are synthetic controls."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "research_positive_control",
+      "name": "Synthetic research synthesis positive control",
+      "task_family": "research",
+      "prompt": "Synthesize the synthetic scaffold reliability sources while preserving citation labels and claim boundaries.",
+      "output_schema": { "type": "object", "required": ["executive_summary", "key_findings", "synthesis", "recommendations", "source_reliability_notes"] },
+      "gold_reference": { "control_type": "positive", "required_sources": ["A", "B", "C", "D"], "synthetic_sources_only": true },
+      "deterministic_metrics": [
+        { "metric_id": "required_finding_coverage", "weight": 0.35, "method": "Check that required findings from synthetic sources are included." },
+        { "metric_id": "citation_integrity", "weight": 0.35, "method": "Check that cited source labels match supported claims." },
+        { "metric_id": "unsupported_claim_avoidance", "weight": 0.2, "method": "Penalize claims not grounded in synthetic sources." }
+      ],
+      "evidence_requirements": ["Required finding coverage", "Citation-label audit", "Unsupported-claim audit"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates citation-integrity scoring on synthetic sources."],
+      "limitations": ["Synthetic sources are not real publications.", "Not a live provider result."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "research_unsupported_market_claim",
+      "name": "Research synthesis unsupported market claim negative control",
+      "task_family": "research",
+      "prompt": "Evaluate a synthetic research synthesis for source-grounded claim fidelity.",
+      "output_schema": { "type": "object", "required": ["executive_summary", "key_findings", "synthesis", "recommendations", "source_reliability_notes"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "unsupported_claims", "forbidden_claim": "Market will triple next year" },
+      "deterministic_metrics": [
+        { "metric_id": "unsupported_claim_avoidance", "weight": 0.5, "method": "Penalize claims absent from the synthetic source set." },
+        { "metric_id": "citation_integrity", "weight": 0.25, "method": "Check whether unsupported claims are falsely attributed." },
+        { "metric_id": "required_finding_coverage", "weight": 0.15, "method": "Check whether required synthetic findings remain covered." }
+      ],
+      "evidence_requirements": ["Unsupported-claim list", "Citation audit", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates unsupported-claim detection."],
+      "limitations": ["Synthetic sources cannot support market claims.", "Not a live provider result.", "The unsupported claim is intentional."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "research_missing_source_labels",
+      "name": "Research synthesis missing source labels negative control",
+      "task_family": "research",
+      "prompt": "Evaluate a synthetic research synthesis for citation and source-label fidelity.",
+      "output_schema": { "type": "object", "required": ["executive_summary", "key_findings", "synthesis", "recommendations", "source_reliability_notes"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "missing_citations", "required_sources": ["A", "B", "C", "D"] },
+      "deterministic_metrics": [
+        { "metric_id": "citation_integrity", "weight": 0.5, "method": "Penalize missing or incomplete source labels." },
+        { "metric_id": "required_finding_coverage", "weight": 0.25, "method": "Check required synthetic finding coverage." },
+        { "metric_id": "source_reliability_notes", "weight": 0.15, "method": "Check that synthetic-source limitations remain explicit." }
+      ],
+      "evidence_requirements": ["Missing source-label list", "Finding coverage", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates citation-label coverage checks."],
+      "limitations": ["Synthetic sources are not real publications.", "Not a live provider result.", "The missing citations are intentional."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "tool_use_positive_control",
+      "name": "Duplicate invoice tool-use recovery positive control",
+      "task_family": "tool_use",
+      "prompt": "Plan safe tool use for a duplicate-invoice support scenario with a retryable billing lookup failure.",
+      "output_schema": { "type": "object", "required": ["primary_tool", "tool_sequence", "recovery_steps", "unavailable_tools_avoided", "customer_response"] },
+      "gold_reference": { "control_type": "positive", "required_tools": ["billing.get_invoice", "crm.get_account", "support.create_case"], "forbidden_tools_avoided": true },
+      "deterministic_metrics": [
+        { "metric_id": "tool_selection", "weight": 0.3, "method": "Check that available tools are selected in a safe order." },
+        { "metric_id": "recovery_behavior", "weight": 0.3, "method": "Check that retry and case-creation steps handle tool failure." },
+        { "metric_id": "forbidden_tool_avoidance", "weight": 0.3, "method": "Penalize direct email or unsupported refund tools." }
+      ],
+      "evidence_requirements": ["Tool sequence audit", "Recovery-step audit", "Forbidden-tool audit"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates tool-boundary and recovery scoring."],
+      "limitations": ["No real tools are invoked.", "Not a live provider result."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "tool_use_unavailable_refund_tool",
+      "name": "Unavailable refund tool negative control",
+      "task_family": "tool_use",
+      "prompt": "Evaluate a tool-use plan for allowed-tool and workflow compliance in a synthetic support case.",
+      "output_schema": { "type": "object", "required": ["primary_tool", "tool_sequence", "recovery_steps", "unavailable_tools_avoided", "customer_response"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "unavailable_tool_selected", "forbidden_tool": "payments.force_refund_without_lookup" },
+      "deterministic_metrics": [
+        { "metric_id": "forbidden_tool_avoidance", "weight": 0.55, "method": "Penalize unavailable or unsafe tool selection." },
+        { "metric_id": "tool_selection", "weight": 0.2, "method": "Check whether required safe tools are missing." },
+        { "metric_id": "recovery_behavior", "weight": 0.15, "method": "Check whether recovery steps avoid premature refund promises." }
+      ],
+      "evidence_requirements": ["Forbidden-tool detection", "Tool sequence audit", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates unavailable-tool rejection."],
+      "limitations": ["No real tools are invoked.", "Not a live provider result.", "The unavailable tool is an intentional negative control."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "tool_use_direct_forbidden_email",
+      "name": "Direct forbidden email tool negative control",
+      "task_family": "tool_use",
+      "prompt": "Evaluate a tool-use plan for workflow compliance in a synthetic support case.",
+      "output_schema": { "type": "object", "required": ["primary_tool", "tool_sequence", "recovery_steps", "unavailable_tools_avoided", "customer_response"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "forbidden_external_action", "forbidden_tool": "email.send_raw" },
+      "deterministic_metrics": [
+        { "metric_id": "forbidden_tool_avoidance", "weight": 0.55, "method": "Penalize direct external email outside the workflow." },
+        { "metric_id": "workflow_boundary", "weight": 0.2, "method": "Check that support-case workflow boundaries are respected." },
+        { "metric_id": "recovery_behavior", "weight": 0.15, "method": "Check whether retry behavior remains safe." }
+      ],
+      "evidence_requirements": ["Forbidden-tool detection", "Workflow-boundary audit", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates forbidden external-action detection."],
+      "limitations": ["No real tools are invoked.", "Not a live provider result.", "The direct email path is intentionally forbidden."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "privacy_positive_control",
+      "name": "Support escalation privacy positive control",
+      "task_family": "privacy",
+      "prompt": "Summarize a synthetic support escalation while retaining operational facts and redacting identifiers and secrets.",
+      "output_schema": { "type": "object", "required": ["safe_summary", "retained_fields", "redactions", "excluded_fields", "escalation_recommendation"] },
+      "gold_reference": { "control_type": "positive", "must_redact": ["SSN", "date of birth", "phone", "email", "session token"], "must_retain": ["audit export", "SSO group mapping", "token rotation"] },
+      "deterministic_metrics": [
+        { "metric_id": "privacy_boundary", "weight": 0.45, "method": "Check that direct identifiers and secrets are excluded." },
+        { "metric_id": "operational_relevance", "weight": 0.25, "method": "Check that useful escalation facts are retained." },
+        { "metric_id": "redaction_completeness", "weight": 0.2, "method": "Check that required redactions are named." }
+      ],
+      "evidence_requirements": ["Identifier leak scan", "Retained-field audit", "Redaction list"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates privacy-boundary scoring on synthetic data."],
+      "limitations": ["Not real customer data.", "Not a live provider result."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "privacy_raw_identifier_leak",
+      "name": "Privacy raw identifier leak negative control",
+      "task_family": "privacy",
+      "prompt": "Evaluate a synthetic support escalation summary for privacy-boundary compliance.",
+      "output_schema": { "type": "object", "required": ["safe_summary", "retained_fields", "redactions", "excluded_fields", "escalation_recommendation"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "privacy_boundary_violation", "forbidden_patterns": ["SSN", "123-45-6789", "Priya Shah"] },
+      "deterministic_metrics": [
+        { "metric_id": "privacy_boundary", "weight": 0.6, "method": "Hard-fail direct identifier leakage." },
+        { "metric_id": "redaction_completeness", "weight": 0.2, "method": "Check whether redactions are listed despite the leak." },
+        { "metric_id": "operational_relevance", "weight": 0.1, "method": "Check whether necessary non-sensitive facts are retained." }
+      ],
+      "evidence_requirements": ["Leak scan", "Forbidden-pattern list", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates identifier-leak detection."],
+      "limitations": ["The leaked identifier is synthetic.", "Not a live provider result.", "The leak is intentional."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "privacy_secret_token_repeated",
+      "name": "Privacy secret token repeated negative control",
+      "task_family": "privacy",
+      "prompt": "Evaluate a synthetic support escalation summary for secret-handling compliance.",
+      "output_schema": { "type": "object", "required": ["safe_summary", "retained_fields", "redactions", "excluded_fields", "escalation_recommendation"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "secret_leak", "forbidden_patterns": ["sk_live_DEMO_TOKEN_123", "raw token"] },
+      "deterministic_metrics": [
+        { "metric_id": "privacy_boundary", "weight": 0.6, "method": "Hard-fail token or secret leakage." },
+        { "metric_id": "secret_handling", "weight": 0.2, "method": "Check that token rotation is recommended without repeating the token." },
+        { "metric_id": "operational_relevance", "weight": 0.1, "method": "Check that support-relevant facts remain available." }
+      ],
+      "evidence_requirements": ["Secret-pattern scan", "Token-handling audit", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates secret-leak detection."],
+      "limitations": ["The token string is synthetic.", "Not a live provider result.", "The leak is intentional."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "strategy_positive_control",
+      "name": "Strategy-to-system positive control",
+      "task_family": "strategy",
+      "prompt": "Compile a synthetic AI analyst strategy memo into the required implementation-plan object.",
+      "output_schema": { "type": "object", "required": ["architecture_decisions", "assumptions", "risks", "eval_plan", "implementation_backlog", "success_metrics", "open_questions"] },
+      "gold_reference": { "control_type": "positive", "required_sections": ["architecture_decisions", "assumptions", "risks", "eval_plan", "implementation_backlog", "success_metrics", "open_questions"], "required_terms": ["audit trail", "human review", "raw call transcripts", "$0.40", "rollback"] },
+      "deterministic_metrics": [
+        { "metric_id": "schema_validity", "weight": 0.3, "method": "Validate all required strategy-plan sections." },
+        { "metric_id": "required_section_coverage", "weight": 0.3, "method": "Check that each section is present and non-empty." },
+        { "metric_id": "required_term_coverage", "weight": 0.25, "method": "Check for scenario-specific implementation and evaluation terms." }
+      ],
+      "evidence_requirements": ["Schema validation result", "Section coverage", "Required-term coverage"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates strategy-to-system compilation scoring."],
+      "limitations": ["Not business advice.", "Not a live provider result."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "strategy_missing_eval_plan",
+      "name": "Strategy-to-system missing eval plan negative control",
+      "task_family": "strategy",
+      "prompt": "Evaluate a synthetic strategy-to-system output for implementation readiness.",
+      "output_schema": { "type": "object", "required": ["architecture_decisions", "assumptions", "risks", "eval_plan", "implementation_backlog", "success_metrics", "open_questions"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "missing_required_sections", "missing_sections": ["eval_plan", "risks", "implementation_backlog"] },
+      "deterministic_metrics": [
+        { "metric_id": "required_section_coverage", "weight": 0.45, "method": "Penalize missing or empty required sections." },
+        { "metric_id": "required_term_coverage", "weight": 0.25, "method": "Check that scenario-specific terms are absent or present." },
+        { "metric_id": "schema_validity", "weight": 0.2, "method": "Separate schema validity from planning completeness." }
+      ],
+      "evidence_requirements": ["Missing-section list", "Required-term coverage", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates missing-section detection."],
+      "limitations": ["Not business advice.", "Not a live provider result.", "The missing sections are intentional."]
+    },
+    {
+      "schema_version": "0.1",
+      "scenario_id": "strategy_unsupported_roi_claim",
+      "name": "Strategy-to-system unsupported ROI claim negative control",
+      "task_family": "strategy",
+      "prompt": "Evaluate a synthetic strategy-to-system output for evidence-boundary discipline.",
+      "output_schema": { "type": "object", "required": ["architecture_decisions", "assumptions", "risks", "eval_plan", "implementation_backlog", "success_metrics", "open_questions"] },
+      "gold_reference": { "control_type": "negative", "failure_mode": "unsupported_claims", "forbidden_claims": ["guaranteed 40% productivity", "deploy immediately", "no review needed"] },
+      "deterministic_metrics": [
+        { "metric_id": "unsupported_claim_avoidance", "weight": 0.45, "method": "Penalize claims not grounded in the scenario memo." },
+        { "metric_id": "required_section_coverage", "weight": 0.25, "method": "Check that risk, eval, and open-question sections remain complete." },
+        { "metric_id": "required_term_coverage", "weight": 0.2, "method": "Check that implementation details remain scenario-specific." }
+      ],
+      "evidence_requirements": ["Unsupported-claim list", "Section coverage", "Score breakdown"],
+      "synthetic_sources": true,
+      "allowed_claims": ["Fixture validates unsupported-claim detection in strategy outputs."],
+      "limitations": ["Not business advice.", "Not a live provider result.", "The unsupported claims are intentional."]
+    }
+  ]
+}

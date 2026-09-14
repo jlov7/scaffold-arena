@@ -1,0 +1,31 @@
+{
+  "study_id": "transfer-prereg-v1",
+  "study_kind": "transfer",
+  "claim_ceiling": "Protocol and recorded-fixture readiness only; no provider execution, empirical, causal, cost, energy, deployment, or product claim.",
+  "bundle_created_at": "2026-08-20T00:00:00Z",
+  "preregistration": {
+    "artifact_uri": "fixtures/preregistration.md",
+    "artifact_hash": "58623267b4255832945d3d3576ab32ea02a0138479bb476d5240ac20a4ba91a2",
+    "publication_state": "hold_not_public",
+    "publication_id": null,
+    "published_at": null
+  },
+  "frozen_bindings": {
+    "models": [{"id": "selection-model", "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, {"id": "transfer-model", "digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],
+    "harnesses": [{"id": "baseline-harness", "digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}, {"id": "mechanism-harness", "digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}],
+    "runtimes": [{"id": "ollama-local", "kind": "ollama", "identity_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "paid_cost_policy": "zero_paid_cost_local_energy_unknown"}, {"id": "lmstudio-local", "kind": "lm_studio", "identity_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", "paid_cost_policy": "zero_paid_cost_local_energy_unknown"}],
+    "evaluators": [{"id": "deterministic-evaluator-v1", "digest": "1111111111111111111111111111111111111111111111111111111111111111"}],
+    "sampling_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+    "budget_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+    "stopping_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+    "exclusions_digest": "5555555555555555555555555555555555555555555555555555555555555555",
+    "severe_failure_digest": "6666666666666666666666666666666666666666666666666666666666666666",
+    "analysis_digest": "7777777777777777777777777777777777777777777777777777777777777777",
+    "multiplicity_digest": "8888888888888888888888888888888888888888888888888888888888888888"
+  },
+  "matrix": {"models": ["selection-model", "transfer-model"], "harnesses": ["baseline-harness", "mechanism-harness"], "tasks": ["selection-task", "transfer-task"], "domains": ["selection-domain", "transfer-domain"], "cohorts": ["selection", "transfer"], "repetitions": 1},
+  "cohorts": [{"cohort_id": "selection", "role": "selection", "task_ids": ["selection-task"], "domain_ids": ["selection-domain"], "model_ids": ["selection-model"]}, {"cohort_id": "transfer", "role": "transfer", "task_ids": ["transfer-task"], "domain_ids": ["transfer-domain"], "model_ids": ["transfer-model"]}],
+  "runtime_admissions": [{"runtime_id": "ollama-local", "kind": "ollama", "endpoint_identity_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}, {"runtime_id": "lmstudio-local", "kind": "lm_studio", "endpoint_identity_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"}],
+  "frozen_selection_receipt": {"receipt_hash": "9999999999999999999999999999999999999999999999999999999999999999", "selection_configuration_hash": "abababababababababababababababababababababababababababababababab", "transfer_configuration_hash": "abababababababababababababababababababababababababababababababab"},
+  "no_retuning": true
+}

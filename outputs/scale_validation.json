@@ -1,0 +1,159 @@
+{
+  "batching": {
+    "attempt_batches": 50,
+    "event_batches": 10000,
+    "events_per_attempt": 200,
+    "materialization_is_batched": true,
+    "max_rows_per_batch": 1000
+  },
+  "claim_ceiling": "capacity model/schema validation only; not production load evidence",
+  "cursor": {
+    "cursor_contract": "nonnegative integer; reads use strict sequence > cursor",
+    "maximum_event_sequence": 10000000,
+    "maximum_supported_positive_integer": 2147483647,
+    "minimum_cursor": 0,
+    "range_valid": true,
+    "type": "positive SQL INTEGER-compatible sequence"
+  },
+  "declared_scale": {
+    "attempts": 50000,
+    "batch_size": 1000,
+    "execution_count": 1,
+    "trace_events": 10000000
+  },
+  "event_ordering": {
+    "execution_sequences": [
+      1,
+      10000000
+    ],
+    "no_gap_arithmetic": true,
+    "ordering_key": "execution_sequence (or sequence within an attempt)",
+    "per_attempt_sequences": [
+      1,
+      200
+    ],
+    "strictly_monotonic": true
+  },
+  "id_uniqueness": {
+    "attempt_key": "attempt-{attempt_ordinal:08d}",
+    "event_key": "event-{event_number:010d}",
+    "proof": "ordinal-to-key mapping is injective over the declared finite integer interval; event coordinates are unique pairs",
+    "sampled_boundaries": [
+      {
+        "attempt_ordinal": 0,
+        "event_number": 1,
+        "sequence": 1
+      },
+      {
+        "attempt_ordinal": 0,
+        "event_number": 200,
+        "sequence": 200
+      },
+      {
+        "attempt_ordinal": 1,
+        "event_number": 201,
+        "sequence": 1
+      },
+      {
+        "attempt_ordinal": 49999,
+        "event_number": 9999999,
+        "sequence": 199
+      },
+      {
+        "attempt_ordinal": 49999,
+        "event_number": 10000000,
+        "sequence": 200
+      }
+    ],
+    "strategy": "deterministic namespace plus zero-based ordinal; primary key IDs and paired unique keys",
+    "unique_constraints": [
+      "attempts.id",
+      "attempt_events(attempt_id, sequence)",
+      "attempt_events(execution_id, execution_sequence)"
+    ]
+  },
+  "index_contract": {
+    "all_present_and_column_ordered": true,
+    "expected": {
+      "ix_attempt_events_attempt_sequence": [
+        "attempt_id",
+        "sequence"
+      ],
+      "ix_attempt_events_execution_sequence": [
+        "execution_id",
+        "execution_sequence"
+      ],
+      "ix_jobs_status_available": [
+        "status",
+        "available_at"
+      ]
+    }
+  },
+  "materialization": {
+    "available": true,
+    "claim_ceiling": "optional local SQLite projection exercise; not production load evidence",
+    "default": false,
+    "requires_explicit_path": true
+  },
+  "mode": "analytical",
+  "query_plans": {
+    "attempt_event_pagination": {
+      "details": [
+        "SEARCH attempt_events USING INDEX ix_attempt_events_attempt_sequence (attempt_id=? AND sequence>?)"
+      ],
+      "expected_index": "ix_attempt_events_attempt_sequence",
+      "order_by_covered": true,
+      "uses_expected_index": true
+    },
+    "execution_event_pagination": {
+      "details": [
+        "SEARCH attempt_events USING INDEX ix_attempt_events_execution_sequence (execution_id=? AND execution_sequence>?)"
+      ],
+      "expected_index": "ix_attempt_events_execution_sequence",
+      "order_by_covered": true,
+      "uses_expected_index": true
+    },
+    "lease_filter": {
+      "claim": "status/available_at filtering is indexed; created_at,id ordering is not covered by the v1 index and may require a sort",
+      "details": [
+        "SEARCH jobs USING INDEX ix_jobs_status_available (status=?)",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ],
+      "expected_index": "ix_jobs_status_available",
+      "order_by_covered": false,
+      "uses_expected_index": true
+    }
+  },
+  "report_version": "scale-validation.v1",
+  "resource_contract": {
+    "default_mode_allocates_all_rows": false,
+    "default_mode_process_storm": false,
+    "default_mode_provider_calls": 0,
+    "target_max_rss_mb": 300,
+    "target_max_seconds": 10
+  },
+  "source_sha256": {
+    "backend/persistence_v1/schema.py": "faa3fc95b324bc3f22026c2a389db3ff5ec5ad60dae65fd299ba1d76cacb9e11"
+  },
+  "storage_estimate": {
+    "assumptions": {
+      "attempt_row_bytes": 732,
+      "caveat": "Planning estimate only: excludes DB pages, WAL, vacuum/fillfactor, TOAST/JSON encoding, foreign-key indexes, jobs, backups, and provider artifacts.",
+      "cursor_row_bytes": 100,
+      "event_index_bytes_each": 88,
+      "event_index_count": 2,
+      "event_row_bytes": 560,
+      "execution_count": 1,
+      "payload_bytes_included_per_row": {
+        "attempt_request": 256,
+        "attempt_result": 256,
+        "event": 256
+      }
+    },
+    "attempt_table_bytes": 36600000,
+    "cursor_table_bytes": 100,
+    "estimated_total_bytes": 7396600100,
+    "estimated_total_gib": 6.888621,
+    "event_table_and_indexes_bytes": 7360000000
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "fixture_schema": "scaffold-arena.genome-fixture/1",
+  "protocol": "otel",
+  "synthetic": true,
+  "recorded_metadata_only": true,
+  "source_date": "2026-08-18",
+  "schema_url": "https://opentelemetry.io/schemas/gen-ai/1.42.0",
+  "span": {"trace_id": "fixture-trace", "span_id": "fixture-span", "name": "gen_ai.synthetic", "kind": "internal", "redaction": "full"},
+  "claim_ceiling": "synthetic recorded metadata only; no collector, exporter, trace-completeness, or runtime claim"
+}

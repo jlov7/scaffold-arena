@@ -1,0 +1,10 @@
+{
+  "artifact_type": "offline-preregistration-custody-v1",
+  "study_id": "flagship-prereg-v1",
+  "files": [
+    {"path": "preregistration.md", "sha256": "ddffe9ba9c96086449e076909b5821ac4216938efdd50ae11435be0f9addd4bd"},
+    {"path": "scientific-study.json", "sha256": "b4831d0d5165367906e03a76ea98b0287313332e38fc29d0a95be20782384d97"}
+  ],
+  "publication_state": "hold_not_public",
+  "integrity_not_truth": true
+}

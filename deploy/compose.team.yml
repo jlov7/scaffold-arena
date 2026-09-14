@@ -1,0 +1,97 @@
+name: scaffold-arena-team
+
+services:
+  postgres:
+    image: postgres:16.4@sha256:e62fbf9d3e2b49816a32c400ed2dba83e3b361e6833e624024309c35d334b412
+    environment:
+      POSTGRES_DB: arena
+      POSTGRES_USER: arena
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Inject through the deployment secret manager}
+    volumes: [postgres-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arena -d arena"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: ../backend
+      target: prod
+    environment:
+      APP_ENV: production
+      PROTOCOL_V1_DEPLOYMENT_PROFILE: team
+      PROTOCOL_V1_DATABASE_URL: ${PROTOCOL_V1_DATABASE_URL:?Inject through the deployment secret manager}
+      PROTOCOL_V1_ARTIFACT_BACKEND: s3_compatible
+      PROTOCOL_V1_S3_BUCKET: ${PROTOCOL_V1_S3_BUCKET:?Set the pre-provisioned bucket name}
+      PROTOCOL_V1_S3_ENDPOINT_URL: ${PROTOCOL_V1_S3_ENDPOINT_URL:?Set a TLS object-store endpoint}
+      PROTOCOL_V1_S3_REGION_NAME: ${PROTOCOL_V1_S3_REGION_NAME:?Set the object-store region}
+      PROTOCOL_V1_S3_PREFIX: ${PROTOCOL_V1_S3_PREFIX:?Set an immutable team namespace prefix}
+      PROTOCOL_V1_S3_PATH_STYLE: ${PROTOCOL_V1_S3_PATH_STYLE:-false}
+      PROTOCOL_V1_OIDC_ISSUER: ${PROTOCOL_V1_OIDC_ISSUER:?Set the OIDC issuer}
+      PROTOCOL_V1_OIDC_CLIENT_ID: ${PROTOCOL_V1_OIDC_CLIENT_ID:?Set the OIDC public client ID}
+      PROTOCOL_V1_OIDC_REDIRECT_URI: ${PROTOCOL_V1_OIDC_REDIRECT_URI:?Set the allowlisted redirect URI}
+      PROTOCOL_V1_OIDC_ALLOWED_REDIRECT_URIS: ${PROTOCOL_V1_OIDC_ALLOWED_REDIRECT_URIS:?Set exact comma-separated allowlist}
+      PROTOCOL_V1_SESSION_SECRET: ${PROTOCOL_V1_SESSION_SECRET:?Inject through the deployment secret manager}
+      PROTOCOL_V1_SESSION_COOKIE_SECURE: "true"
+    depends_on:
+      postgres: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/ready')"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+
+  worker:
+    build:
+      context: ../backend
+      target: prod
+    command: ["uv", "run", "arena", "worker"]
+    environment:
+      APP_ENV: production
+      PROTOCOL_V1_DEPLOYMENT_PROFILE: team
+      PROTOCOL_V1_DATABASE_URL: ${PROTOCOL_V1_DATABASE_URL:?Inject through the deployment secret manager}
+      PROTOCOL_V1_ARTIFACT_BACKEND: s3_compatible
+      PROTOCOL_V1_S3_BUCKET: ${PROTOCOL_V1_S3_BUCKET:?Set the pre-provisioned bucket name}
+      PROTOCOL_V1_S3_ENDPOINT_URL: ${PROTOCOL_V1_S3_ENDPOINT_URL:?Set a TLS object-store endpoint}
+      PROTOCOL_V1_S3_REGION_NAME: ${PROTOCOL_V1_S3_REGION_NAME:?Set the object-store region}
+      PROTOCOL_V1_S3_PREFIX: ${PROTOCOL_V1_S3_PREFIX:?Set an immutable team namespace prefix}
+      PROTOCOL_V1_S3_PATH_STYLE: ${PROTOCOL_V1_S3_PATH_STYLE:-false}
+      PROTOCOL_V1_S3_MAX_ARTIFACT_BYTES: ${PROTOCOL_V1_S3_MAX_ARTIFACT_BYTES:-33554432}
+      PROTOCOL_V1_ADAPTER_RUNTIME_CONFIG: /etc/scaffold-arena/adapter-runtime.json
+      PROTOCOL_V1_WORKER_PROJECT_ID: ${PROTOCOL_V1_WORKER_PROJECT_ID:?Set the worker's exact project scope}
+      PROTOCOL_V1_WORKER_OWNER: ${PROTOCOL_V1_WORKER_OWNER:-arena-worker}
+      PROTOCOL_V1_WORKER_LEASE_SECONDS: ${PROTOCOL_V1_WORKER_LEASE_SECONDS:-30}
+      PROTOCOL_V1_WORKER_POLL_SECONDS: ${PROTOCOL_V1_WORKER_POLL_SECONDS:-0.5}
+      PROTOCOL_V1_OIDC_ISSUER: ${PROTOCOL_V1_OIDC_ISSUER:?Set the OIDC issuer}
+      PROTOCOL_V1_OIDC_CLIENT_ID: ${PROTOCOL_V1_OIDC_CLIENT_ID:?Set the OIDC public client ID}
+      PROTOCOL_V1_OIDC_REDIRECT_URI: ${PROTOCOL_V1_OIDC_REDIRECT_URI:?Set the allowlisted redirect URI}
+      PROTOCOL_V1_OIDC_ALLOWED_REDIRECT_URIS: ${PROTOCOL_V1_OIDC_ALLOWED_REDIRECT_URIS:?Set exact comma-separated allowlist}
+      PROTOCOL_V1_SESSION_SECRET: ${PROTOCOL_V1_SESSION_SECRET:?Inject through the deployment secret manager}
+      PROTOCOL_V1_SESSION_COOKIE_SECURE: "true"
+    volumes:
+      - ${PROTOCOL_V1_ADAPTER_RUNTIME_CONFIG_HOST_PATH:?Mount a reviewed adapter runtime configuration}:/etc/scaffold-arena/adapter-runtime.json:ro
+    depends_on:
+      postgres: { condition: service_healthy }
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "uv", "run", "arena", "worker", "--healthcheck"]
+      interval: 15s
+      timeout: 10s
+      retries: 12
+
+  frontend:
+    build:
+      context: ../frontend
+      target: prod
+    depends_on:
+      backend: { condition: service_healthy }
+    ports: ["8080:80"]
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost/health >/dev/null"]
+      interval: 15s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  postgres-data:

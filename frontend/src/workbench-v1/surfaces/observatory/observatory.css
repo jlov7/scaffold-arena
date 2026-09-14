@@ -1,0 +1,16 @@
+.sa-observatory, .sa-observatory-report { display: grid; min-width: 0; gap: var(--sa-space-4); max-width: 78rem; }
+.sa-observatory-boundary, .sa-observatory-note, .sa-observatory-status { margin: 0; color: var(--lab-text-soft); font-size: .75rem; line-height: 1.55; }
+.sa-observatory-note { color: var(--lab-text-muted); }
+.sa-observatory-form { display: grid; gap: var(--sa-space-3); margin: var(--sa-space-3) 0; }
+.sa-observatory-field { display: grid; min-width: 0; gap: .35rem; color: var(--lab-text-soft); font-size: .75rem; }
+.sa-observatory-field input { width: 100%; min-width: 0; min-height: 2.75rem; padding: .55rem .65rem; border: 1px solid var(--lab-hairline-strong); border-radius: var(--lab-radius-sm); color: var(--lab-text); background: var(--lab-surface-inset); font: inherit; }
+.sa-observatory-field small { color: var(--lab-text-muted); font: .6875rem/1.45 var(--font-data); }
+.sa-observatory-selection { min-height: 2.75rem; margin: var(--sa-space-3) 0; padding: .55rem .65rem; border: 1px solid var(--lab-hairline); border-radius: var(--lab-radius-sm); color: var(--lab-text-soft); background: var(--lab-surface-inset); font-size: .75rem; line-height: 1.45; }
+.sa-observatory-selection[data-selected='true'] { border-color: color-mix(in oklch, var(--lab-info) 45%, var(--lab-hairline)); }
+.sa-observatory-fidelity { display: grid; gap: .45rem; margin: 0; padding: 0; list-style: none; counter-reset: fidelity; }
+.sa-observatory-fidelity li { display: grid; grid-template-columns: minmax(9rem, 1fr) minmax(5rem, auto); gap: .25rem .75rem; align-items: baseline; padding: .55rem; border: 1px solid var(--lab-hairline); border-radius: var(--lab-radius-sm); background: var(--lab-surface-inset); color: var(--lab-text-soft); font-size: .75rem; }
+.sa-observatory-fidelity strong { color: var(--lab-text); }
+.sa-observatory-fidelity span { color: var(--lab-warning); font: .6875rem var(--font-data); text-align: right; }
+.sa-observatory-fidelity p { grid-column: 1 / -1; margin: 0; color: var(--lab-text-muted); font-size: .6875rem; line-height: 1.45; }
+@media (max-width: 720px) { .sa-observatory-fidelity li { grid-template-columns: 1fr; } .sa-observatory-fidelity span { text-align: left; } }
+@media (prefers-reduced-motion: reduce) { .sa-observatory *, .sa-observatory-report * { animation: none !important; transition-duration: .01ms !important; } }

@@ -1,0 +1,292 @@
+{
+  "$defs": {
+    "CandidateDesign": {
+      "additionalProperties": false,
+      "properties": {
+        "assumptions": {
+          "items": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "cost_per_attempt_usd": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1000000,
+          "title": "Cost Per Attempt Usd",
+          "type": "number"
+        },
+        "coverage_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Coverage Ids",
+          "type": "array"
+        },
+        "design_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Design Id",
+          "type": "string"
+        },
+        "maximum_attempts": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Maximum Attempts",
+          "type": "integer"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        },
+        "minimum_attempts": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Minimum Attempts",
+          "type": "integer"
+        },
+        "risk": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Risk",
+          "type": "number"
+        }
+      },
+      "required": [
+        "design_id",
+        "mechanism_id",
+        "coverage_ids",
+        "cost_per_attempt_usd",
+        "minimum_attempts",
+        "maximum_attempts",
+        "risk",
+        "assumptions"
+      ],
+      "title": "CandidateDesign",
+      "type": "object"
+    },
+    "PlannerCoverage": {
+      "additionalProperties": false,
+      "properties": {
+        "coverage_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Coverage Id",
+          "type": "string"
+        },
+        "fraction": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Fraction",
+          "type": "number"
+        }
+      },
+      "required": [
+        "coverage_id",
+        "fraction"
+      ],
+      "title": "PlannerCoverage",
+      "type": "object"
+    },
+    "PlannerMechanism": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_effect": {
+          "maximum": 1000000,
+          "minimum": 0.0,
+          "title": "Expected Effect",
+          "type": "number"
+        },
+        "interaction_uncertainty": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Interaction Uncertainty",
+          "type": "number"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        },
+        "uncertainty": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Uncertainty",
+          "type": "number"
+        }
+      },
+      "required": [
+        "mechanism_id",
+        "uncertainty",
+        "expected_effect"
+      ],
+      "title": "PlannerMechanism",
+      "type": "object"
+    },
+    "PlannerPriorEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evidence Digest",
+          "type": "string"
+        },
+        "evidence_strength": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Evidence Strength",
+          "type": "number"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_digest",
+        "mechanism_id",
+        "evidence_strength"
+      ],
+      "title": "PlannerPriorEvidence",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/next-best-experiment-v1-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "automatic_admission_requested": {
+      "const": false,
+      "default": false,
+      "title": "Automatic Admission Requested",
+      "type": "boolean"
+    },
+    "candidate_designs": {
+      "items": {
+        "$ref": "#/$defs/CandidateDesign"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Candidate Designs",
+      "type": "array"
+    },
+    "coverage": {
+      "items": {
+        "$ref": "#/$defs/PlannerCoverage"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Coverage",
+      "type": "array"
+    },
+    "execution_requested": {
+      "const": false,
+      "default": false,
+      "title": "Execution Requested",
+      "type": "boolean"
+    },
+    "exploratory_adaptation": {
+      "default": false,
+      "title": "Exploratory Adaptation",
+      "type": "boolean"
+    },
+    "frozen_analysis_plan_digest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Frozen Analysis Plan Digest"
+    },
+    "maximum_risk": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Maximum Risk",
+      "type": "number"
+    },
+    "mechanisms": {
+      "items": {
+        "$ref": "#/$defs/PlannerMechanism"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Mechanisms",
+      "type": "array"
+    },
+    "minimum_detectable_effect": {
+      "exclusiveMinimum": 0.0,
+      "maximum": 1000000,
+      "title": "Minimum Detectable Effect",
+      "type": "number"
+    },
+    "mode": {
+      "enum": [
+        "exploratory",
+        "confirmatory"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "prior_evidence": {
+      "items": {
+        "$ref": "#/$defs/PlannerPriorEvidence"
+      },
+      "maxItems": 256,
+      "title": "Prior Evidence",
+      "type": "array"
+    },
+    "remaining_budget_usd": {
+      "exclusiveMinimum": 0.0,
+      "maximum": 1000000,
+      "title": "Remaining Budget Usd",
+      "type": "number"
+    },
+    "request_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Request Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.next-best-experiment/1",
+      "default": "scaffold-arena.next-best-experiment/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_evidence_digests": {
+      "items": {
+        "pattern": "^sha256:[a-f0-9]{64}$",
+        "type": "string"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Source Evidence Digests",
+      "type": "array"
+    }
+  },
+  "required": [
+    "request_id",
+    "mode",
+    "mechanisms",
+    "coverage",
+    "candidate_designs",
+    "minimum_detectable_effect",
+    "remaining_budget_usd",
+    "maximum_risk",
+    "source_evidence_digests"
+  ],
+  "title": "NextBestExperimentRequest",
+  "type": "object"
+}

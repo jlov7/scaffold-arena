@@ -1,0 +1,54 @@
+{
+  "schema_version": "0.1",
+  "mode": "fixture",
+  "minimum_required_separation_points": 20,
+  "all_families_pass": true,
+  "families": [
+    {
+      "task_family": "extraction",
+      "positive_mean": 92.5,
+      "negative_mean": 47.15,
+      "separation_points": 45.35,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "privacy",
+      "positive_mean": 100.0,
+      "negative_mean": 55.6,
+      "separation_points": 44.4,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "research",
+      "positive_mean": 100.0,
+      "negative_mean": 53.4,
+      "separation_points": 46.6,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "risk",
+      "positive_mean": 97.4,
+      "negative_mean": 11.8,
+      "separation_points": 85.6,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "strategy",
+      "positive_mean": 100.0,
+      "negative_mean": 50.25,
+      "separation_points": 49.75,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "tool_use",
+      "positive_mean": 100.0,
+      "negative_mean": 53.9,
+      "separation_points": 46.1,
+      "passes_minimum": true
+    }
+  ],
+  "limitations": [
+    "Executed fixture controls are a calibration check, not a replacement for live model baselines.",
+    "No provider usage or latency measurement is represented by these fixture controls."
+  ]
+}

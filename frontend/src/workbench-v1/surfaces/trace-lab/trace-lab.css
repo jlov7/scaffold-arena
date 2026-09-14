@@ -1,0 +1,13 @@
+.sa-trace-lab { display: grid; gap: 16px; }
+.sa-trace-lab-boundary, .sa-trace-lab-context { color: var(--sa-text-muted); }
+.sa-trace-lab-attempts { display: grid; gap: 8px; margin: 16px 0; }
+.sa-trace-lab-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.sa-trace-lab-form label { display: grid; gap: 6px; font-size: .875rem; }
+.sa-trace-lab-form input { min-height: 40px; }
+.sa-trace-lab-form .sa-trace-lab-check { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; }
+.sa-trace-lab-check input { min-height: auto; width: 18px; height: 18px; }
+.sa-trace-lab-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+.sa-trace-lab-metrics > div { display: grid; gap: 4px; }
+.sa-trace-lab-metrics span { color: var(--sa-text-muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+.sa-trace-lab-ids { overflow-wrap: anywhere; }
+@media (max-width: 640px) { .sa-trace-lab-form { grid-template-columns: 1fr; } }

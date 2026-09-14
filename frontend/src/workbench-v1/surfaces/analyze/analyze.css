@@ -1,0 +1,8 @@
+.sa-analyze { display: grid; gap: 16px; }
+.sa-analyze-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 12px; }
+.sa-analyze-summary > div { display: grid; gap: 4px; min-width: 0; }
+.sa-analyze-summary span { color: var(--sa-text-muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; }
+.sa-analyze-summary code { overflow-wrap: anywhere; }
+.sa-analyze-boundary { color: var(--sa-text-muted); margin: 0 0 12px; }
+.sa-analyze-json { overflow: auto; max-height: 24rem; white-space: pre-wrap; }
+@media (max-width: 640px) { .sa-analyze-summary { grid-template-columns: 1fr; } }

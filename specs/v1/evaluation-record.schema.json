@@ -1,0 +1,181 @@
+{
+  "$defs": {
+    "OutcomeVector": {
+      "additionalProperties": false,
+      "properties": {
+        "auditability": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Auditability",
+          "type": "number"
+        },
+        "consistency": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Consistency",
+          "type": "number"
+        },
+        "cost_status": {
+          "default": "unknown",
+          "enum": [
+            "within_budget",
+            "over_budget",
+            "unknown"
+          ],
+          "title": "Cost Status",
+          "type": "string"
+        },
+        "cost_usd": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Usd"
+        },
+        "deterministic": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]{1,127}$": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            }
+          },
+          "title": "Deterministic",
+          "type": "object"
+        },
+        "episode_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Episode Id",
+          "type": "string"
+        },
+        "human": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]{1,127}$": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            }
+          },
+          "title": "Human",
+          "type": "object"
+        },
+        "latency_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latency Seconds"
+        },
+        "mission_success": {
+          "default": 0.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Mission Success",
+          "type": "number"
+        },
+        "model_judged": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]{1,127}$": {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            }
+          },
+          "title": "Model Judged",
+          "type": "object"
+        },
+        "protocol_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "severe_failures": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Severe Failures",
+          "type": "array"
+        },
+        "tool_calls": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Tool Calls",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "episode_id",
+        "deterministic"
+      ],
+      "title": "OutcomeVector",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/evaluation-record.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "deterministic_weight": {
+      "maximum": 1.0,
+      "minimum": 0.7,
+      "title": "Deterministic Weight",
+      "type": "number"
+    },
+    "episode_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "evaluation_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Evaluation Id",
+      "type": "string"
+    },
+    "evaluator_version": {
+      "minLength": 1,
+      "title": "Evaluator Version",
+      "type": "string"
+    },
+    "outcome": {
+      "$ref": "#/$defs/OutcomeVector"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "trace_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Trace Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "evaluation_id",
+    "episode_id",
+    "outcome",
+    "deterministic_weight",
+    "evaluator_version",
+    "trace_hash"
+  ],
+  "title": "EvaluationRecord",
+  "type": "object"
+}

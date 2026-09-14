@@ -1,0 +1,106 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/forge-v1-evolution-receipt.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "admitting_identity": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Admitting Identity",
+      "type": "string"
+    },
+    "approval_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Approval Digest",
+      "type": "string"
+    },
+    "automatic_merge": {
+      "const": false,
+      "default": false,
+      "title": "Automatic Merge",
+      "type": "boolean"
+    },
+    "claim_ceiling": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "evaluation_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Evaluation Digest",
+      "type": "string"
+    },
+    "evaluator_identity": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Evaluator Identity",
+      "type": "string"
+    },
+    "execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Execution Started",
+      "type": "boolean"
+    },
+    "idempotent_replay": {
+      "default": false,
+      "title": "Idempotent Replay",
+      "type": "boolean"
+    },
+    "immutable": {
+      "const": true,
+      "default": true,
+      "title": "Immutable",
+      "type": "boolean"
+    },
+    "outcome": {
+      "enum": [
+        "ADMITTED",
+        "REJECTED",
+        "QUARANTINED",
+        "INCONCLUSIVE"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "proposal_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Proposal Digest",
+      "type": "string"
+    },
+    "receipt_artifact_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Receipt Artifact Digest",
+      "type": "string"
+    },
+    "receipt_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Receipt Digest",
+      "type": "string"
+    },
+    "receipt_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.evolution-receipt/1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "receipt_id",
+    "receipt_digest",
+    "receipt_artifact_digest",
+    "proposal_digest",
+    "approval_digest",
+    "evaluation_digest",
+    "outcome",
+    "evaluator_identity",
+    "admitting_identity",
+    "claim_ceiling"
+  ],
+  "title": "EvolutionReceipt",
+  "type": "object"
+}

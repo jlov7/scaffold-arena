@@ -1,0 +1,163 @@
+{
+  "$defs": {
+    "ClaimCeiling": {
+      "enum": [
+        "no_claim",
+        "fixture_only",
+        "local_live_only",
+        "confirmatory_analysis",
+        "replicated",
+        "cross_model",
+        "human_calibrated",
+        "independent"
+      ],
+      "title": "ClaimCeiling",
+      "type": "string"
+    },
+    "ClaimKind": {
+      "enum": [
+        "fixture_observation",
+        "local_live_observation",
+        "causal_effect",
+        "generalized_effect",
+        "cost_comparison",
+        "pareto_comparison",
+        "cross_model_replication",
+        "human_calibrated_assessment",
+        "independent_validation"
+      ],
+      "title": "ClaimKind",
+      "type": "string"
+    },
+    "ProposedClaim": {
+      "additionalProperties": false,
+      "description": "A requested claim with exact, immutable receipt links.\n\nThe request deliberately contains no score, adequacy, exclusion, estimate,\nsevere-failure, or ceiling fields.  Those values are always derived from\nthe immutable report and the engine's hard gates.",
+      "properties": {
+        "claim_id": {
+          "minLength": 1,
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/ClaimKind"
+        },
+        "linked_receipt_ids": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Linked Receipt Ids",
+          "type": "array"
+        },
+        "statement": {
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim_id",
+        "statement",
+        "kind",
+        "linked_receipt_ids"
+      ],
+      "title": "ProposedClaim",
+      "type": "object"
+    },
+    "RiskConstraints": {
+      "additionalProperties": false,
+      "description": "Risk policy may narrow outcomes; it cannot waive hard evidence gates.",
+      "properties": {
+        "maximum_claim_ceiling": {
+          "$ref": "#/$defs/ClaimCeiling",
+          "default": "independent"
+        },
+        "require_estimated_effect_for_effect_claims": {
+          "const": true,
+          "default": true,
+          "title": "Require Estimated Effect For Effect Claims",
+          "type": "boolean"
+        },
+        "require_zero_exclusions": {
+          "const": true,
+          "default": true,
+          "title": "Require Zero Exclusions",
+          "type": "boolean"
+        },
+        "severe_failure_disposition": {
+          "default": "HOLD",
+          "enum": [
+            "HOLD",
+            "REJECT"
+          ],
+          "title": "Severe Failure Disposition",
+          "type": "string"
+        }
+      },
+      "title": "RiskConstraints",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/analysis-v1-decision-admission-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Public API admission contract for a service-derived Analysis v1 decision.",
+  "properties": {
+    "analysis_report_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Analysis Report Id"
+    },
+    "execution_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Execution Id"
+    },
+    "experiment_id": {
+      "anyOf": [
+        {
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Experiment Id"
+    },
+    "proposed_claims": {
+      "items": {
+        "$ref": "#/$defs/ProposedClaim"
+      },
+      "minItems": 1,
+      "title": "Proposed Claims",
+      "type": "array"
+    },
+    "risk_constraints": {
+      "$ref": "#/$defs/RiskConstraints"
+    }
+  },
+  "required": [
+    "risk_constraints",
+    "proposed_claims"
+  ],
+  "title": "DecisionAdmissionRequest",
+  "type": "object"
+}

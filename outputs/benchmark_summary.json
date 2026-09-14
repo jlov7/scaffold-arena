@@ -1,0 +1,122 @@
+{
+  "schema_version": "0.1",
+  "mode": "fixture",
+  "generated_at": "2026-05-23T00:00:00Z",
+  "model_id": "fixture-no-provider-deterministic-v1",
+  "task_families": [
+    "extraction",
+    "privacy",
+    "research",
+    "risk",
+    "strategy",
+    "tool_use"
+  ],
+  "scaffolds_or_ablation_labels": [
+    "bare",
+    "full_scaffold",
+    "plan_only",
+    "retry_only",
+    "schema_only"
+  ],
+  "repeat_count": 3,
+  "run_count": 54,
+  "score_mean": 63.01,
+  "score_stdev": 31.14,
+  "score_ci95": {
+    "low": 54.7,
+    "high": 71.31
+  },
+  "by_family": {
+    "extraction": {
+      "runs": 9,
+      "positive_mean": 92.5,
+      "negative_mean": 47.15,
+      "separation_points": 45.35,
+      "positive_ci95": {
+        "low": 92.5,
+        "high": 92.5
+      },
+      "negative_ci95": {
+        "low": 17.39,
+        "high": 76.91
+      }
+    },
+    "privacy": {
+      "runs": 9,
+      "positive_mean": 100.0,
+      "negative_mean": 55.6,
+      "separation_points": 44.4,
+      "positive_ci95": {
+        "low": 100.0,
+        "high": 100.0
+      },
+      "negative_ci95": {
+        "low": 55.6,
+        "high": 55.6
+      }
+    },
+    "research": {
+      "runs": 9,
+      "positive_mean": 100.0,
+      "negative_mean": 53.4,
+      "separation_points": 46.6,
+      "positive_ci95": {
+        "low": 100.0,
+        "high": 100.0
+      },
+      "negative_ci95": {
+        "low": 39.64,
+        "high": 67.16
+      }
+    },
+    "risk": {
+      "runs": 9,
+      "positive_mean": 97.4,
+      "negative_mean": 11.8,
+      "separation_points": 85.6,
+      "positive_ci95": {
+        "low": 97.4,
+        "high": 97.4
+      },
+      "negative_ci95": {
+        "low": 11.8,
+        "high": 11.8
+      }
+    },
+    "strategy": {
+      "runs": 9,
+      "positive_mean": 100.0,
+      "negative_mean": 50.25,
+      "separation_points": 49.75,
+      "positive_ci95": {
+        "low": 100.0,
+        "high": 100.0
+      },
+      "negative_ci95": {
+        "low": 45.12,
+        "high": 55.38
+      }
+    },
+    "tool_use": {
+      "runs": 9,
+      "positive_mean": 100.0,
+      "negative_mean": 53.9,
+      "separation_points": 46.1,
+      "positive_ci95": {
+        "low": 100.0,
+        "high": 100.0
+      },
+      "negative_ci95": {
+        "low": 45.13,
+        "high": 62.67
+      }
+    }
+  },
+  "limitations": [
+    "Fixture mode validates benchmark mechanics, baseline separation, and artifact generation.",
+    "No provider was invoked: provider token, cost, and call fields are zero; latency was not measured.",
+    "Timestamps are fixed fixture values for reproducibility, not observed execution times.",
+    "Fixture scores are deterministic control outcomes, not model-performance evidence.",
+    "This is not live provider evidence and does not remove the strict rubric live-run cap."
+  ]
+}

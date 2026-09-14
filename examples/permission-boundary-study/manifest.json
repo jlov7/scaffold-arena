@@ -1,0 +1,28 @@
+{
+  "schema_version": "scaffold-arena.public-example/1",
+  "example_id": "permission-boundary-study",
+  "status": "PASS",
+  "run": {
+    "cwd": "repository-root/frontend",
+    "command": "cd frontend && npx -y pnpm@10 exec playwright test tests/e2e/workbench-v1.spec.ts --grep \"team chooser\" --output=/tmp/scaffold-arena-permission-boundary-results",
+    "expected_exit_code": 0,
+    "output": "/tmp/scaffold-arena-permission-boundary-results"
+  },
+  "inputs": [
+    {"path": "frontend/tests/e2e/workbench-v1.spec.ts", "role": "team chooser E2E"},
+    {"path": "frontend/tests/support/workbenchV1Mock.ts", "role": "synthetic memberships and API responses"},
+    {"path": "backend/tests/api_v1/test_team_authorization.py", "role": "backend authorization contract"},
+    {"path": "backend/tests/auth_v1", "role": "authentication contract tests"}
+  ],
+  "expected": {
+    "verdict": "PASS",
+    "provider_execution_started": false,
+    "real_tenant_used": false,
+    "secret_like_values_in_page_or_report": false,
+    "selected_memberships": ["project-a", "project-b"]
+  },
+  "evidence_ceiling": "Fixture/client/API authorization contract only; not tenant isolation, deployment security, penetration testing, or independent assurance.",
+  "focused_test": "frontend/tests/e2e/workbench-v1.spec.ts (team chooser test) plus backend team-authorization and accessibility tests",
+  "cleanup": ["rm -rf /tmp/scaffold-arena-permission-boundary-results"],
+  "pinned_screenshot": {"status": "HOLD", "reason": "No dedicated synthetic team-chooser capture is claimed in this example-only change."}
+}

@@ -1,0 +1,1493 @@
+{
+  "atlas_digest": "sha256:e26aab5c96fb15d2bb3a1b1c1bb4b214d45b6979680d9302567a5d22b0419bc7",
+  "atlas_id": "harness-mechanism-atlas-v1",
+  "atlas_schema": "scaffold-arena.harness-mechanism-atlas/1",
+  "canonicalization": "arena-json-v1",
+  "catalog_ref": {
+    "path": "backend/genome_v1/data/standards_catalog_v1.json",
+    "sha256": "sha256:d92eee2f6781779bf7917a020e0bf3a095f38e8012e9302b01f9adea99ac60d8",
+    "source_date": "2026-08-18"
+  },
+  "citation_manifest_path": "backend/genome_v1/data/harness_mechanism_atlas_citations_v1.json",
+  "claim_ceiling": "Source-backed declarations and synthetic metadata fixture shapes only; no execution, interoperability, safety, deployment, performance, human-calibration, or independent-reproduction claim.",
+  "declarations": [
+    {
+      "citation_ids": [
+        "cite-native-models",
+        "cite-native-fixture"
+      ],
+      "compatibility_requirements": [
+        "descriptor contract only"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-native-source",
+        "ev-native-fixture"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "native_scaffold",
+      "identity": {
+        "arena_name": "bare single shot",
+        "catalog_standard_id": null,
+        "citation_ids": [
+          "cite-native-models",
+          "cite-native-fixture"
+        ],
+        "identity_kind": "native_source",
+        "license_spdx": null,
+        "source_revision_state": "pinned",
+        "version": null
+      },
+      "implementation_identity": "Pinned Arena Genome descriptor contract source",
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "native.bare.single_shot",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-native-models"
+      ],
+      "compatibility_requirements": [
+        "descriptor contract only"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-native-source"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "native_scaffold",
+      "identity": {
+        "arena_name": "plan execute verify",
+        "catalog_standard_id": null,
+        "citation_ids": [
+          "cite-native-models"
+        ],
+        "identity_kind": "native_source",
+        "license_spdx": null,
+        "source_revision_state": "pinned",
+        "version": null
+      },
+      "implementation_identity": "Pinned Arena Genome descriptor contract source",
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "native.plan_execute_verify",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-native-models"
+      ],
+      "compatibility_requirements": [
+        "descriptor contract only"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-native-source"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "native_scaffold",
+      "identity": {
+        "arena_name": "memory critique",
+        "catalog_standard_id": null,
+        "citation_ids": [
+          "cite-native-models"
+        ],
+        "identity_kind": "native_source",
+        "license_spdx": null,
+        "source_revision_state": "pinned",
+        "version": null
+      },
+      "implementation_identity": "Pinned Arena Genome descriptor contract source",
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "native.memory_critique",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-native-models"
+      ],
+      "compatibility_requirements": [
+        "descriptor contract only"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-native-source"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "native_scaffold",
+      "identity": {
+        "arena_name": "tool error recovery",
+        "catalog_standard_id": null,
+        "citation_ids": [
+          "cite-native-models"
+        ],
+        "identity_kind": "native_source",
+        "license_spdx": null,
+        "source_revision_state": "pinned",
+        "version": null
+      },
+      "implementation_identity": "Pinned Arena Genome descriptor contract source",
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "native.tool_error_recovery",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-langgraph"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-langgraph"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "graph_orchestrator",
+      "identity": {
+        "arena_name": "LangGraph graph state",
+        "catalog_standard_id": "langgraph",
+        "citation_ids": [
+          "cite-langgraph"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "MIT",
+        "source_revision_state": "not_captured",
+        "version": "1.2.9"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "langgraph.graph_state",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-langgraph"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-langgraph"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "graph_orchestrator",
+      "identity": {
+        "arena_name": "LangGraph checkpoint store",
+        "catalog_standard_id": "langgraph",
+        "citation_ids": [
+          "cite-langgraph"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "MIT",
+        "source_revision_state": "not_captured",
+        "version": "1.2.9"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "langgraph.checkpoint_store",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-langgraph"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-langgraph"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "graph_orchestrator",
+      "identity": {
+        "arena_name": "LangGraph interrupt resume",
+        "catalog_standard_id": "langgraph",
+        "citation_ids": [
+          "cite-langgraph"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "MIT",
+        "source_revision_state": "not_captured",
+        "version": "1.2.9"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "langgraph.interrupt_resume",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-openai-agents"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-openai-agents"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "sdk_runtime",
+      "identity": {
+        "arena_name": "OpenAI Agents agent loop",
+        "catalog_standard_id": "openai-agents-sdk",
+        "citation_ids": [
+          "cite-openai-agents"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "MIT",
+        "source_revision_state": "not_captured",
+        "version": "0.17.4"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "openai_agents.agent_loop",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-openai-agents"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-openai-agents"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "sdk_runtime",
+      "identity": {
+        "arena_name": "OpenAI Agents handoff",
+        "catalog_standard_id": "openai-agents-sdk",
+        "citation_ids": [
+          "cite-openai-agents"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "MIT",
+        "source_revision_state": "not_captured",
+        "version": "0.17.4"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "openai_agents.handoff",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-openai-agents"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-openai-agents"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "sdk_runtime",
+      "identity": {
+        "arena_name": "OpenAI Agents guardrail",
+        "catalog_standard_id": "openai-agents-sdk",
+        "citation_ids": [
+          "cite-openai-agents"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "MIT",
+        "source_revision_state": "not_captured",
+        "version": "0.17.4"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "openai_agents.guardrail",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-google-adk"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-google-adk"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "sdk_runtime",
+      "identity": {
+        "arena_name": "Google ADK sub agents",
+        "catalog_standard_id": "google-adk",
+        "citation_ids": [
+          "cite-google-adk"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "Apache-2.0",
+        "source_revision_state": "not_discoverable",
+        "version": "v2.1.0"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "google_adk.sub_agents",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-codex-cli"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-codex-cli"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "coding_cli",
+      "identity": {
+        "arena_name": "Codex CLI approval surface",
+        "catalog_standard_id": "codex-cli",
+        "citation_ids": [
+          "cite-codex-cli"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "Apache-2.0",
+        "source_revision_state": "not_captured",
+        "version": "0.139.0"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "codex_cli.approval_surface",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-claude-code"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-claude-code"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "coding_cli",
+      "identity": {
+        "arena_name": "Claude Code permission surface",
+        "catalog_standard_id": "claude-code-cli",
+        "citation_ids": [
+          "cite-claude-code"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": null,
+        "source_revision_state": "not_captured",
+        "version": "v2.1.220"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "claude_code.permission_surface",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-gemini-cli"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-gemini-cli"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "coding_cli",
+      "identity": {
+        "arena_name": "Gemini CLI approval mode",
+        "catalog_standard_id": "gemini-cli",
+        "citation_ids": [
+          "cite-gemini-cli"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "Apache-2.0",
+        "source_revision_state": "not_captured",
+        "version": "v0.53.0"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "gemini_cli.approval_mode",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-mcp"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-mcp"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "tool_protocol",
+      "identity": {
+        "arena_name": "MCP tools resources prompts",
+        "catalog_standard_id": "mcp",
+        "citation_ids": [
+          "cite-mcp"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "MIT",
+        "source_revision_state": "not_captured",
+        "version": "2026-07-28"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "mcp.tools_resources_prompts",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-a2a"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-a2a"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "agent_protocol",
+      "identity": {
+        "arena_name": "A2A task artifact lifecycle",
+        "catalog_standard_id": "a2a",
+        "citation_ids": [
+          "cite-a2a"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "Apache-2.0",
+        "source_revision_state": "not_discoverable",
+        "version": "1.0.0"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "a2a.task_artifact_lifecycle",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-acp"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-acp"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "agent_protocol",
+      "identity": {
+        "arena_name": "ACP session lifecycle",
+        "catalog_standard_id": "agent-client-protocol",
+        "citation_ids": [
+          "cite-acp"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "Apache-2.0",
+        "source_revision_state": "pinned",
+        "version": "1.6.0 / schema-v1.20.0"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "acp.session_lifecycle",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    },
+    {
+      "citation_ids": [
+        "cite-otel-genai"
+      ],
+      "compatibility_requirements": [
+        "reference-only catalog"
+      ],
+      "configuration_digest": null,
+      "configuration_status": "not_captured",
+      "evidence_ids": [
+        "ev-otel-genai"
+      ],
+      "evidence_maturity": "source_metadata",
+      "family_id": "telemetry_surface",
+      "identity": {
+        "arena_name": "OpenTelemetry GenAI semantic conventions",
+        "catalog_standard_id": "otel-genai",
+        "citation_ids": [
+          "cite-otel-genai"
+        ],
+        "identity_kind": "external_catalog",
+        "license_spdx": "Apache-2.0",
+        "source_revision_state": "not_captured",
+        "version": "gen-ai/1.42.0"
+      },
+      "implementation_identity": "Official catalog identity only",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "mechanism_id": "otel.gen_ai_semconv",
+      "mutability": "unknown",
+      "observability_surfaces": [
+        "unknown"
+      ],
+      "security_responsibilities": [
+        "unknown"
+      ]
+    }
+  ],
+  "evidence": [
+    {
+      "artifact_digest": "sha256:1c2719310ff83aca9ebda2e93d01aa920914cd18e1258033257b7abacf628103",
+      "artifact_path": "backend/genome_v1/models.py",
+      "authority_ceiling": "Pinned local source identity only",
+      "citation_ids": [
+        "cite-native-models"
+      ],
+      "claim_ceiling": "Pinned source metadata only; no execution or outcome claim.",
+      "evidence_id": "ev-native-source",
+      "kind": "local_source_snapshot",
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "limitations": [
+        "Local source identity is not an activation record."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": "sha256:2dd440f4cfae8fcaacb7f2deecab239754ef0fdc6946c3f823fffdb560386831",
+      "artifact_path": "backend/genome_v1/fixtures/native-genome-v1.json",
+      "authority_ceiling": "Synthetic metadata shape only",
+      "citation_ids": [
+        "cite-native-fixture"
+      ],
+      "claim_ceiling": "Synthetic fixture metadata only; no execution or outcome claim.",
+      "evidence_id": "ev-native-fixture",
+      "kind": "synthetic_fixture_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "limitations": [
+        "Fixture bytes are integrity custody, not runtime truth."
+      ],
+      "maturity": "synthetic_fixture"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-langgraph"
+      ],
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_id": "ev-langgraph",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No graph replay or persistence equivalence evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-openai-agents"
+      ],
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_id": "ev-openai-agents",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No SDK invocation or trace evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-google-adk"
+      ],
+      "claim_ceiling": "Official source metadata only; no execution or deployment claim.",
+      "evidence_id": "ev-google-adk",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No runtime or deployment evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-codex-cli"
+      ],
+      "claim_ceiling": "Official source metadata only; no process or approval behavior claim.",
+      "evidence_id": "ev-codex-cli",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No local process or containment evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-claude-code"
+      ],
+      "claim_ceiling": "Official source metadata only; no process or permission behavior claim.",
+      "evidence_id": "ev-claude-code",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No command execution evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-gemini-cli"
+      ],
+      "claim_ceiling": "Official source metadata only; no process or approval behavior claim.",
+      "evidence_id": "ev-gemini-cli",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No shell or sandbox evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-mcp"
+      ],
+      "claim_ceiling": "Official source metadata only; no client, server, or interoperability claim.",
+      "evidence_id": "ev-mcp",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No protocol runtime evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-a2a"
+      ],
+      "claim_ceiling": "Official source metadata only; no remote task or interoperability claim.",
+      "evidence_id": "ev-a2a",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No remote task execution evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Pinned schema custody only",
+      "citation_ids": [
+        "cite-acp"
+      ],
+      "claim_ceiling": "Pinned source metadata only; no session execution or lifecycle claim.",
+      "evidence_id": "ev-acp",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "limitations": [
+        "No operator receipt or runtime evidence."
+      ],
+      "maturity": "source_metadata"
+    },
+    {
+      "artifact_digest": null,
+      "artifact_path": null,
+      "authority_ceiling": "Catalog source metadata only",
+      "citation_ids": [
+        "cite-otel-genai"
+      ],
+      "claim_ceiling": "Official source metadata only; no emitted trace or semantic completeness claim.",
+      "evidence_id": "ev-otel-genai",
+      "kind": "official_source_metadata",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-upstream-custody"
+      ],
+      "limitations": [
+        "No collector, exporter, or trace evidence."
+      ],
+      "maturity": "source_metadata"
+    }
+  ],
+  "families": [
+    {
+      "citation_ids": [
+        "cite-native-models",
+        "cite-native-fixture"
+      ],
+      "display_name": "Native scaffold",
+      "family_id": "native_scaffold",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-no-equivalence"
+      ],
+      "mechanism_ids": [
+        "native.bare.single_shot",
+        "native.plan_execute_verify",
+        "native.memory_critique",
+        "native.tool_error_recovery"
+      ],
+      "semantic_contract": {
+        "configuration_knobs": [
+          "configuration status",
+          "mutability",
+          "evidence maturity"
+        ],
+        "local_validation_repair": "strict contract validation with no runtime repair evidence",
+        "phase_sequence": [
+          "input",
+          "model call",
+          "local validation",
+          "bounded repair"
+        ],
+        "profile_kind": "native_scaffold",
+        "provider_call_shape": "declarative descriptor only; no provider invocation"
+      },
+      "semantic_namespace": "arena.native"
+    },
+    {
+      "citation_ids": [
+        "cite-langgraph"
+      ],
+      "display_name": "Graph orchestrator",
+      "family_id": "graph_orchestrator",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-no-equivalence"
+      ],
+      "mechanism_ids": [
+        "langgraph.graph_state",
+        "langgraph.checkpoint_store",
+        "langgraph.interrupt_resume"
+      ],
+      "semantic_contract": {
+        "checkpoint_scope": "source-declared only",
+        "interrupt_resume_semantics": "source-declared interrupt and resume semantics",
+        "node_edge_model": "nodes and directed edges",
+        "profile_kind": "graph_orchestrator",
+        "state_graph_model": "named state graph",
+        "store_scope": "source-declared only"
+      },
+      "semantic_namespace": "langgraph"
+    },
+    {
+      "citation_ids": [
+        "cite-openai-agents",
+        "cite-google-adk"
+      ],
+      "display_name": "SDK runtime",
+      "family_id": "sdk_runtime",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-no-equivalence"
+      ],
+      "mechanism_ids": [
+        "openai_agents.agent_loop",
+        "openai_agents.handoff",
+        "openai_agents.guardrail",
+        "google_adk.sub_agents"
+      ],
+      "semantic_contract": {
+        "agent_loop": "SDK agent-loop identity only",
+        "guardrail_phase_tripwire": "guardrail phase and tripwire remain source-defined",
+        "handoff_ownership": "handoff and sub-agent ownership remain source-defined",
+        "profile_kind": "sdk_runtime",
+        "session_tracing_surfaces": [
+          "session",
+          "tracing"
+        ]
+      },
+      "semantic_namespace": "sdk.runtime"
+    },
+    {
+      "citation_ids": [
+        "cite-codex-cli",
+        "cite-claude-code",
+        "cite-gemini-cli"
+      ],
+      "display_name": "Coding CLI",
+      "family_id": "coding_cli",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-security-safety"
+      ],
+      "mechanism_ids": [
+        "codex_cli.approval_surface",
+        "claude_code.permission_surface",
+        "gemini_cli.approval_mode"
+      ],
+      "semantic_contract": {
+        "approval_permission_mode": "source-named approval or permission mode",
+        "cli_session": "CLI session identity only",
+        "containment_invariant": "unknown; no containment is inferred from a CLI mode",
+        "profile_kind": "coding_cli",
+        "tool_filesystem_terminal_surface": "tool, filesystem, and terminal surface metadata"
+      },
+      "semantic_namespace": "coding.cli"
+    },
+    {
+      "citation_ids": [
+        "cite-mcp"
+      ],
+      "display_name": "Tool protocol",
+      "family_id": "tool_protocol",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-no-equivalence"
+      ],
+      "mechanism_ids": [
+        "mcp.tools_resources_prompts"
+      ],
+      "semantic_contract": {
+        "authorization_consent": "source-defined authorization and consent semantics",
+        "cancellation_task_support": "source-defined cancellation and task support",
+        "control_owner": "protocol control owner is source-defined",
+        "profile_kind": "tool_protocol",
+        "prompts_primitive": "MCP prompts primitive",
+        "resources_primitive": "MCP resources primitive",
+        "schemas": "protocol schemas are distinct from tools",
+        "tools_primitive": "MCP tools primitive"
+      },
+      "semantic_namespace": "mcp"
+    },
+    {
+      "citation_ids": [
+        "cite-a2a",
+        "cite-acp"
+      ],
+      "display_name": "Agent protocol",
+      "family_id": "agent_protocol",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-no-equivalence"
+      ],
+      "mechanism_ids": [
+        "a2a.task_artifact_lifecycle",
+        "acp.session_lifecycle"
+      ],
+      "semantic_contract": {
+        "cancellation_semantics": "protocol-specific cancellation remains distinct",
+        "lifecycle_objects": [
+          "A2A message task artifact",
+          "ACP initialize session prompt cancel permission"
+        ],
+        "permission_semantics": "ACP permission lifecycle is distinct from A2A tasks",
+        "profile_kind": "agent_protocol",
+        "protocol_distinction": "agent-communication-protocol is only a historical migration alias to A2A, never Agent Client Protocol",
+        "streaming_semantics": "protocol-specific streams remain distinct"
+      },
+      "semantic_namespace": "agent.protocol"
+    },
+    {
+      "citation_ids": [
+        "cite-otel-genai"
+      ],
+      "display_name": "Telemetry surface",
+      "family_id": "telemetry_surface",
+      "known_unknown_ids": [
+        "unknown-no-runtime",
+        "unknown-security-safety"
+      ],
+      "mechanism_ids": [
+        "otel.gen_ai_semconv"
+      ],
+      "semantic_contract": {
+        "profile_kind": "telemetry_surface",
+        "schema_url": "source-declared schema URL only",
+        "semantic_convention_namespace": "OpenTelemetry GenAI semantic-convention namespace",
+        "signal": "telemetry signal metadata",
+        "span_linkage": "source-declared span linkage only"
+      },
+      "semantic_namespace": "otel.gen_ai"
+    }
+  ],
+  "known_unknowns": [
+    {
+      "blocked_claims": [
+        "execution",
+        "interoperability"
+      ],
+      "resolution_predicate": "Admit a separately verified activation record with immutable artifacts and bounded evidence.",
+      "statement": "No local or external runtime activation is recorded.",
+      "subject_id": "harness-mechanism-atlas-v1",
+      "subject_kind": "atlas",
+      "unknown_id": "unknown-no-runtime"
+    },
+    {
+      "blocked_claims": [
+        "exact upstream implementation identity"
+      ],
+      "resolution_predicate": "Capture an official immutable revision and content digest under a new source date.",
+      "statement": "Some catalog sources have no captured upstream revision or content snapshot.",
+      "subject_id": "harness-mechanism-atlas-v1",
+      "subject_kind": "atlas",
+      "unknown_id": "unknown-upstream-custody"
+    },
+    {
+      "blocked_claims": [
+        "cross-family semantic equivalence"
+      ],
+      "resolution_predicate": "Publish an explicit comparative protocol and admissible evidence.",
+      "statement": "Family labels do not establish semantic equivalence between mechanisms.",
+      "subject_id": "harness-mechanism-atlas-v1",
+      "subject_kind": "atlas",
+      "unknown_id": "unknown-no-equivalence"
+    },
+    {
+      "blocked_claims": [
+        "security assurance",
+        "safety assurance",
+        "deployment assurance",
+        "performance conclusion"
+      ],
+      "resolution_predicate": "Complete separately scoped assessments and evidence admission.",
+      "statement": "No security, safety, deployment, or performance evidence is recorded.",
+      "subject_id": "harness-mechanism-atlas-v1",
+      "subject_kind": "atlas",
+      "unknown_id": "unknown-security-safety"
+    },
+    {
+      "blocked_claims": [
+        "human-calibrated conclusion",
+        "independent reproduction"
+      ],
+      "resolution_predicate": "Publish attributable calibrated and independent evidence under the relevant protocol.",
+      "statement": "No human calibration or independent reproduction is recorded.",
+      "subject_id": "harness-mechanism-atlas-v1",
+      "subject_kind": "atlas",
+      "unknown_id": "unknown-no-independent"
+    },
+    {
+      "blocked_claims": [
+        "ecosystem completeness"
+      ],
+      "resolution_predicate": "Review a bounded expanded curation with source custody.",
+      "statement": "The curated mechanism set is not complete ecosystem coverage.",
+      "subject_id": "harness-mechanism-atlas-v1",
+      "subject_kind": "atlas",
+      "unknown_id": "unknown-coverage"
+    }
+  ],
+  "observations": [
+    {
+      "activation_id": "obs-native-bare",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Source and synthetic metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-native-source",
+        "ev-native-fixture"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "native.bare.single_shot",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-native-plan",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-native-source"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "native.plan_execute_verify",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-native-memory",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-native-source"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "native.memory_critique",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-native-recovery",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-native-source"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "native.tool_error_recovery",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-langgraph-state",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-langgraph"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "langgraph.graph_state",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-langgraph-checkpoint",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-langgraph"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "langgraph.checkpoint_store",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-langgraph-interrupt",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-langgraph"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "langgraph.interrupt_resume",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-openai-loop",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-openai-agents"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "openai_agents.agent_loop",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-openai-handoff",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-openai-agents"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "openai_agents.handoff",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-openai-guardrail",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-openai-agents"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "openai_agents.guardrail",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-google-adk",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-google-adk"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "google_adk.sub_agents",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-codex-cli",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-codex-cli"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "codex_cli.approval_surface",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-claude-code",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-claude-code"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "claude_code.permission_surface",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-gemini-cli",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-gemini-cli"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "gemini_cli.approval_mode",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-mcp",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-mcp"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "mcp.tools_resources_prompts",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-a2a",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-a2a"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "a2a.task_artifact_lifecycle",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-acp",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-acp"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "acp.session_lifecycle",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    },
+    {
+      "activation_id": "obs-otel",
+      "artifact_digest": null,
+      "artifact_path": null,
+      "claim_ceiling": "Official source metadata only; no execution or interoperability claim.",
+      "evidence_ids": [
+        "ev-otel-genai"
+      ],
+      "known_unknown_ids": [
+        "unknown-no-runtime"
+      ],
+      "mechanism_id": "otel.gen_ai_semconv",
+      "metadata_shape_only": false,
+      "observed_at": null,
+      "status": "not_observed"
+    }
+  ],
+  "source_date": "2026-08-18"
+}

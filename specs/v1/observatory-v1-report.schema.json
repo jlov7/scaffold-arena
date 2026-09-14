@@ -1,0 +1,313 @@
+{
+  "$defs": {
+    "DiagnosticMetric": {
+      "additionalProperties": false,
+      "properties": {
+        "denominator": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Denominator"
+        },
+        "exclusions": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Exclusions",
+          "type": "array"
+        },
+        "metric_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Metric Id",
+          "type": "string"
+        },
+        "numerator": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Numerator"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "metric_id",
+        "value",
+        "numerator",
+        "denominator"
+      ],
+      "title": "DiagnosticMetric",
+      "type": "object"
+    },
+    "InterventionFidelity": {
+      "additionalProperties": false,
+      "properties": {
+        "reason": {
+          "maxLength": 16384,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "stage": {
+          "enum": [
+            "declared",
+            "assigned",
+            "available",
+            "triggered",
+            "applied",
+            "activated",
+            "observed",
+            "downstream_pathway_detected"
+          ],
+          "title": "Stage",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "stage",
+        "status",
+        "reason"
+      ],
+      "title": "InterventionFidelity",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/observatory-v1-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Redacted, content-addressed report over already persisted event evidence.",
+  "properties": {
+    "analysis_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Analysis Digest",
+      "type": "string"
+    },
+    "attempt_ids": {
+      "items": {
+        "pattern": "^[a-zA-Z0-9_-]{1,64}$",
+        "type": "string"
+      },
+      "title": "Attempt Ids",
+      "type": "array"
+    },
+    "claim_ceiling": {
+      "maxLength": 16384,
+      "minLength": 1,
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "context_ledger": {
+      "additionalProperties": true,
+      "title": "Context Ledger",
+      "type": "object"
+    },
+    "evidence_ceiling": {
+      "maxLength": 16384,
+      "minLength": 1,
+      "title": "Evidence Ceiling",
+      "type": "string"
+    },
+    "execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Execution Started",
+      "type": "boolean"
+    },
+    "fidelity_ladder": {
+      "items": {
+        "enum": [
+          "declared",
+          "assigned",
+          "available",
+          "triggered",
+          "applied",
+          "activated",
+          "observed",
+          "downstream_pathway_detected"
+        ],
+        "type": "string"
+      },
+      "title": "Fidelity Ladder",
+      "type": "array"
+    },
+    "fidelity_level": {
+      "anyOf": [
+        {
+          "enum": [
+            "declared",
+            "assigned",
+            "available",
+            "triggered",
+            "applied",
+            "activated",
+            "observed",
+            "downstream_pathway_detected"
+          ],
+          "type": "string"
+        },
+        {
+          "const": "unknown",
+          "type": "string"
+        }
+      ],
+      "title": "Fidelity Level"
+    },
+    "graph_microscope": {
+      "additionalProperties": true,
+      "title": "Graph Microscope",
+      "type": "object"
+    },
+    "idempotent_replay": {
+      "default": false,
+      "title": "Idempotent Replay",
+      "type": "boolean"
+    },
+    "intervention_fidelity": {
+      "items": {
+        "$ref": "#/$defs/InterventionFidelity"
+      },
+      "title": "Intervention Fidelity",
+      "type": "array"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 128,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "loop_microscope": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Loop Microscope",
+      "type": "array"
+    },
+    "memory_ledger": {
+      "additionalProperties": true,
+      "title": "Memory Ledger",
+      "type": "object"
+    },
+    "metrics": {
+      "items": {
+        "$ref": "#/$defs/DiagnosticMetric"
+      },
+      "title": "Metrics",
+      "type": "array"
+    },
+    "network_requested": {
+      "const": false,
+      "default": false,
+      "title": "Network Requested",
+      "type": "boolean"
+    },
+    "provider_execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Provider Execution Started",
+      "type": "boolean"
+    },
+    "report_artifact_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Artifact Digest",
+      "type": "string"
+    },
+    "report_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Digest",
+      "type": "string"
+    },
+    "report_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "source_artifact_digest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Artifact Digest"
+    },
+    "xray_analysis_digest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Xray Analysis Digest"
+    }
+  },
+  "required": [
+    "report_id",
+    "report_digest",
+    "analysis_digest",
+    "report_artifact_digest",
+    "claim_ceiling",
+    "evidence_ceiling",
+    "context_ledger",
+    "memory_ledger",
+    "loop_microscope",
+    "graph_microscope",
+    "intervention_fidelity",
+    "fidelity_ladder",
+    "fidelity_level",
+    "metrics",
+    "attempt_ids"
+  ],
+  "title": "ObservatoryReport",
+  "type": "object"
+}

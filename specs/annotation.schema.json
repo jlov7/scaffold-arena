@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://scaffold-arena.local/specs/annotation.schema.json",
+  "title": "Scaffold Arena Protocol-v0.1 Legacy Fixture Annotation",
+  "description": "Legacy 1-5 fixture-only annotation sample. It is not valid input for Protocol-v1 calibration or receipt minting.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "annotation_id",
+    "run_id",
+    "scenario_id",
+    "annotator_role",
+    "blind_to_scaffold",
+    "rubric_scores",
+    "claim_review",
+    "adjudication_required"
+  ],
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^0\\.1$" },
+    "annotation_id": { "type": "string", "minLength": 3 },
+    "run_id": { "type": "string", "minLength": 3 },
+    "scenario_id": { "type": "string", "minLength": 3 },
+    "annotator_role": { "type": "string", "minLength": 3 },
+    "blind_to_scaffold": { "type": "boolean" },
+    "rubric_scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_success",
+        "evidence_grounding",
+        "schema_adherence",
+        "safety_boundary",
+        "actionability"
+      ],
+      "properties": {
+        "task_success": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "evidence_grounding": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "schema_adherence": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "safety_boundary": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "actionability": { "type": "integer", "minimum": 1, "maximum": 5 }
+      }
+    },
+    "claim_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unsupported_claims_found", "privacy_or_safety_issue_found", "notes"],
+      "properties": {
+        "unsupported_claims_found": { "type": "boolean" },
+        "privacy_or_safety_issue_found": { "type": "boolean" },
+        "notes": { "type": "string" }
+      }
+    },
+    "adjudication_required": { "type": "boolean" }
+  }
+}

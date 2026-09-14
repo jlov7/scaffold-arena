@@ -1,0 +1,1037 @@
+{
+  "$defs": {
+    "AdequacyRule": {
+      "additionalProperties": false,
+      "properties": {
+        "minimum_completed_attempts": {
+          "minimum": 1,
+          "title": "Minimum Completed Attempts",
+          "type": "integer"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "required_balance": {
+          "default": true,
+          "title": "Required Balance",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "minimum_completed_attempts",
+        "rationale"
+      ],
+      "title": "AdequacyRule",
+      "type": "object"
+    },
+    "AggregateBudgetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_total_cost_usd": {
+          "minimum": 0.0,
+          "title": "Max Total Cost Usd",
+          "type": "number"
+        },
+        "max_total_tokens": {
+          "minimum": 1,
+          "title": "Max Total Tokens",
+          "type": "integer"
+        },
+        "max_total_tool_calls": {
+          "minimum": 0,
+          "title": "Max Total Tool Calls",
+          "type": "integer"
+        },
+        "max_wall_time_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "Max Wall Time Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "max_total_cost_usd",
+        "max_total_tokens",
+        "max_total_tool_calls",
+        "max_wall_time_seconds",
+        "max_attempts"
+      ],
+      "title": "AggregateBudgetSpec",
+      "type": "object"
+    },
+    "BudgetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_context_tokens": {
+          "description": "Maximum input context consumption, measured in provider-reported tokens.",
+          "minimum": 1,
+          "title": "Max Context Tokens",
+          "type": "integer"
+        },
+        "max_cost_usd": {
+          "minimum": 0.0,
+          "title": "Max Cost Usd",
+          "type": "number"
+        },
+        "max_latency_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "Max Latency Seconds",
+          "type": "number"
+        },
+        "max_tokens": {
+          "minimum": 1,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "max_tool_calls": {
+          "minimum": 0,
+          "title": "Max Tool Calls",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_attempts",
+        "max_cost_usd",
+        "max_latency_seconds",
+        "max_tokens",
+        "max_tool_calls",
+        "max_context_tokens"
+      ],
+      "title": "BudgetSpec",
+      "type": "object"
+    },
+    "CapabilityRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "enum": [
+            "tools",
+            "state",
+            "checkpoint",
+            "memory",
+            "delegation",
+            "streaming",
+            "usage",
+            "sandboxing"
+          ],
+          "title": "Capability",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "capability"
+      ],
+      "title": "CapabilityRequirement",
+      "type": "object"
+    },
+    "CustomTreatment": {
+      "additionalProperties": false,
+      "properties": {
+        "assignments": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]{1,127}$": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          "title": "Assignments",
+          "type": "object"
+        },
+        "treatment_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Treatment Id"
+        }
+      },
+      "required": [
+        "assignments"
+      ],
+      "title": "CustomTreatment",
+      "type": "object"
+    },
+    "FactorSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "baseline": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline"
+        },
+        "capability_requirements": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/CapabilityRequirement"
+          },
+          "title": "Capability Requirements",
+          "type": "array"
+        },
+        "declarative_config": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Declarative Config",
+          "type": "object"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "expected_benefit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Benefit"
+        },
+        "expected_tax": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Tax"
+        },
+        "extensions": {
+          "additionalProperties": true,
+          "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+          "title": "Extensions",
+          "type": "object"
+        },
+        "factor_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Factor Id",
+          "type": "string"
+        },
+        "falsifying_result": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Falsifying Result"
+        },
+        "fixed_infrastructure": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Fixed Infrastructure",
+          "type": "object"
+        },
+        "incompatible_level_combinations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IncompatibleLevelCombination"
+          },
+          "title": "Incompatible Level Combinations",
+          "type": "array"
+        },
+        "incompatible_with": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Incompatible With",
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "binary",
+            "categorical",
+            "ordinal"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "levels": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Levels",
+          "type": "array"
+        },
+        "manipulation_checks": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ManipulationCheck"
+          },
+          "title": "Manipulation Checks",
+          "type": "array"
+        },
+        "no_op_levels": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "No Op Levels",
+          "type": "array"
+        },
+        "prohibited_co_mutations": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Prohibited Co Mutations",
+          "type": "array"
+        },
+        "sham_treatment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ShamTreatment"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "treatment_mutations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TreatmentMutation"
+          },
+          "title": "Treatment Mutations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "factor_id",
+        "kind",
+        "levels",
+        "description"
+      ],
+      "title": "FactorSpec",
+      "type": "object"
+    },
+    "IncompatibleLevelCombination": {
+      "additionalProperties": false,
+      "properties": {
+        "assignments": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]{1,127}$": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          "title": "Assignments",
+          "type": "object"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assignments",
+        "reason"
+      ],
+      "title": "IncompatibleLevelCombination",
+      "type": "object"
+    },
+    "ManipulationCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Expected Value"
+        },
+        "factor_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Factor Id",
+          "type": "string"
+        },
+        "oracle": {
+          "minLength": 1,
+          "title": "Oracle",
+          "type": "string"
+        }
+      },
+      "required": [
+        "factor_id",
+        "expected_value",
+        "oracle"
+      ],
+      "title": "ManipulationCheck",
+      "type": "object"
+    },
+    "ModelEndpoint": {
+      "additionalProperties": false,
+      "properties": {
+        "endpoint_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Digest"
+        },
+        "endpoint_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Endpoint Id",
+          "type": "string"
+        },
+        "model": {
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "provider": {
+          "minLength": 1,
+          "title": "Provider",
+          "type": "string"
+        }
+      },
+      "required": [
+        "endpoint_id",
+        "provider",
+        "model"
+      ],
+      "title": "ModelEndpoint",
+      "type": "object"
+    },
+    "OutcomeInteraction": {
+      "additionalProperties": false,
+      "properties": {
+        "factor_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Factor Ids",
+          "type": "array"
+        },
+        "interaction_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Interaction Id",
+          "type": "string"
+        },
+        "outcome_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Outcome Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "interaction_id",
+        "factor_ids",
+        "outcome_id"
+      ],
+      "title": "OutcomeInteraction",
+      "type": "object"
+    },
+    "RandomizationBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "block_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Block Id",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "scenario",
+            "model",
+            "harness",
+            "cluster"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "block_id",
+        "unit",
+        "values"
+      ],
+      "title": "RandomizationBlock",
+      "type": "object"
+    },
+    "SamplingSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_tokens": {
+          "default": 1024,
+          "minimum": 1,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "temperature": {
+          "default": 0.0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "top_p": {
+          "default": 1.0,
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Top P",
+          "type": "number"
+        }
+      },
+      "title": "SamplingSpec",
+      "type": "object"
+    },
+    "ShamTreatment": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "levels": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Levels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label",
+        "description"
+      ],
+      "title": "ShamTreatment",
+      "type": "object"
+    },
+    "StoppingRule": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "stop",
+            "hold",
+            "escalate"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "condition": {
+          "minLength": 1,
+          "title": "Condition",
+          "type": "string"
+        },
+        "rule_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Rule Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "condition",
+        "action"
+      ],
+      "title": "StoppingRule",
+      "type": "object"
+    },
+    "TreatmentMutation": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Level"
+        },
+        "operation": {
+          "enum": [
+            "set",
+            "enable",
+            "disable",
+            "select"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "target": {
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "target",
+        "operation",
+        "level"
+      ],
+      "title": "TreatmentMutation",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/experiment.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "adequacy_rule": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AdequacyRule"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "aggregate_budget": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AggregateBudgetSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "budgets": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BudgetSpec"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "claim_bearing": {
+      "default": false,
+      "title": "Claim Bearing",
+      "type": "boolean"
+    },
+    "claim_ceiling": {
+      "default": "protocol evidence only",
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "custom_design": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/CustomTreatment"
+      },
+      "title": "Custom Design",
+      "type": "array"
+    },
+    "design": {
+      "default": "full",
+      "enum": [
+        "full",
+        "fractional",
+        "custom"
+      ],
+      "title": "Design",
+      "type": "string"
+    },
+    "deterministic_weight": {
+      "maximum": 1.0,
+      "minimum": 0.7,
+      "title": "Deterministic Weight",
+      "type": "number"
+    },
+    "experiment_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Experiment Id",
+      "type": "string"
+    },
+    "extensions": {
+      "additionalProperties": true,
+      "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+      "title": "Extensions",
+      "type": "object"
+    },
+    "factors": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/FactorSpec"
+      },
+      "title": "Factors",
+      "type": "array"
+    },
+    "freeze_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Freeze Hash"
+    },
+    "frozen": {
+      "default": false,
+      "title": "Frozen",
+      "type": "boolean"
+    },
+    "frozen_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Frozen At"
+    },
+    "harness_ids": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+        "type": "string"
+      },
+      "title": "Harness Ids",
+      "type": "array"
+    },
+    "hypotheses": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Hypotheses",
+      "type": "array"
+    },
+    "interactions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/OutcomeInteraction"
+      },
+      "title": "Interactions",
+      "type": "array"
+    },
+    "manipulation_checks": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ManipulationCheck"
+      },
+      "title": "Manipulation Checks",
+      "type": "array"
+    },
+    "model_endpoints": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ModelEndpoint"
+      },
+      "title": "Model Endpoints",
+      "type": "array"
+    },
+    "multiple_comparison_correction": {
+      "default": "none",
+      "enum": [
+        "none",
+        "bonferroni",
+        "holm",
+        "benjamini_hochberg"
+      ],
+      "title": "Multiple Comparison Correction",
+      "type": "string"
+    },
+    "owner_approval": {
+      "default": "pending",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "title": "Owner Approval",
+      "type": "string"
+    },
+    "predecessor_experiment_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Predecessor Experiment Id"
+    },
+    "predecessor_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "deprecated": true,
+      "title": "Predecessor Version"
+    },
+    "primary_outcomes": {
+      "default": [],
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+        "type": "string"
+      },
+      "title": "Primary Outcomes",
+      "type": "array"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "questions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Questions",
+      "type": "array"
+    },
+    "randomization_blocks": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/RandomizationBlock"
+      },
+      "title": "Randomization Blocks",
+      "type": "array"
+    },
+    "randomization_seed": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Randomization Seed",
+      "type": "integer"
+    },
+    "repetitions": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Repetitions",
+      "type": "integer"
+    },
+    "sampling": {
+      "$ref": "#/$defs/SamplingSpec"
+    },
+    "scenario_ids": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+        "type": "string"
+      },
+      "title": "Scenario Ids",
+      "type": "array"
+    },
+    "stopping_rules": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/StoppingRule"
+      },
+      "title": "Stopping Rules",
+      "type": "array"
+    },
+    "study_pack_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Study Pack Hash"
+    },
+    "study_pack_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Study Pack Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "experiment_id",
+    "study_pack_id",
+    "scenario_ids",
+    "harness_ids",
+    "deterministic_weight"
+  ],
+  "title": "ExperimentSpec",
+  "type": "object"
+}

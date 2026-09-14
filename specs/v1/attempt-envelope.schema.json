@@ -1,0 +1,344 @@
+{
+  "$defs": {
+    "BudgetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_context_tokens": {
+          "description": "Maximum input context consumption, measured in provider-reported tokens.",
+          "minimum": 1,
+          "title": "Max Context Tokens",
+          "type": "integer"
+        },
+        "max_cost_usd": {
+          "minimum": 0.0,
+          "title": "Max Cost Usd",
+          "type": "number"
+        },
+        "max_latency_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "Max Latency Seconds",
+          "type": "number"
+        },
+        "max_tokens": {
+          "minimum": 1,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "max_tool_calls": {
+          "minimum": 0,
+          "title": "Max Tool Calls",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_attempts",
+        "max_cost_usd",
+        "max_latency_seconds",
+        "max_tokens",
+        "max_tool_calls",
+        "max_context_tokens"
+      ],
+      "title": "BudgetSpec",
+      "type": "object"
+    },
+    "ExecutionProvenance": {
+      "additionalProperties": false,
+      "properties": {
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "code_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Code Hash",
+          "type": "string"
+        },
+        "code_revision": {
+          "minLength": 1,
+          "title": "Code Revision",
+          "type": "string"
+        },
+        "context_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Context Hash",
+          "type": "string"
+        },
+        "environment_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Environment Hash",
+          "type": "string"
+        },
+        "prompt_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Prompt Hash",
+          "type": "string"
+        },
+        "protocol_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "runtime_image": {
+          "minLength": 1,
+          "title": "Runtime Image",
+          "type": "string"
+        },
+        "runtime_image_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Runtime Image Hash",
+          "type": "string"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/ProvenanceSourceRef"
+          },
+          "minItems": 1,
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "tool_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Tool Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code_revision",
+        "code_hash",
+        "runtime_image",
+        "runtime_image_hash",
+        "environment_hash",
+        "prompt_hash",
+        "context_hash",
+        "tool_hash",
+        "source_refs",
+        "captured_at"
+      ],
+      "title": "ExecutionProvenance",
+      "type": "object"
+    },
+    "ProvenanceSourceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "content_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "source_uri": {
+          "minLength": 1,
+          "title": "Source Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_uri",
+        "content_hash"
+      ],
+      "title": "ProvenanceSourceRef",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/attempt-envelope.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attempt_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "budget": {
+      "$ref": "#/$defs/BudgetSpec"
+    },
+    "completed_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Completed At"
+    },
+    "endpoint_id": {
+      "anyOf": [
+        {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Endpoint Id"
+    },
+    "episode_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "factor_assignments": {
+      "patternProperties": {
+        "^[a-z][a-z0-9_-]{1,127}$": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        }
+      },
+      "title": "Factor Assignments",
+      "type": "object"
+    },
+    "harness_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Harness Id",
+      "type": "string"
+    },
+    "observed_endpoint_digest": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed Endpoint Digest"
+    },
+    "observed_provider_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed Provider Version"
+    },
+    "ordinal": {
+      "minimum": 1,
+      "title": "Ordinal",
+      "type": "integer"
+    },
+    "pinned_endpoint_digest": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pinned Endpoint Digest"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "provenance": {
+      "$ref": "#/$defs/ExecutionProvenance"
+    },
+    "provider": {
+      "minLength": 1,
+      "title": "Provider",
+      "type": "string"
+    },
+    "provider_model": {
+      "minLength": 1,
+      "title": "Provider Model",
+      "type": "string"
+    },
+    "queued_at": {
+      "format": "date-time",
+      "title": "Queued At",
+      "type": "string"
+    },
+    "request_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Request Hash",
+      "type": "string"
+    },
+    "response_hash": {
+      "anyOf": [
+        {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Response Hash"
+    },
+    "started_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Started At"
+    },
+    "status": {
+      "enum": [
+        "queued",
+        "started",
+        "completed",
+        "failed",
+        "timed_out",
+        "cancelled",
+        "incomplete"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "attempt_id",
+    "episode_id",
+    "ordinal",
+    "provider_model",
+    "provider",
+    "harness_id",
+    "factor_assignments",
+    "budget",
+    "provenance",
+    "request_hash",
+    "status",
+    "queued_at"
+  ],
+  "title": "AttemptEnvelope",
+  "type": "object"
+}

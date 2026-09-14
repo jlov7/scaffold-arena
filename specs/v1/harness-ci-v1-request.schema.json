@@ -1,0 +1,170 @@
+{
+  "$defs": {
+    "HarnessCIPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "allow_fixture_evidence": {
+          "default": true,
+          "title": "Allow Fixture Evidence",
+          "type": "boolean"
+        },
+        "fail_on_new_severe_failures": {
+          "default": true,
+          "title": "Fail On New Severe Failures",
+          "type": "boolean"
+        },
+        "max_cost_increase_ratio": {
+          "default": 0.25,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Max Cost Increase Ratio",
+          "type": "number"
+        },
+        "max_latency_increase_ratio": {
+          "default": 0.25,
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Max Latency Increase Ratio",
+          "type": "number"
+        },
+        "max_quality_regression": {
+          "default": 0.0,
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Max Quality Regression",
+          "type": "number"
+        },
+        "minimum_fidelity": {
+          "default": "applied",
+          "enum": [
+            "declared",
+            "assigned",
+            "available",
+            "triggered",
+            "applied",
+            "activated",
+            "observed",
+            "downstream_pathway_detected"
+          ],
+          "title": "Minimum Fidelity",
+          "type": "string"
+        },
+        "minimum_paired_repetitions": {
+          "default": 2,
+          "maximum": 512,
+          "minimum": 1,
+          "title": "Minimum Paired Repetitions",
+          "type": "integer"
+        },
+        "require_process_safety": {
+          "default": true,
+          "title": "Require Process Safety",
+          "type": "boolean"
+        },
+        "required_cohorts": {
+          "items": {
+            "enum": [
+              "development",
+              "holdout"
+            ],
+            "type": "string"
+          },
+          "title": "Required Cohorts",
+          "type": "array"
+        },
+        "required_evidence_maturity": {
+          "default": "paired_replay",
+          "enum": [
+            "temporal_correlation",
+            "diagnostic_divergence",
+            "paired_replay",
+            "replicated_intervention",
+            "confirmatory_eligibility"
+          ],
+          "title": "Required Evidence Maturity",
+          "type": "string"
+        },
+        "unknown_usage": {
+          "default": "hold",
+          "enum": [
+            "hold",
+            "fail"
+          ],
+          "title": "Unknown Usage",
+          "type": "string"
+        }
+      },
+      "title": "HarnessCIPolicy",
+      "type": "object"
+    },
+    "SourceChange": {
+      "additionalProperties": false,
+      "description": "In-memory diff input; report serialization never includes this text.",
+      "properties": {
+        "diff_text": {
+          "maxLength": 32768,
+          "minLength": 1,
+          "title": "Diff Text",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "diff_text"
+      ],
+      "title": "SourceChange",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/harness-ci-v1-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "base_source_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Base Source Digest",
+      "type": "string"
+    },
+    "candidate_source_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Candidate Source Digest",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "#/$defs/HarnessCIPolicy"
+    },
+    "replay_report_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Replay Report Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.harness-ci/1",
+      "default": "scaffold-arena.harness-ci/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_changes": {
+      "items": {
+        "$ref": "#/$defs/SourceChange"
+      },
+      "maxItems": 64,
+      "title": "Source Changes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "replay_report_digest",
+    "base_source_digest",
+    "candidate_source_digest",
+    "policy"
+  ],
+  "title": "HarnessCIRequest",
+  "type": "object"
+}

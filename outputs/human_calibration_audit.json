@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-05-23T00:00:00Z",
+  "status": "blocked_no_completed_annotations",
+  "annotation_dir": "outputs/human_annotations",
+  "target_count": 18,
+  "annotation_source_count": 0,
+  "annotation_count": 0,
+  "completed_annotation_targets": 0,
+  "required_annotators_per_target": 3,
+  "score_scale": "normalized [0,1] per rubric dimension",
+  "conflict_threshold": "> 0.20",
+  "agreement_by_dimension": {
+    "task_success": {
+      "pair_count": 0,
+      "exact_rate": null,
+      "within_0_20_rate": null,
+      "mean_absolute_delta": null
+    },
+    "evidence_grounding": {
+      "pair_count": 0,
+      "exact_rate": null,
+      "within_0_20_rate": null,
+      "mean_absolute_delta": null
+    },
+    "schema_adherence": {
+      "pair_count": 0,
+      "exact_rate": null,
+      "within_0_20_rate": null,
+      "mean_absolute_delta": null
+    },
+    "safety_boundary": {
+      "pair_count": 0,
+      "exact_rate": null,
+      "within_0_20_rate": null,
+      "mean_absolute_delta": null
+    },
+    "actionability": {
+      "pair_count": 0,
+      "exact_rate": null,
+      "within_0_20_rate": null,
+      "mean_absolute_delta": null
+    }
+  },
+  "adjudication_required_targets": [],
+  "conflicted_dimensions": {},
+  "unresolved_conflict_targets": [],
+  "incomplete_targets": [],
+  "protocol_completion_digest": null,
+  "human_calibration_receipt": null,
+  "receipt_state": "not_minted_authority_attestation_required",
+  "validation_error_count": 0,
+  "validation_errors": [],
+  "blockers_before_95": [
+    "Collect at least three independent blind annotations for every assigned packet target.",
+    "Resolve every derived > 0.20 per-dimension conflict with one bound adjudication covering exactly its conflicted dimensions.",
+    "Verify reviewer independence and authority, preserve an immutable completion artifact, and obtain external attestation before minting a HumanCalibrationReceipt.",
+    "Update outputs/external_validation.json only after concrete authority-bound annotation evidence exists.",
+    "Do not treat fixture annotation readiness or a local protocol digest as live benchmark validation."
+  ],
+  "claim_boundary": "This audit validates protocol shape and completed annotation records when they exist. With zero annotations it is a blocker ledger, not human calibration evidence, not live benchmark evidence, and not external validation evidence. A protocol-completion digest is not a HumanCalibrationReceipt and does not establish reviewer independence, human judgment validity, or external attestation."
+}

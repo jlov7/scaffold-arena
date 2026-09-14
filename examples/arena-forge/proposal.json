@@ -1,0 +1,39 @@
+{
+  "proposal_id": "fixture-proposal",
+  "proposer_identity": "fixture-proposer",
+  "source_provenance_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "base_genome_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "candidate_genome_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "mechanism_change": {
+    "mechanism_id": "context_compaction",
+    "base_mechanism_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "candidate_mechanism_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "patch_or_config_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "declared_change_count": 1
+  },
+  "falsifiable_prediction": {
+    "metric_id": "quality",
+    "direction": "increase",
+    "threshold": 0.02,
+    "prediction_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+  },
+  "expected_tradeoff": {
+    "quality": "improve",
+    "safety": "neutral",
+    "cost": "increase",
+    "latency": "increase",
+    "rationale_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "triggering_evidence_digests": ["sha256:3333333333333333333333333333333333333333333333333333333333333333"],
+  "rollback": {
+    "rollback_id": "fixture-rollback",
+    "rollback_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "recovery_plan_digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+  },
+  "requested_claim_scope": "fixture_contract",
+  "untrusted": true,
+  "execution_requested": false,
+  "automatic_merge_requested": false,
+  "self_evaluation_requested": false,
+  "scalar_optimization_requested": false
+}

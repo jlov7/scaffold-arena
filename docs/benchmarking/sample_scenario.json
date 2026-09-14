@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1",
+  "scenario_id": "strategy_to_system_demo",
+  "name": "Strategy memo to system plan",
+  "task_family": "strategy",
+  "prompt": "Compile the provided AI strategy memo into architecture decisions, assumptions, risks, eval plan, implementation backlog, success metrics, and open questions.",
+  "output_schema": {
+    "type": "object",
+    "required": [
+      "architecture_decisions",
+      "assumptions",
+      "risks",
+      "eval_plan",
+      "implementation_backlog",
+      "success_metrics",
+      "open_questions"
+    ],
+    "properties": {
+      "architecture_decisions": { "type": "array" },
+      "assumptions": { "type": "array" },
+      "risks": { "type": "array" },
+      "eval_plan": { "type": "array" },
+      "implementation_backlog": { "type": "array" },
+      "success_metrics": { "type": "array" },
+      "open_questions": { "type": "array" }
+    }
+  },
+  "gold_reference": {
+    "required_sections": [
+      "architecture_decisions",
+      "assumptions",
+      "risks",
+      "eval_plan",
+      "implementation_backlog",
+      "success_metrics",
+      "open_questions"
+    ],
+    "required_terms": [
+      "retrieval",
+      "evaluation",
+      "human review",
+      "cost ceiling",
+      "rollback"
+    ]
+  },
+  "deterministic_metrics": [
+    {
+      "metric_id": "schema_validity",
+      "weight": 0.35,
+      "method": "Validate output against the published JSON schema."
+    },
+    {
+      "metric_id": "required_section_coverage",
+      "weight": 0.35,
+      "method": "Check that every required planning section is present and non-empty."
+    },
+    {
+      "metric_id": "required_term_coverage",
+      "weight": 0.20,
+      "method": "Check that required strategy concepts appear in the compiled system plan."
+    }
+  ],
+  "evidence_requirements": [
+    "Output schema validation result",
+    "Per-section coverage result",
+    "Required-term coverage result"
+  ],
+  "synthetic_sources": true,
+  "allowed_claims": [
+    "This fixture demonstrates the scenario contract for the strategy task family.",
+    "A scaffold can be compared on this scenario if run artifacts cite this scenario id."
+  ],
+  "limitations": [
+    "This sample scenario is not a live benchmark result.",
+    "The memo is synthetic and cannot support external market claims."
+  ]
+}

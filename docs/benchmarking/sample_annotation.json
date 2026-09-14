@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "annotation_id": "annotation_sample_001",
+  "run_id": "sample_run_strategy_001",
+  "scenario_id": "strategy_to_system_demo",
+  "annotator_role": "benchmark_reviewer",
+  "blind_to_scaffold": true,
+  "rubric_scores": {
+    "task_success": 4,
+    "evidence_grounding": 4,
+    "schema_adherence": 5,
+    "safety_boundary": 5,
+    "actionability": 4
+  },
+  "claim_review": {
+    "unsupported_claims_found": false,
+    "privacy_or_safety_issue_found": false,
+    "notes": "Sample annotation for schema validation only; not independent human evidence."
+  },
+  "adjudication_required": false
+}

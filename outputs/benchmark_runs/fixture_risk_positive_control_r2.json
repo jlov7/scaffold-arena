@@ -1,0 +1,161 @@
+{
+  "schema_version": "0.1",
+  "run_id": "fixture_risk_positive_control_r2",
+  "protocol_version": "0.1",
+  "mode": "fixture",
+  "task_family": "risk",
+  "task_id": "risk",
+  "scenario_id": "risk_positive_control",
+  "control": "positive_control",
+  "expected_role": "positive",
+  "model_id": "fixture-no-provider-deterministic-v1",
+  "scaffold_id": "full_scaffold",
+  "evaluation_profile": "strict",
+  "created_at": "2026-05-23T00:00:00Z",
+  "output": {
+    "overall_risk_score": 82,
+    "top_3_priorities": [
+      "liability",
+      "data use",
+      "indemnity"
+    ],
+    "negotiation_leverage_points": [
+      "enterprise buying power"
+    ],
+    "risk_items": [
+      {
+        "clause_number": "2",
+        "clause_title": "Clause 2",
+        "risk_level": "high",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "benchmarking, anonymized, aggregated data",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      },
+      {
+        "clause_number": "3",
+        "clause_title": "Clause 3",
+        "risk_level": "high",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "IP ownership, owned by Provider",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      },
+      {
+        "clause_number": "4",
+        "clause_title": "Clause 4",
+        "risk_level": "high",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "3-month, liability cap, data loss, consequential",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      },
+      {
+        "clause_number": "6",
+        "clause_title": "Clause 6",
+        "risk_level": "high",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "asymmetric, indemnification, client indemnifies",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      },
+      {
+        "clause_number": "9",
+        "clause_title": "Clause 9",
+        "risk_level": "high",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "unilateral, pricing, modification",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      },
+      {
+        "clause_number": "1",
+        "clause_title": "Clause 1",
+        "risk_level": "medium",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "99.5%, uptime, credit cap, 10%",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      },
+      {
+        "clause_number": "2",
+        "clause_title": "Clause 2",
+        "risk_level": "medium",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "30-day, data download, termination",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      },
+      {
+        "clause_number": "7",
+        "clause_title": "Clause 7",
+        "risk_level": "medium",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "binding arbitration, Delaware",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      },
+      {
+        "clause_number": "8",
+        "clause_title": "Clause 8",
+        "risk_level": "low",
+        "risk_description": "Known must-flag issue.",
+        "specific_concern": "auto-renewal, 60-day",
+        "recommendation": "Negotiate narrower terms and explicit remedies."
+      }
+    ]
+  },
+  "metrics": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0.0,
+    "wall_time_ms": null,
+    "num_api_calls": 0,
+    "provider_usage_status": "known_none_no_provider_invoked",
+    "measurement_scope": "fixture_deterministic_controls",
+    "latency_status": "not_measured"
+  },
+  "evaluation": {
+    "total_score": 97.4,
+    "breakdown": {
+      "must_flag_hit_rate": 100.0,
+      "false_positive_rate": 100.0,
+      "risk_level_accuracy": 88.88888888888889,
+      "structure_compliance": 100.0
+    },
+    "weights": {
+      "must_flag_hit_rate": {
+        "type": "deterministic",
+        "weight": 0.487192
+      },
+      "risk_level_accuracy": {
+        "type": "deterministic",
+        "weight": 0.21653
+      },
+      "false_positive_rate": {
+        "type": "deterministic",
+        "weight": 0.108265
+      },
+      "structure_compliance": {
+        "type": "deterministic",
+        "weight": 0.108265
+      },
+      "recommendation_quality": {
+        "type": "judge",
+        "weight": 0.079749
+      }
+    },
+    "profile": "strict",
+    "notes": [
+      "Clause 2: predicted risk_level='high', gold='medium'"
+    ],
+    "judge": null,
+    "deterministic_weight": 0.920252
+  },
+  "evidence": [
+    {
+      "kind": "fixture_control",
+      "summary": "positive control for risk: positive_control"
+    }
+  ],
+  "limitations": [
+    "Fixture-mode artifact generated from deterministic controls, not a live provider run.",
+    "No provider was invoked, so provider input tokens, output tokens, cost, and API calls are known to be none and recorded as zero.",
+    "Fixture runtime latency was not measured; wall_time_ms is null.",
+    "Timestamps are fixed fixture values for reproducibility, not observed execution times.",
+    "Fixture scores are deterministic control outcomes, not model-performance evidence.",
+    "Use live mode before making provider/model performance claims."
+  ]
+}

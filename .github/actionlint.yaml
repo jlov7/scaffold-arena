@@ -1,0 +1,5 @@
+self-hosted-runner:
+  labels:
+    - scaffold-arena-private
+
+config-variables: null

@@ -1,0 +1,26 @@
+{
+  "schema_version": "scaffold-arena.public-example/1",
+  "example_id": "compare-two-harnesses",
+  "status": "HOLD",
+  "run": {
+    "cwd": "repository-root",
+    "command": "uv run --project backend python examples/compare-two-harnesses/run.py --output /tmp/scaffold-arena-compare-two-harnesses.json",
+    "expected_exit_code": 2,
+    "output": "/tmp/scaffold-arena-compare-two-harnesses.json"
+  },
+  "inputs": [
+    {"path": "study_packs/offline-demo-v1/study-pack.json", "role": "single-harness StudyPack"},
+    {"path": "study_packs/offline-demo-v1/fixtures/runtime-truth-table.json", "role": "recorded truth table"}
+  ],
+  "expected": {
+    "verdict": "HOLD",
+    "code": "second_checked_harness_not_supplied",
+    "provider_execution_started": false,
+    "network_requested": false,
+    "comparison_emitted": false
+  },
+  "evidence_ceiling": "Synthetic recorded protocol admissibility only; no two-harness result, model comparison, performance effect, or causal claim.",
+  "focused_test": "backend/tests/examples_v1/test_public_examples.py::test_compare_two_harnesses_fails_closed",
+  "cleanup": ["rm -f /tmp/scaffold-arena-compare-two-harnesses.json"],
+  "pinned_screenshot": {"status": "HOLD", "reason": "No dedicated comparison state is present in the current product-tour capture set."}
+}

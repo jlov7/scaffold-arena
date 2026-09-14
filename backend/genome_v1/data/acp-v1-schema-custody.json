@@ -1,0 +1,11 @@
+{
+  "schema": "scaffold-arena.acp-schema-custody/1",
+  "protocol": "Agent Client Protocol",
+  "wire_protocol_version": "1",
+  "official_source": "https://github.com/agentclientprotocol/agent-client-protocol",
+  "source_commit": "5e89c71497fe07dd4ae633c181a17224f4a8956d",
+  "source_path": "schema/v1/schema.json",
+  "content_digest": "sha256:92c1dfcda10dd47e99127500a3763da2b471f9ac61e12b9bf0430c32cf953796",
+  "license_spdx": "Apache-2.0",
+  "claim_ceiling": "pinned schema custody only; no runtime, containment, or interoperability claim"
+}

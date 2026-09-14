@@ -1,0 +1,28 @@
+{
+  "schema_version": "scaffold-arena.public-example/1",
+  "example_id": "context-compaction-ablation",
+  "status": "HOLD",
+  "run": {
+    "cwd": "repository-root",
+    "command": "uv run --project backend arena harness-ci --replay examples/counterfactual-replay/fixture-replay.json --base examples/counterfactual-replay/fixture-base.json --candidate examples/counterfactual-replay/fixture-candidate.json --policy examples/counterfactual-replay/fixture-policy.json --output /tmp/scaffold-arena-context-compaction-report.json",
+    "expected_exit_code": 2,
+    "output": "/tmp/scaffold-arena-context-compaction-report.json"
+  },
+  "inputs": [
+    {"path": "examples/counterfactual-replay/fixture-replay.json", "role": "checkpointed paired replay"},
+    {"path": "examples/counterfactual-replay/fixture-base.json", "role": "base source digest"},
+    {"path": "examples/counterfactual-replay/fixture-candidate.json", "role": "candidate source digest"},
+    {"path": "examples/counterfactual-replay/fixture-policy.json", "role": "Harness CI policy"}
+  ],
+  "expected": {
+    "verdict": "HOLD",
+    "usage_state": "unknown",
+    "provider_execution_started": false,
+    "execution_started": false,
+    "network_requested": false
+  },
+  "evidence_ceiling": "Paired recorded replay and policy mechanics only; not a context-compaction benchmark, model-performance result, live replay, or causal estimate.",
+  "focused_test": "backend/tests/examples_v1/test_public_examples.py::test_context_compaction_example_preserves_unknown_usage",
+  "cleanup": ["rm -f /tmp/scaffold-arena-context-compaction-report.json"],
+  "pinned_screenshot": {"status": "HOLD", "reason": "Use the product-tour Trace / Counterfactual Lab evidence map; no dedicated example capture is claimed here."}
+}

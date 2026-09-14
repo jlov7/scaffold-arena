@@ -1,0 +1,132 @@
+{
+  "$defs": {
+    "ProcessSafetyCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Check Id",
+          "type": "string"
+        },
+        "detail": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "PASS",
+            "HOLD",
+            "FAIL"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "check_id",
+        "verdict",
+        "detail"
+      ],
+      "title": "ProcessSafetyCheck",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/process-safety-v1-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/ProcessSafetyCheck"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "claim_ceiling": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Execution Started",
+      "type": "boolean"
+    },
+    "idempotent_replay": {
+      "default": false,
+      "title": "Idempotent Replay",
+      "type": "boolean"
+    },
+    "network_requested": {
+      "const": false,
+      "default": false,
+      "title": "Network Requested",
+      "type": "boolean"
+    },
+    "raw_sensitive_content_retained": {
+      "const": false,
+      "default": false,
+      "title": "Raw Sensitive Content Retained",
+      "type": "boolean"
+    },
+    "report_artifact_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Artifact Digest",
+      "type": "string"
+    },
+    "report_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Digest",
+      "type": "string"
+    },
+    "report_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "request_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Request Digest",
+      "type": "string"
+    },
+    "retained_manifest_digests": {
+      "items": {
+        "pattern": "^sha256:[a-f0-9]{64}$",
+        "type": "string"
+      },
+      "title": "Retained Manifest Digests",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.process-safety-report/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "HOLD",
+        "FAIL"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "report_digest",
+    "report_artifact_digest",
+    "request_digest",
+    "verdict",
+    "checks",
+    "retained_manifest_digests",
+    "claim_ceiling"
+  ],
+  "title": "ProcessSafetyReport",
+  "type": "object"
+}

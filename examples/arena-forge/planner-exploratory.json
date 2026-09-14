@@ -1,0 +1,27 @@
+{
+  "request_id": "fixture-plan",
+  "mode": "exploratory",
+  "mechanisms": [
+    {"mechanism_id": "context_compaction", "uncertainty": 0.8, "expected_effect": 0.2, "interaction_uncertainty": 0.1},
+    {"mechanism_id": "retry_stopping", "uncertainty": 0.5, "expected_effect": 0.05, "interaction_uncertainty": 0.1}
+  ],
+  "coverage": [
+    {"coverage_id": "research", "fraction": 0.8},
+    {"coverage_id": "safety", "fraction": 0.6}
+  ],
+  "prior_evidence": [
+    {"evidence_digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666", "mechanism_id": "context_compaction", "evidence_strength": 0.2}
+  ],
+  "candidate_designs": [
+    {"design_id": "context-design", "mechanism_id": "context_compaction", "coverage_ids": ["research", "safety"], "cost_per_attempt_usd": 1.0, "minimum_attempts": 2, "maximum_attempts": 5, "risk": 0.2, "assumptions": ["Evaluator and analysis plan remain fixed."]},
+    {"design_id": "retry-design", "mechanism_id": "retry_stopping", "coverage_ids": ["research"], "cost_per_attempt_usd": 10.0, "minimum_attempts": 2, "maximum_attempts": 4, "risk": 0.1, "assumptions": ["Cost catalog remains pinned."]}
+  ],
+  "minimum_detectable_effect": 0.1,
+  "remaining_budget_usd": 6.0,
+  "maximum_risk": 0.3,
+  "frozen_analysis_plan_digest": null,
+  "exploratory_adaptation": false,
+  "source_evidence_digests": ["sha256:7777777777777777777777777777777777777777777777777777777777777777"],
+  "execution_requested": false,
+  "automatic_admission_requested": false
+}

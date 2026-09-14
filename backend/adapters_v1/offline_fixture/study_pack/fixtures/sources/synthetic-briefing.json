@@ -1,0 +1,7 @@
+{
+  "label": "SYNTHETIC FIXTURE",
+  "case_id": "offline-p0",
+  "required_answer": "P0-OK",
+  "required_status": "completed",
+  "claim_ceiling": "fixture-only"
+}

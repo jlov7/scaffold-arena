@@ -1,0 +1,209 @@
+{
+  "$defs": {
+    "EvidenceFinding": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "evidence_state": {
+          "enum": [
+            "declared",
+            "observed",
+            "inferred",
+            "verified",
+            "unsupported",
+            "unknown"
+          ],
+          "title": "Evidence State",
+          "type": "string"
+        },
+        "finding_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Finding Id",
+          "type": "string"
+        },
+        "inference_basis": {
+          "anyOf": [
+            {
+              "maxLength": 16384,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inference Basis"
+        },
+        "limitation": {
+          "anyOf": [
+            {
+              "maxLength": 16384,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Limitation"
+        },
+        "statement": {
+          "maxLength": 16384,
+          "minLength": 1,
+          "title": "Statement",
+          "type": "string"
+        },
+        "subject": {
+          "maxLength": 16384,
+          "minLength": 1,
+          "title": "Subject",
+          "type": "string"
+        },
+        "verification_method": {
+          "anyOf": [
+            {
+              "maxLength": 16384,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verification Method"
+        }
+      },
+      "required": [
+        "finding_id",
+        "subject",
+        "statement",
+        "evidence_state"
+      ],
+      "title": "EvidenceFinding",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/xray-v1-source-snapshot.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "captured_at": {
+      "format": "date-time",
+      "title": "Captured At",
+      "type": "string"
+    },
+    "findings": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/EvidenceFinding"
+      },
+      "maxItems": 1024,
+      "title": "Findings",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.xray/1",
+      "default": "scaffold-arena.xray/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Snapshot Id",
+      "type": "string"
+    },
+    "source_digest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Digest"
+    },
+    "source_media_type": {
+      "enum": [
+        "text/plain",
+        "application/json",
+        "text/markdown"
+      ],
+      "title": "Source Media Type",
+      "type": "string"
+    },
+    "source_name": {
+      "maxLength": 16384,
+      "minLength": 1,
+      "title": "Source Name",
+      "type": "string"
+    },
+    "source_refs": {
+      "default": [],
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+        "type": "string"
+      },
+      "maxItems": 256,
+      "title": "Source Refs",
+      "type": "array"
+    },
+    "source_revision": {
+      "anyOf": [
+        {
+          "maxLength": 16384,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Revision"
+    },
+    "source_text": {
+      "maxLength": 1000000,
+      "minLength": 1,
+      "title": "Source Text",
+      "type": "string"
+    },
+    "source_uri": {
+      "anyOf": [
+        {
+          "maxLength": 16384,
+          "minLength": 1,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Uri"
+    }
+  },
+  "required": [
+    "snapshot_id",
+    "source_name",
+    "captured_at",
+    "source_media_type",
+    "source_text"
+  ],
+  "title": "XraySourceSnapshot",
+  "type": "object"
+}

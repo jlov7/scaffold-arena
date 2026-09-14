@@ -1,0 +1,288 @@
+{
+  "$defs": {
+    "CandidateDesign": {
+      "additionalProperties": false,
+      "properties": {
+        "assumptions": {
+          "items": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "cost_per_attempt_usd": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1000000,
+          "title": "Cost Per Attempt Usd",
+          "type": "number"
+        },
+        "coverage_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Coverage Ids",
+          "type": "array"
+        },
+        "design_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Design Id",
+          "type": "string"
+        },
+        "maximum_attempts": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Maximum Attempts",
+          "type": "integer"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        },
+        "minimum_attempts": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Minimum Attempts",
+          "type": "integer"
+        },
+        "risk": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Risk",
+          "type": "number"
+        }
+      },
+      "required": [
+        "design_id",
+        "mechanism_id",
+        "coverage_ids",
+        "cost_per_attempt_usd",
+        "minimum_attempts",
+        "maximum_attempts",
+        "risk",
+        "assumptions"
+      ],
+      "title": "CandidateDesign",
+      "type": "object"
+    },
+    "CostInterval": {
+      "additionalProperties": false,
+      "properties": {
+        "lower_usd": {
+          "maximum": 1000000,
+          "minimum": 0.0,
+          "title": "Lower Usd",
+          "type": "number"
+        },
+        "upper_usd": {
+          "maximum": 1000000,
+          "minimum": 0.0,
+          "title": "Upper Usd",
+          "type": "number"
+        }
+      },
+      "required": [
+        "lower_usd",
+        "upper_usd"
+      ],
+      "title": "CostInterval",
+      "type": "object"
+    },
+    "ExcludedDesign": {
+      "additionalProperties": false,
+      "properties": {
+        "design_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Design Id",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "design_id",
+        "reason"
+      ],
+      "title": "ExcludedDesign",
+      "type": "object"
+    },
+    "PlannerRecommendation": {
+      "additionalProperties": false,
+      "properties": {
+        "alternatives": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "assumptions": {
+          "items": {
+            "maxLength": 512,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "attempts": {
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "claim_ceiling": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Claim Ceiling",
+          "type": "string"
+        },
+        "cost_interval": {
+          "$ref": "#/$defs/CostInterval"
+        },
+        "expected_information_gain": {
+          "maximum": 1000000,
+          "minimum": 0.0,
+          "title": "Expected Information Gain",
+          "type": "number"
+        },
+        "proposed_design": {
+          "$ref": "#/$defs/CandidateDesign"
+        },
+        "rank": {
+          "minimum": 1,
+          "title": "Rank",
+          "type": "integer"
+        },
+        "risk": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Risk",
+          "type": "number"
+        }
+      },
+      "required": [
+        "rank",
+        "proposed_design",
+        "expected_information_gain",
+        "attempts",
+        "cost_interval",
+        "risk",
+        "assumptions",
+        "claim_ceiling",
+        "alternatives"
+      ],
+      "title": "PlannerRecommendation",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/next-best-experiment-v1-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "claim_ceiling": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "excluded_designs": {
+      "items": {
+        "$ref": "#/$defs/ExcludedDesign"
+      },
+      "title": "Excluded Designs",
+      "type": "array"
+    },
+    "execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Execution Started",
+      "type": "boolean"
+    },
+    "idempotent_replay": {
+      "default": false,
+      "title": "Idempotent Replay",
+      "type": "boolean"
+    },
+    "mode": {
+      "enum": [
+        "exploratory",
+        "confirmatory"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "network_requested": {
+      "const": false,
+      "default": false,
+      "title": "Network Requested",
+      "type": "boolean"
+    },
+    "recommendations": {
+      "items": {
+        "$ref": "#/$defs/PlannerRecommendation"
+      },
+      "title": "Recommendations",
+      "type": "array"
+    },
+    "report_artifact_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Artifact Digest",
+      "type": "string"
+    },
+    "report_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Digest",
+      "type": "string"
+    },
+    "report_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "request_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Request Digest",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.next-best-experiment-report/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "READY",
+        "HOLD"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "report_digest",
+    "report_artifact_digest",
+    "request_digest",
+    "mode",
+    "verdict",
+    "recommendations",
+    "excluded_designs",
+    "claim_ceiling"
+  ],
+  "title": "NextBestExperimentReport",
+  "type": "object"
+}

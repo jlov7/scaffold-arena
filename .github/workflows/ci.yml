@@ -1,0 +1,304 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_VERSION: "0.12.5"
+
+jobs:
+  repo-hygiene:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Verify release metadata
+        run: python scripts/verify-release-metadata.py --root .
+
+      - name: Check public repository hygiene
+        run: python scripts/check-public-repo-hygiene.py
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Run secret scan
+        run: ./scripts/scan-secrets.sh
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: uv sync --frozen --extra dev
+
+      - name: Run trace audit smoke
+        run: |
+          uv run --project backend python scripts/trace-audit.py \
+            --input backend/tests/fixtures/trace_audit/sample_runs.json
+
+      - name: Check documentation visual freshness
+        run: uv run --project backend python scripts/check-doc-visual-assets.py --check
+
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs:
+      - repo-hygiene
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install backend dependencies
+        run: uv sync --frozen --extra dev --extra research
+
+      - name: Run backend tests
+        run: uv run pytest -q
+
+      - name: Audit locked backend dependencies
+        run: uv audit --frozen
+
+      - name: Verify installed CLI and build wheel
+        run: |
+          uv run arena --help
+          uv build --wheel
+          wheel_smoke="$(mktemp -d)"
+          uv venv "$wheel_smoke/venv"
+          uv pip install --python "$wheel_smoke/venv/bin/python" dist/*.whl
+          "$wheel_smoke/venv/bin/arena" init --yes --path "$wheel_smoke/workspace"
+          "$wheel_smoke/venv/bin/arena" doctor --workspace "$wheel_smoke/workspace"
+          "$wheel_smoke/venv/bin/arena" demo --path "$wheel_smoke/demo"
+          test -f "$wheel_smoke/workspace/study_packs/offline-demo-v1/fixtures/preregistration.md"
+          test -f "$wheel_smoke/demo/.arena/provenance.json"
+          test -f "$wheel_smoke/demo/.arena/demo-summary.json"
+
+  backend-compatibility:
+    name: backend-compatibility (${{ matrix.python }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs:
+      - repo-hygiene
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install locked backend dependencies
+        run: uv sync --frozen --extra dev
+
+      - name: Run protocol, adapter, migration, and fixture compatibility suite
+        run: |
+          uv run pytest \
+            tests/protocol_v1 \
+            tests/adapters_v1 \
+            tests/persistence_v1/test_legacy_and_migrations.py \
+            tests/study_packs_v1/test_offline_demo_v1.py \
+            tests/integration_v1/test_offline_demo_fixture_chain.py \
+            -q
+          uv run arena --help
+
+  production-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs:
+      - repo-hygiene
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Install locked team dependencies
+        working-directory: backend
+        run: uv sync --frozen --extra dev --extra team
+
+      - name: Verify Docker Compose runtime
+        run: |
+          docker version
+          docker compose version
+
+      - name: Run PostgreSQL and S3-compatible production integration suite
+        run: ./scripts/test-production-integrations.sh
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    needs:
+      - repo-hygiene
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint frontend
+        run: pnpm lint
+
+      - name: Run frontend tests
+        run: pnpm test
+
+      - name: Run UX writing content lint checks
+        run: pnpm test:content
+
+      - name: Enforce frontend coverage thresholds
+        run: pnpm exec vitest run --coverage
+
+      - name: Check frontend layering
+        run: pnpm arch:layers
+
+      - name: Build frontend
+        run: pnpm build
+
+      - name: Check frontend performance budgets
+        run: pnpm perf:budget
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run Playwright E2E journeys
+        run: pnpm test:e2e
+
+      - name: Run accessibility smoke checks
+        run: pnpm test:a11y
+
+      - name: Upload accessibility regression report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: playwright-a11y-report
+          path: frontend/playwright-report
+          if-no-files-found: warn
+
+      - name: Run visual verification
+        run: pnpm verify:visual
+
+      - name: Upload visual regression artifacts
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: visual-regression-artifacts
+          path: frontend/test-results
+          if-no-files-found: error
+
+      - name: Run desktop Lighthouse gate
+        run: pnpm perf:lighthouse
+
+      - name: Run mobile throttled Lighthouse gate
+        run: pnpm perf:lighthouse:mobile
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lighthouse-reports
+          path: frontend/lighthouse-reports
+          if-no-files-found: warn
+
+      - name: Audit all frontend dependencies (moderate threshold)
+        run: pnpm audit --audit-level moderate
+
+  docker-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs:
+      - backend
+      - backend-compatibility
+      - production-integration
+      - frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+      - name: Build backend image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: backend
+          file: backend/Dockerfile
+          target: prod
+          push: false
+
+      - name: Build frontend image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: frontend
+          file: frontend/Dockerfile
+          target: prod
+          push: false
+
+      - name: Build combined production image
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          file: Dockerfile
+          push: false

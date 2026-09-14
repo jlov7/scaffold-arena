@@ -1,0 +1,346 @@
+{
+  "$defs": {
+    "EffectEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "base_mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Mean"
+        },
+        "candidate_mean": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Mean"
+        },
+        "ci95_high": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95 High"
+        },
+        "ci95_low": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95 Low"
+        },
+        "metric": {
+          "enum": [
+            "quality",
+            "cost_usd",
+            "latency_ms"
+          ],
+          "title": "Metric",
+          "type": "string"
+        },
+        "paired_samples": {
+          "minimum": 0,
+          "title": "Paired Samples",
+          "type": "integer"
+        },
+        "point_estimate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Point Estimate"
+        },
+        "reason": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric",
+        "state",
+        "paired_samples",
+        "reason"
+      ],
+      "title": "EffectEstimate",
+      "type": "object"
+    },
+    "HarnessCICheck": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Check Id",
+          "type": "string"
+        },
+        "detail": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Detail",
+          "type": "string"
+        },
+        "verdict": {
+          "enum": [
+            "PASS",
+            "HOLD",
+            "FAIL"
+          ],
+          "title": "Verdict",
+          "type": "string"
+        }
+      },
+      "required": [
+        "check_id",
+        "verdict",
+        "detail"
+      ],
+      "title": "HarnessCICheck",
+      "type": "object"
+    },
+    "SemanticDiffResult": {
+      "additionalProperties": false,
+      "properties": {
+        "affected_mechanisms": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Affected Mechanisms",
+          "type": "array"
+        },
+        "classification_state": {
+          "enum": [
+            "observed",
+            "unknown",
+            "multiple"
+          ],
+          "title": "Classification State",
+          "type": "string"
+        },
+        "recommended_packs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Recommended Packs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "affected_mechanisms",
+        "recommended_packs",
+        "classification_state"
+      ],
+      "title": "SemanticDiffResult",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/harness-ci-v1-report.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/HarnessCICheck"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "claim_ceiling": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Claim Ceiling",
+      "type": "string"
+    },
+    "effects": {
+      "items": {
+        "$ref": "#/$defs/EffectEstimate"
+      },
+      "title": "Effects",
+      "type": "array"
+    },
+    "evidence_maturity": {
+      "enum": [
+        "temporal_correlation",
+        "diagnostic_divergence",
+        "paired_replay",
+        "replicated_intervention",
+        "confirmatory_eligibility"
+      ],
+      "title": "Evidence Maturity",
+      "type": "string"
+    },
+    "execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Execution Started",
+      "type": "boolean"
+    },
+    "fidelity_level": {
+      "anyOf": [
+        {
+          "enum": [
+            "declared",
+            "assigned",
+            "available",
+            "triggered",
+            "applied",
+            "activated",
+            "observed",
+            "downstream_pathway_detected"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Fidelity Level"
+    },
+    "idempotent_replay": {
+      "default": false,
+      "title": "Idempotent Replay",
+      "type": "boolean"
+    },
+    "network_requested": {
+      "const": false,
+      "default": false,
+      "title": "Network Requested",
+      "type": "boolean"
+    },
+    "pr_comment_body": {
+      "maxLength": 16384,
+      "minLength": 1,
+      "title": "Pr Comment Body",
+      "type": "string"
+    },
+    "provider_execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Provider Execution Started",
+      "type": "boolean"
+    },
+    "replay_report_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Replay Report Digest",
+      "type": "string"
+    },
+    "report_artifact_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Artifact Digest",
+      "type": "string"
+    },
+    "report_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Report Digest",
+      "type": "string"
+    },
+    "report_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Report Id",
+      "type": "string"
+    },
+    "reproduction_command": {
+      "maxLength": 512,
+      "minLength": 1,
+      "title": "Reproduction Command",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.harness-ci-report/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "semantic_diff": {
+      "$ref": "#/$defs/SemanticDiffResult"
+    },
+    "severe_failures": {
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+        "type": "string"
+      },
+      "title": "Severe Failures",
+      "type": "array"
+    },
+    "step_summary": {
+      "maxLength": 16384,
+      "minLength": 1,
+      "title": "Step Summary",
+      "type": "string"
+    },
+    "usage_state": {
+      "enum": [
+        "observed",
+        "unknown"
+      ],
+      "title": "Usage State",
+      "type": "string"
+    },
+    "verdict": {
+      "enum": [
+        "PASS",
+        "HOLD",
+        "FAIL"
+      ],
+      "title": "Verdict",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "report_digest",
+    "report_artifact_digest",
+    "replay_report_digest",
+    "verdict",
+    "checks",
+    "effects",
+    "severe_failures",
+    "usage_state",
+    "evidence_maturity",
+    "semantic_diff",
+    "reproduction_command",
+    "step_summary",
+    "pr_comment_body",
+    "claim_ceiling"
+  ],
+  "title": "HarnessCIReport",
+  "type": "object"
+}

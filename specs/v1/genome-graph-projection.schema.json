@@ -1,0 +1,347 @@
+{
+  "$defs": {
+    "CrossGraphEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "edge_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Edge Id",
+          "type": "string"
+        },
+        "object": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Object",
+          "type": "string"
+        },
+        "object_graph": {
+          "enum": [
+            "mechanism",
+            "execution",
+            "evidence"
+          ],
+          "title": "Object Graph",
+          "type": "string"
+        },
+        "predicate": {
+          "enum": [
+            "configured_as",
+            "applied_control",
+            "captured_by",
+            "evaluated_by"
+          ],
+          "title": "Predicate",
+          "type": "string"
+        },
+        "provenance_refs": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "subject": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Subject",
+          "type": "string"
+        },
+        "subject_graph": {
+          "enum": [
+            "mechanism",
+            "execution",
+            "evidence"
+          ],
+          "title": "Subject Graph",
+          "type": "string"
+        }
+      },
+      "required": [
+        "edge_id",
+        "subject_graph",
+        "subject",
+        "predicate",
+        "object_graph",
+        "object"
+      ],
+      "title": "CrossGraphEdge",
+      "type": "object"
+    },
+    "GenomeRef": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "genome_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Genome Id",
+          "type": "string"
+        },
+        "schema": {
+          "const": "scaffold-arena.genome/1",
+          "default": "scaffold-arena.genome/1",
+          "title": "Schema",
+          "type": "string"
+        }
+      },
+      "required": [
+        "genome_id",
+        "digest"
+      ],
+      "title": "GenomeRef",
+      "type": "object"
+    },
+    "GraphEdge": {
+      "additionalProperties": false,
+      "properties": {
+        "edge_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Edge Id",
+          "type": "string"
+        },
+        "graph": {
+          "enum": [
+            "mechanism",
+            "execution",
+            "evidence"
+          ],
+          "title": "Graph",
+          "type": "string"
+        },
+        "object": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Object",
+          "type": "string"
+        },
+        "predicate": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Predicate",
+          "type": "string"
+        },
+        "provenance_refs": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "sequence": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sequence"
+        },
+        "subject": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Subject",
+          "type": "string"
+        }
+      },
+      "required": [
+        "edge_id",
+        "graph",
+        "subject",
+        "predicate",
+        "object"
+      ],
+      "title": "GraphEdge",
+      "type": "object"
+    },
+    "GraphNode": {
+      "additionalProperties": false,
+      "properties": {
+        "attributes": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "maxProperties": 64,
+          "title": "Attributes",
+          "type": "object"
+        },
+        "digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Digest"
+        },
+        "graph": {
+          "enum": [
+            "mechanism",
+            "execution",
+            "evidence"
+          ],
+          "title": "Graph",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "node_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Node Id",
+          "type": "string"
+        },
+        "provenance_refs": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Provenance Refs",
+          "type": "array"
+        },
+        "ref_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ref Id"
+        }
+      },
+      "required": [
+        "node_id",
+        "graph",
+        "kind",
+        "label"
+      ],
+      "title": "GraphNode",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/genome-graph-projection.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "cross_graph_edges": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/CrossGraphEdge"
+      },
+      "maxItems": 4096,
+      "title": "Cross Graph Edges",
+      "type": "array"
+    },
+    "evidence_edges": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/GraphEdge"
+      },
+      "maxItems": 2048,
+      "title": "Evidence Edges",
+      "type": "array"
+    },
+    "evidence_nodes": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/GraphNode"
+      },
+      "maxItems": 1024,
+      "title": "Evidence Nodes",
+      "type": "array"
+    },
+    "execution_edges": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/GraphEdge"
+      },
+      "maxItems": 2048,
+      "title": "Execution Edges",
+      "type": "array"
+    },
+    "execution_nodes": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/GraphNode"
+      },
+      "maxItems": 1024,
+      "title": "Execution Nodes",
+      "type": "array"
+    },
+    "genome_ref": {
+      "$ref": "#/$defs/GenomeRef"
+    },
+    "mechanism_edges": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/GraphEdge"
+      },
+      "maxItems": 2048,
+      "title": "Mechanism Edges",
+      "type": "array"
+    },
+    "mechanism_nodes": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/GraphNode"
+      },
+      "maxItems": 1024,
+      "title": "Mechanism Nodes",
+      "type": "array"
+    },
+    "projection_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Projection Digest",
+      "type": "string"
+    }
+  },
+  "required": [
+    "genome_ref",
+    "projection_digest"
+  ],
+  "title": "GraphProjection",
+  "type": "object"
+}

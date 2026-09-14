@@ -1,0 +1,19 @@
+@reference "../styles/theme.css";
+
+.td { @apply rounded border border-border/60 bg-bg-primary p-3; }
+.td-s { @apply mt-4 border-t border-border/60 pt-3; }
+.td-h { @apply text-[11px] uppercase tracking-widest text-text-secondary; }
+.td-l { @apply mt-2 space-y-2; }
+.td-g { @apply mt-2 grid gap-2 sm:grid-cols-2; }
+.td-c { @apply rounded border border-border/60 bg-bg-secondary px-2 py-2; }
+.td-lab, .td-cap { @apply text-[10px] text-text-muted; }
+.td-lab--upper { @apply uppercase; }
+.td-val { @apply text-sm tabular-nums text-text-primary; }
+.td-val--emphasis { @apply text-accent-winner; }
+.td-fh { @apply flex items-center justify-between text-[11px]; }
+.td-fh span:first-child { @apply text-text-secondary; }
+.td-fh span:last-child { @apply text-text-primary tabular-nums; }
+.td-ft { @apply mt-1 h-1.5 rounded bg-bg-tertiary; }
+.td-fb { @apply h-1.5 rounded; }
+.td-fb--info { @apply bg-accent-info; }
+.td-fb--winner { @apply bg-accent-winner; }

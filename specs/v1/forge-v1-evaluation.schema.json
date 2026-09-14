@@ -1,0 +1,667 @@
+{
+  "$defs": {
+    "AdmissionRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "admitting_identity": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Admitting Identity",
+          "type": "string"
+        },
+        "authority_kind": {
+          "enum": [
+            "human",
+            "policy"
+          ],
+          "title": "Authority Kind",
+          "type": "string"
+        },
+        "decision_evidence_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Decision Evidence Digest",
+          "type": "string"
+        },
+        "execution_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Execution Authorized",
+          "type": "boolean"
+        },
+        "merge_authorized": {
+          "const": false,
+          "default": false,
+          "title": "Merge Authorized",
+          "type": "boolean"
+        },
+        "outcome": {
+          "enum": [
+            "ADMITTED",
+            "REJECTED",
+            "QUARANTINED",
+            "INCONCLUSIVE"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "policy_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Policy Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "authority_kind",
+        "admitting_identity",
+        "policy_digest",
+        "decision_evidence_digest",
+        "outcome"
+      ],
+      "title": "AdmissionRecord",
+      "type": "object"
+    },
+    "EffectWithUncertainty": {
+      "additionalProperties": false,
+      "properties": {
+        "ci95_high": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95 High"
+        },
+        "ci95_low": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ci95 Low"
+        },
+        "metric_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Metric Id",
+          "type": "string"
+        },
+        "minimum_detectable_effect": {
+          "maximum": 1000000,
+          "minimum": 0.0,
+          "title": "Minimum Detectable Effect",
+          "type": "number"
+        },
+        "point_estimate": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Point Estimate"
+        },
+        "state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric_id",
+        "state",
+        "minimum_detectable_effect"
+      ],
+      "title": "EffectWithUncertainty",
+      "type": "object"
+    },
+    "EvaluationCohorts": {
+      "additionalProperties": false,
+      "description": "Holdout contents stay sealed: only its manifest/runner receipts bind it.",
+      "properties": {
+        "cohort_partition_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Cohort Partition Digest",
+          "type": "string"
+        },
+        "development_item_digests": {
+          "items": {
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "maxItems": 512,
+          "minItems": 1,
+          "title": "Development Item Digests",
+          "type": "array"
+        },
+        "safety_item_digests": {
+          "items": {
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "maxItems": 512,
+          "minItems": 1,
+          "title": "Safety Item Digests",
+          "type": "array"
+        },
+        "sealed_holdout_manifest_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Sealed Holdout Manifest Digest",
+          "type": "string"
+        },
+        "sealed_holdout_runner_receipt_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Sealed Holdout Runner Receipt Digest",
+          "type": "string"
+        },
+        "transfer_cohorts": {
+          "items": {
+            "$ref": "#/$defs/TransferCohort"
+          },
+          "maxItems": 32,
+          "title": "Transfer Cohorts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "cohort_partition_digest",
+        "development_item_digests",
+        "sealed_holdout_manifest_digest",
+        "sealed_holdout_runner_receipt_digest",
+        "safety_item_digests"
+      ],
+      "title": "EvaluationCohorts",
+      "type": "object"
+    },
+    "EvaluationFailure": {
+      "additionalProperties": false,
+      "properties": {
+        "disposition": {
+          "enum": [
+            "retained",
+            "quarantined",
+            "blocks_admission"
+          ],
+          "title": "Disposition",
+          "type": "string"
+        },
+        "evidence_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evidence Digest",
+          "type": "string"
+        },
+        "failure_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Failure Id",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "moderate",
+            "severe"
+          ],
+          "title": "Severity",
+          "type": "string"
+        }
+      },
+      "required": [
+        "failure_id",
+        "severity",
+        "evidence_digest",
+        "disposition"
+      ],
+      "title": "EvaluationFailure",
+      "type": "object"
+    },
+    "EvaluationWorkflow": {
+      "additionalProperties": false,
+      "description": "Recorded lifecycle evidence; it is never an instruction to resume work.",
+      "properties": {
+        "interruption_evidence_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Interruption Evidence Digest"
+        },
+        "recovery_evidence_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recovery Evidence Digest"
+        },
+        "rollback_evidence_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rollback Evidence Digest"
+        },
+        "rollback_state": {
+          "default": "not_needed",
+          "enum": [
+            "not_needed",
+            "recorded"
+          ],
+          "title": "Rollback State",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "completed",
+            "interrupted",
+            "cancelled",
+            "recovered"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "EvaluationWorkflow",
+      "type": "object"
+    },
+    "FrozenEvaluationPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_plan_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Analysis Plan Digest",
+          "type": "string"
+        },
+        "cancellation_policy_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Cancellation Policy Digest",
+          "type": "string"
+        },
+        "deterministic_score_weight": {
+          "maximum": 1.0,
+          "minimum": 0.7,
+          "title": "Deterministic Score Weight",
+          "type": "number"
+        },
+        "evaluator_configuration_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evaluator Configuration Digest",
+          "type": "string"
+        },
+        "experiment_plan_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Experiment Plan Digest",
+          "type": "string"
+        },
+        "exploratory_adaptation": {
+          "const": false,
+          "default": false,
+          "title": "Exploratory Adaptation",
+          "type": "boolean"
+        },
+        "frozen": {
+          "const": true,
+          "default": true,
+          "title": "Frozen",
+          "type": "boolean"
+        },
+        "matched_compute_budget_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Matched Compute Budget Digest",
+          "type": "string"
+        },
+        "recovery_policy_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Recovery Policy Digest",
+          "type": "string"
+        },
+        "stopping_rule_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Stopping Rule Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "experiment_plan_digest",
+        "analysis_plan_digest",
+        "evaluator_configuration_digest",
+        "stopping_rule_digest",
+        "cancellation_policy_digest",
+        "recovery_policy_digest",
+        "matched_compute_budget_digest",
+        "deterministic_score_weight"
+      ],
+      "title": "FrozenEvaluationPlan",
+      "type": "object"
+    },
+    "MatchedControl": {
+      "additionalProperties": false,
+      "properties": {
+        "compute_budget_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Compute Budget Digest",
+          "type": "string"
+        },
+        "control_genome_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Control Genome Digest",
+          "type": "string"
+        },
+        "control_kind": {
+          "enum": [
+            "random_search",
+            "heuristic_edits",
+            "no_change",
+            "matched_compute_test_time_search"
+          ],
+          "title": "Control Kind",
+          "type": "string"
+        },
+        "evaluator_configuration_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evaluator Configuration Digest",
+          "type": "string"
+        },
+        "result_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Result Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "control_kind",
+        "control_genome_digest",
+        "result_digest",
+        "compute_budget_digest",
+        "evaluator_configuration_digest"
+      ],
+      "title": "MatchedControl",
+      "type": "object"
+    },
+    "TransferCohort": {
+      "additionalProperties": false,
+      "properties": {
+        "cohort_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Cohort Id",
+          "type": "string"
+        },
+        "item_digests": {
+          "items": {
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "maxItems": 512,
+          "minItems": 1,
+          "title": "Item Digests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "cohort_id",
+        "item_digests"
+      ],
+      "title": "TransferCohort",
+      "type": "object"
+    },
+    "UsageAndCost": {
+      "additionalProperties": false,
+      "properties": {
+        "cost_usd": {
+          "anyOf": [
+            {
+              "maximum": 1000000,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Usd"
+        },
+        "latency_ms": {
+          "anyOf": [
+            {
+              "maximum": 86400000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latency Ms"
+        },
+        "state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "usage_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Usage Digest"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "UsageAndCost",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/forge-v1-evaluation.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Captured evaluation evidence, never an executor instruction.",
+  "properties": {
+    "admission": {
+      "$ref": "#/$defs/AdmissionRecord"
+    },
+    "automatic_merge": {
+      "const": false,
+      "default": false,
+      "title": "Automatic Merge",
+      "type": "boolean"
+    },
+    "cohorts": {
+      "$ref": "#/$defs/EvaluationCohorts"
+    },
+    "effects": {
+      "items": {
+        "$ref": "#/$defs/EffectWithUncertainty"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "title": "Effects",
+      "type": "array"
+    },
+    "evaluation_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Evaluation Id",
+      "type": "string"
+    },
+    "evaluator_changed": {
+      "const": false,
+      "default": false,
+      "title": "Evaluator Changed",
+      "type": "boolean"
+    },
+    "evaluator_identity": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Evaluator Identity",
+      "type": "string"
+    },
+    "evaluator_identity_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Evaluator Identity Digest",
+      "type": "string"
+    },
+    "execution_started": {
+      "const": false,
+      "default": false,
+      "title": "Execution Started",
+      "type": "boolean"
+    },
+    "failure_manifest_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Failure Manifest Digest",
+      "type": "string"
+    },
+    "failures": {
+      "items": {
+        "$ref": "#/$defs/EvaluationFailure"
+      },
+      "maxItems": 128,
+      "title": "Failures",
+      "type": "array"
+    },
+    "failures_erased": {
+      "const": false,
+      "default": false,
+      "title": "Failures Erased",
+      "type": "boolean"
+    },
+    "frozen_plan": {
+      "$ref": "#/$defs/FrozenEvaluationPlan"
+    },
+    "matched_controls": {
+      "items": {
+        "$ref": "#/$defs/MatchedControl"
+      },
+      "maxItems": 4,
+      "minItems": 4,
+      "title": "Matched Controls",
+      "type": "array"
+    },
+    "network_requested": {
+      "const": false,
+      "default": false,
+      "title": "Network Requested",
+      "type": "boolean"
+    },
+    "outcome": {
+      "enum": [
+        "ADMITTED",
+        "REJECTED",
+        "QUARANTINED",
+        "INCONCLUSIVE"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "process_safety_report_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Process Safety Report Digest",
+      "type": "string"
+    },
+    "proposal_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Proposal Digest",
+      "type": "string"
+    },
+    "result_evidence_digests": {
+      "items": {
+        "pattern": "^sha256:[a-f0-9]{64}$",
+        "type": "string"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Result Evidence Digests",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.forge-evaluation/1",
+      "default": "scaffold-arena.forge-evaluation/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "sealed_holdout_inspected": {
+      "const": false,
+      "default": false,
+      "title": "Sealed Holdout Inspected",
+      "type": "boolean"
+    },
+    "self_graded": {
+      "const": false,
+      "default": false,
+      "title": "Self Graded",
+      "type": "boolean"
+    },
+    "self_promoted": {
+      "const": false,
+      "default": false,
+      "title": "Self Promoted",
+      "type": "boolean"
+    },
+    "usage": {
+      "$ref": "#/$defs/UsageAndCost"
+    },
+    "workflow": {
+      "$ref": "#/$defs/EvaluationWorkflow"
+    }
+  },
+  "required": [
+    "evaluation_id",
+    "proposal_digest",
+    "evaluator_identity",
+    "evaluator_identity_digest",
+    "cohorts",
+    "frozen_plan",
+    "result_evidence_digests",
+    "effects",
+    "failure_manifest_digest",
+    "usage",
+    "matched_controls",
+    "process_safety_report_digest",
+    "workflow",
+    "outcome",
+    "admission"
+  ],
+  "title": "ForgeEvaluation",
+  "type": "object"
+}

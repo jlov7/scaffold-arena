@@ -1,0 +1,22 @@
+name: scaffold-arena-postgres-parity
+
+services:
+  postgres:
+    image: postgres:16.4@sha256:e62fbf9d3e2b49816a32c400ed2dba83e3b361e6833e624024309c35d334b412
+    environment:
+      POSTGRES_DB: arena_parity
+      POSTGRES_USER: arena_parity_runner
+      POSTGRES_PASSWORD: arena_parity_local_only
+    ports:
+      - "127.0.0.1:${POSTGRES_TEST_PORT:-55432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U arena_parity_runner -d arena_parity"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+      start_period: 5s
+    volumes:
+      - postgres-parity-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-parity-data:

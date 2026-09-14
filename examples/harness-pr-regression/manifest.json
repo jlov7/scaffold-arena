@@ -1,0 +1,38 @@
+{
+  "schema_version": "scaffold-arena.public-example/1",
+  "example_id": "harness-pr-regression",
+  "status": "HOLD",
+  "run": {
+    "cwd": "repository-root",
+    "command": "uv run --project backend arena harness-ci --replay examples/counterfactual-replay/fixture-replay.json --base examples/counterfactual-replay/fixture-base.json --candidate examples/counterfactual-replay/fixture-candidate.json --policy examples/counterfactual-replay/fixture-policy.json --output /tmp/scaffold-arena-harness-pr-regression-report.json --summary /tmp/scaffold-arena-harness-pr-regression-summary.md --comment-output /tmp/scaffold-arena-harness-pr-regression-comment.md",
+    "expected_exit_code": 2,
+    "outputs": [
+      "/tmp/scaffold-arena-harness-pr-regression-report.json",
+      "/tmp/scaffold-arena-harness-pr-regression-summary.md",
+      "/tmp/scaffold-arena-harness-pr-regression-comment.md"
+    ]
+  },
+  "inputs": [
+    {"path": "examples/counterfactual-replay/fixture-replay.json", "role": "checkpointed paired replay"},
+    {"path": "examples/counterfactual-replay/fixture-base.json", "role": "base source"},
+    {"path": "examples/counterfactual-replay/fixture-candidate.json", "role": "candidate source"},
+    {"path": "examples/counterfactual-replay/fixture-policy.json", "role": "fixture policy"},
+    {"path": ".github/actions/harness-ci/action.yml", "role": "non-posting reusable action"}
+  ],
+  "expected": {
+    "verdict": "HOLD",
+    "usage_state": "unknown",
+    "provider_execution_started": false,
+    "execution_started": false,
+    "network_requested": false,
+    "comment_posted": false
+  },
+  "evidence_ceiling": "Provider-free policy/report generation over named synthetic files; not an actual harness code regression, live CI assurance, PR approval, or release gate.",
+  "focused_test": "backend/tests/examples_v1/test_public_examples.py::test_harness_pr_regression_preserves_hold_artifacts plus Harness CI action/CLI/service tests",
+  "cleanup": [
+    "rm -f /tmp/scaffold-arena-harness-pr-regression-report.json",
+    "rm -f /tmp/scaffold-arena-harness-pr-regression-summary.md",
+    "rm -f /tmp/scaffold-arena-harness-pr-regression-comment.md"
+  ],
+  "pinned_screenshot": {"status": "HOLD", "reason": "No dedicated PR regression capture is claimed; future Trace / Counterfactual Lab images must show non-posting HOLD state."}
+}

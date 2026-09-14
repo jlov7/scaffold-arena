@@ -1,0 +1,6 @@
+{
+  "unknown_usage": "hold",
+  "required_evidence_maturity": "paired_replay",
+  "minimum_paired_repetitions": 2,
+  "allow_fixture_evidence": true
+}

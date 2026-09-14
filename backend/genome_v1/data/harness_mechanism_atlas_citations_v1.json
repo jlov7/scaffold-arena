@@ -1,0 +1,244 @@
+{
+  "canonicalization": "arena-json-v1",
+  "citations": [
+    {
+      "citation_id": "cite-native-models",
+      "content_digest": "sha256:1c2719310ff83aca9ebda2e93d01aa920914cd18e1258033257b7abacf628103",
+      "limitations": [
+        "Pinned local source identity only; no external runtime equivalence or execution is established."
+      ],
+      "revision_discoverability": "pinned",
+      "source_date": "2026-08-18",
+      "source_kind": "local_repository_source",
+      "source_path": "backend/genome_v1/models.py",
+      "source_revision": "4fe131587919edec8e709df921c8dbc4e8eecdab",
+      "supported_family_ids": [
+        "native_scaffold"
+      ],
+      "supported_mechanism_ids": [
+        "native.bare.single_shot",
+        "native.plan_execute_verify",
+        "native.memory_critique",
+        "native.tool_error_recovery"
+      ],
+      "url": "https://github.com/jlov7/scaffold-arena/blob/4fe131587919edec8e709df921c8dbc4e8eecdab/backend/genome_v1/models.py"
+    },
+    {
+      "citation_id": "cite-native-fixture",
+      "content_digest": "sha256:2dd440f4cfae8fcaacb7f2deecab239754ef0fdc6946c3f823fffdb560386831",
+      "limitations": [
+        "Synthetic descriptor shape only; it is not an activation or outcome record."
+      ],
+      "revision_discoverability": "pinned",
+      "source_date": "2026-08-18",
+      "source_kind": "local_repository_source",
+      "source_path": "backend/genome_v1/fixtures/native-genome-v1.json",
+      "source_revision": "4fe131587919edec8e709df921c8dbc4e8eecdab",
+      "supported_family_ids": [
+        "native_scaffold"
+      ],
+      "supported_mechanism_ids": [
+        "native.bare.single_shot"
+      ],
+      "url": "https://github.com/jlov7/scaffold-arena/blob/4fe131587919edec8e709df921c8dbc4e8eecdab/backend/genome_v1/fixtures/native-genome-v1.json"
+    },
+    {
+      "citation_id": "cite-langgraph",
+      "content_digest": null,
+      "license_spdx": "MIT",
+      "limitations": [
+        "Catalog source metadata only; no graph replay, persistence equivalence, or runtime claim."
+      ],
+      "revision_discoverability": "not_captured",
+      "source_date": "2026-08-18",
+      "source_kind": "official_repository",
+      "source_revision": null,
+      "supported_family_ids": [
+        "graph_orchestrator"
+      ],
+      "supported_mechanism_ids": [
+        "langgraph.graph_state",
+        "langgraph.checkpoint_store",
+        "langgraph.interrupt_resume"
+      ],
+      "url": "https://github.com/langchain-ai/langgraph"
+    },
+    {
+      "citation_id": "cite-openai-agents",
+      "content_digest": null,
+      "license_spdx": "MIT",
+      "limitations": [
+        "Catalog source metadata only; no SDK invocation, trace backfill, or runtime claim."
+      ],
+      "revision_discoverability": "not_captured",
+      "source_date": "2026-08-18",
+      "source_kind": "official_repository",
+      "source_revision": null,
+      "supported_family_ids": [
+        "sdk_runtime"
+      ],
+      "supported_mechanism_ids": [
+        "openai_agents.agent_loop",
+        "openai_agents.handoff",
+        "openai_agents.guardrail"
+      ],
+      "url": "https://github.com/openai/openai-agents-python"
+    },
+    {
+      "citation_id": "cite-google-adk",
+      "content_digest": null,
+      "license_spdx": "Apache-2.0",
+      "limitations": [
+        "Catalog source metadata only; no deployment, runtime, or importer claim."
+      ],
+      "revision_discoverability": "not_discoverable",
+      "source_date": "2026-08-18",
+      "source_kind": "official_repository",
+      "source_revision": null,
+      "supported_family_ids": [
+        "sdk_runtime"
+      ],
+      "supported_mechanism_ids": [
+        "google_adk.sub_agents"
+      ],
+      "url": "https://github.com/google/adk-python"
+    },
+    {
+      "citation_id": "cite-codex-cli",
+      "content_digest": null,
+      "license_spdx": "Apache-2.0",
+      "limitations": [
+        "Catalog source metadata only; no local process, approval behavior, or containment claim."
+      ],
+      "revision_discoverability": "not_captured",
+      "source_date": "2026-08-18",
+      "source_kind": "official_repository",
+      "source_revision": null,
+      "supported_family_ids": [
+        "coding_cli"
+      ],
+      "supported_mechanism_ids": [
+        "codex_cli.approval_surface"
+      ],
+      "url": "https://github.com/openai/codex"
+    },
+    {
+      "citation_id": "cite-claude-code",
+      "content_digest": null,
+      "license_spdx": null,
+      "limitations": [
+        "Catalog source metadata only; no command execution, approval behavior, or containment claim."
+      ],
+      "revision_discoverability": "not_captured",
+      "source_date": "2026-08-18",
+      "source_kind": "official_docs",
+      "source_revision": null,
+      "supported_family_ids": [
+        "coding_cli"
+      ],
+      "supported_mechanism_ids": [
+        "claude_code.permission_surface"
+      ],
+      "url": "https://github.com/anthropics/claude-code/releases"
+    },
+    {
+      "citation_id": "cite-gemini-cli",
+      "content_digest": null,
+      "license_spdx": "Apache-2.0",
+      "limitations": [
+        "Catalog source metadata only; no shell, sandbox, or runtime claim."
+      ],
+      "revision_discoverability": "not_captured",
+      "source_date": "2026-08-18",
+      "source_kind": "official_repository",
+      "source_revision": null,
+      "supported_family_ids": [
+        "coding_cli"
+      ],
+      "supported_mechanism_ids": [
+        "gemini_cli.approval_mode"
+      ],
+      "url": "https://github.com/google-gemini/gemini-cli"
+    },
+    {
+      "citation_id": "cite-mcp",
+      "content_digest": null,
+      "license_spdx": "MIT",
+      "limitations": [
+        "Catalog source metadata only; no MCP client, server, validator, or importer claim."
+      ],
+      "revision_discoverability": "not_captured",
+      "source_date": "2026-08-18",
+      "source_kind": "official_spec",
+      "source_revision": null,
+      "supported_family_ids": [
+        "tool_protocol"
+      ],
+      "supported_mechanism_ids": [
+        "mcp.tools_resources_prompts"
+      ],
+      "url": "https://modelcontextprotocol.io/specification"
+    },
+    {
+      "citation_id": "cite-a2a",
+      "content_digest": null,
+      "license_spdx": "Apache-2.0",
+      "limitations": [
+        "Catalog source metadata only; no remote task execution, authentication, or importer claim."
+      ],
+      "revision_discoverability": "not_discoverable",
+      "source_date": "2026-08-18",
+      "source_kind": "official_spec",
+      "source_revision": null,
+      "supported_family_ids": [
+        "agent_protocol"
+      ],
+      "supported_mechanism_ids": [
+        "a2a.task_artifact_lifecycle"
+      ],
+      "url": "https://a2a-protocol.org/latest/specification/"
+    },
+    {
+      "citation_id": "cite-acp",
+      "content_digest": "sha256:92c1dfcda10dd47e99127500a3763da2b471f9ac61e12b9bf0430c32cf953796",
+      "license_spdx": "Apache-2.0",
+      "limitations": [
+        "Pinned schema custody only; no operator receipt, executable lifecycle, containment, or runtime claim."
+      ],
+      "revision_discoverability": "pinned",
+      "source_date": "2026-08-18",
+      "source_kind": "official_repository",
+      "source_revision": "5e89c71497fe07dd4ae633c181a17224f4a8956d",
+      "supported_family_ids": [
+        "agent_protocol"
+      ],
+      "supported_mechanism_ids": [
+        "acp.session_lifecycle"
+      ],
+      "url": "https://github.com/agentclientprotocol/agent-client-protocol"
+    },
+    {
+      "citation_id": "cite-otel-genai",
+      "content_digest": null,
+      "license_spdx": "Apache-2.0",
+      "limitations": [
+        "Catalog source metadata only; no semantic completeness, collector, exporter, or trace claim."
+      ],
+      "revision_discoverability": "not_captured",
+      "source_date": "2026-08-18",
+      "source_kind": "official_repository",
+      "source_revision": null,
+      "supported_family_ids": [
+        "telemetry_surface"
+      ],
+      "supported_mechanism_ids": [
+        "otel.gen_ai_semconv"
+      ],
+      "url": "https://github.com/open-telemetry/semantic-conventions-genai"
+    }
+  ],
+  "manifest_digest": "sha256:a970d3544763b4ae2e22fdb53e63d2f153d3f362cde87f85f8f45a08a1123c36",
+  "manifest_id": "harness-mechanism-atlas-citations-v1",
+  "manifest_schema": "scaffold-arena.harness-mechanism-atlas-citations/1",
+  "source_date": "2026-08-18"
+}

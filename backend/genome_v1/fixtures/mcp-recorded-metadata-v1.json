@@ -1,0 +1,10 @@
+{
+  "fixture_schema": "scaffold-arena.genome-fixture/1",
+  "protocol": "mcp",
+  "synthetic": true,
+  "recorded_metadata_only": true,
+  "source_date": "2026-08-18",
+  "jsonrpc": "2.0",
+  "exchange": {"method": "tools/list", "request_id": "fixture-request", "tool_names": ["synthetic-readonly"]},
+  "claim_ceiling": "synthetic recorded tool-exchange metadata only; no MCP client, server, tool-safety, or runtime claim"
+}

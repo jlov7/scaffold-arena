@@ -1,0 +1,85 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/evidence-v1-reproduction-receipt.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "deviations": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Deviations",
+      "type": "array"
+    },
+    "independent": {
+      "const": false,
+      "default": false,
+      "title": "Independent",
+      "type": "boolean"
+    },
+    "integrity_not_truth": {
+      "const": true,
+      "default": true,
+      "title": "Integrity Not Truth",
+      "type": "boolean"
+    },
+    "original_authority_id": {
+      "minLength": 1,
+      "title": "Original Authority Id",
+      "type": "string"
+    },
+    "original_environment_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Original Environment Hash",
+      "type": "string"
+    },
+    "original_manifest_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Original Manifest Hash",
+      "type": "string"
+    },
+    "original_operator_id": {
+      "minLength": 1,
+      "title": "Original Operator Id",
+      "type": "string"
+    },
+    "receipt_id": {
+      "minLength": 1,
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "reproduced_manifest_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Reproduced Manifest Hash",
+      "type": "string"
+    },
+    "reproducer_authority_id": {
+      "minLength": 1,
+      "title": "Reproducer Authority Id",
+      "type": "string"
+    },
+    "reproducer_environment_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Reproducer Environment Hash",
+      "type": "string"
+    },
+    "reproducer_operator_id": {
+      "minLength": 1,
+      "title": "Reproducer Operator Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "receipt_id",
+    "original_operator_id",
+    "original_authority_id",
+    "reproducer_operator_id",
+    "reproducer_authority_id",
+    "original_environment_hash",
+    "reproducer_environment_hash",
+    "original_manifest_hash",
+    "reproduced_manifest_hash"
+  ],
+  "title": "ReproductionReceipt",
+  "type": "object"
+}

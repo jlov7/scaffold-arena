@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1",
+  "eval_card_id": "eval_strategy_v0_1",
+  "task_family": "strategy",
+  "deterministic_weight": 0.9,
+  "metrics": [
+    {
+      "metric_id": "schema_validity",
+      "weight": 0.35,
+      "type": "deterministic",
+      "description": "Output must validate against the strategy-to-system JSON schema."
+    },
+    {
+      "metric_id": "required_section_coverage",
+      "weight": 0.35,
+      "type": "deterministic",
+      "description": "All required planning sections must be present and non-empty."
+    },
+    {
+      "metric_id": "required_term_coverage",
+      "weight": 0.20,
+      "type": "deterministic",
+      "description": "Required strategic concepts must appear in the output."
+    },
+    {
+      "metric_id": "actionability",
+      "weight": 0.10,
+      "type": "judge",
+      "description": "Optional judge score for whether the plan is actionable."
+    }
+  ],
+  "pass_thresholds": {
+    "minimum_total_score": 80,
+    "blocking_conditions": [
+      "Invalid output schema",
+      "Missing eval plan",
+      "Missing risk section"
+    ]
+  },
+  "failure_modes": [
+    "schema_missing_required_fields",
+    "weak_evidence_trail",
+    "unsupported_claims"
+  ],
+  "allowed_claims": [
+    "The strategy task family measures structured compilation quality for a synthetic strategy memo."
+  ],
+  "limitations": [
+    "The eval card does not prove business strategy correctness.",
+    "Judge-only actionability cannot override deterministic schema failures."
+  ]
+}

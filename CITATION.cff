@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use Scaffold Arena, cite this software and name the protocol, StudyPack version, and immutable revision used in your experiment. The 0.9.1 release candidate is prepared for the tag-triggered signed release workflow but has not been published or deployed."
+title: "Scaffold Arena: Causal Measurement for LLM Scaffold and Harness Design"
+authors:
+  - family-names: Lovell
+    given-names: Jason
+version: "0.9.1"
+date-released: "2026-08-23"
+license: MIT
+repository-code: "https://github.com/jlov7/scaffold-arena"
+abstract: "Scaffold Arena is an evidence-bound workbench for controlled experiments on how scaffold and orchestration mechanisms affect language-model outcomes."
+keywords:
+  - llm-evaluation
+  - agents
+  - scaffolding
+  - harness-engineering
+  - causal-inference
+  - reproducibility

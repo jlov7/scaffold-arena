@@ -1,0 +1,85 @@
+{
+  "schema_version": "0.1",
+  "run_id": "fixture_extraction_missing_required_fields_r1",
+  "protocol_version": "0.1",
+  "mode": "fixture",
+  "task_family": "extraction",
+  "task_id": "extraction",
+  "scenario_id": "extraction_missing_required_fields",
+  "control": "missing_required_fields",
+  "expected_role": "negative",
+  "model_id": "fixture-no-provider-deterministic-v1",
+  "scaffold_id": "bare",
+  "evaluation_profile": "strict",
+  "created_at": "2026-05-23T00:00:00Z",
+  "output": {
+    "document_type": "Amendment to Service Agreement"
+  },
+  "metrics": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0.0,
+    "wall_time_ms": null,
+    "num_api_calls": 0,
+    "provider_usage_status": "known_none_no_provider_invoked",
+    "measurement_scope": "fixture_deterministic_controls",
+    "latency_status": "not_measured"
+  },
+  "evaluation": {
+    "total_score": 13.2,
+    "breakdown": {
+      "schema_validity": 12.5,
+      "field_accuracy": 14.285714285714285
+    },
+    "weights": {
+      "schema_validity": {
+        "type": "deterministic",
+        "weight": 0.515601
+      },
+      "field_accuracy": {
+        "type": "deterministic",
+        "weight": 0.343734
+      },
+      "completeness": {
+        "type": "judge",
+        "weight": 0.084399
+      },
+      "reasoning_clarity": {
+        "type": "judge",
+        "weight": 0.056266
+      }
+    },
+    "profile": "strict",
+    "notes": [
+      "Missing required field: 'effective_date' is a required property",
+      "Missing required field: 'parties' is a required property",
+      "Missing required field: 'references_agreement' is a required property",
+      "Missing required field: 'amendments' is a required property",
+      "Missing required field: 'compliance_requirements' is a required property",
+      "Missing required field: 'financial_summary' is a required property",
+      "Missing required field: 'new_expiration_date' is a required property",
+      "Field 'effective_date': predicted=None, gold='2025-03-15', score=0.00",
+      "Field 'references_agreement.date': predicted=None, gold='2023-09-01', score=0.00",
+      "Field 'new_expiration_date': predicted=None, gold='2027-12-31', score=0.00",
+      "Field 'financial_summary.monthly_retainer_old': predicted=None, gold=45000, score=0.00",
+      "Field 'financial_summary.monthly_retainer_new': predicted=None, gold=78500, score=0.00",
+      "Field 'financial_summary.insurance_minimum': predicted=None, gold=5000000, score=0.00"
+    ],
+    "judge": null,
+    "deterministic_weight": 0.859335
+  },
+  "evidence": [
+    {
+      "kind": "fixture_control",
+      "summary": "negative control for extraction: missing_required_fields"
+    }
+  ],
+  "limitations": [
+    "Fixture-mode artifact generated from deterministic controls, not a live provider run.",
+    "No provider was invoked, so provider input tokens, output tokens, cost, and API calls are known to be none and recorded as zero.",
+    "Fixture runtime latency was not measured; wall_time_ms is null.",
+    "Timestamps are fixed fixture values for reproducibility, not observed execution times.",
+    "Fixture scores are deterministic control outcomes, not model-performance evidence.",
+    "Use live mode before making provider/model performance claims."
+  ]
+}

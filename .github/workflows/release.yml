@@ -1,0 +1,291 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify-build:
+    name: Verify and build under a read-only token
+    if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout complete history and tags
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
+        with:
+          version: "0.12.5"
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10
+        with:
+          version: 10
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Read authoritative version
+        id: release_meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(python -c 'import json; print(json.load(open("release/release-metadata.json"))["version"])')"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "VERSION=${version}" >> "$GITHUB_ENV"
+          echo "SOURCE_DATE_EPOCH=$(git show -s --format=%ct HEAD)" >> "$GITHUB_ENV"
+
+      - name: Verify repository release declarations
+        if: github.event_name != 'push'
+        run: python scripts/verify-release-metadata.py --root .
+
+      - name: Verify annotated release tag and commit binding
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: >-
+          python scripts/verify-release-metadata.py
+          --root .
+          --tag "${GITHUB_REF_NAME}"
+          --expected-sha "${GITHUB_SHA}"
+
+      - name: Run authoritative release gates
+        run: ./scripts/verify-release-gates.sh
+
+      - name: Verify backend distributions from authoritative gate
+        working-directory: backend
+        run: test -n "$(find dist -maxdepth 1 -type f \( -name '*.whl' -o -name '*.tar.gz' \) -print -quit)"
+
+      - name: Verify frontend distribution from authoritative gate
+        working-directory: frontend
+        run: test -f dist/index.html
+
+      - name: Assemble deterministic public release archives
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-dist/public release-dist/internal
+          cp backend/dist/* release-dist/public/
+          tar \
+            --sort=name \
+            --mtime="@${SOURCE_DATE_EPOCH}" \
+            --owner=0 \
+            --group=0 \
+            --numeric-owner \
+            -C frontend/dist \
+            -czf "release-dist/public/scaffold-arena-frontend-${VERSION}.tar.gz" \
+            .
+          git archive \
+            --format=tar.gz \
+            --prefix="scaffold-arena-${VERSION}/" \
+            --output="release-dist/public/scaffold-arena-source-${VERSION}.tar.gz" \
+            HEAD
+          cp release/release-metadata.json release-dist/public/release-metadata.json
+          cp release/harness-mechanism-atlas-v1.digest.json release-dist/public/harness-mechanism-atlas-v1.digest.json
+
+      - name: Generate SPDX JSON software bill of materials
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
+        with:
+          path: .
+          format: spdx-json
+          output-file: release-dist/public/scaffold-arena-${{ steps.release_meta.outputs.version }}.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
+      - name: Build combined OCI image under read-only credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker build --tag "scaffold-arena-release:${VERSION}" .
+          docker save \
+            --output "release-dist/internal/scaffold-arena-image-${VERSION}.docker.tar" \
+            "scaffold-arena-release:${VERSION}"
+
+      - name: Compute and verify public release checksums
+        working-directory: release-dist/public
+        shell: bash
+        run: |
+          set -euo pipefail
+          checksum_file="$(mktemp)"
+          find . -maxdepth 1 -type f ! -name SHA256SUMS -printf '%f\n' \
+            | LC_ALL=C sort \
+            | xargs -r sha256sum \
+            > "${checksum_file}"
+          mv "${checksum_file}" SHA256SUMS
+          sha256sum --check SHA256SUMS
+
+      - name: Bind the internal image transfer artifact
+        working-directory: release-dist/internal
+        shell: bash
+        run: |
+          set -euo pipefail
+          sha256sum "scaffold-arena-image-${VERSION}.docker.tar" > IMAGE_SHA256SUMS
+          sha256sum --check IMAGE_SHA256SUMS
+
+      - name: Upload immutable validation or publication inputs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: scaffold-arena-release-${{ steps.release_meta.outputs.version }}
+          path: release-dist
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: Sign, attest, and publish prebuilt outputs
+    if: github.event_name == 'push'
+    needs:
+      - verify-build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      artifact-metadata: write
+      attestations: write
+      contents: write
+      id-token: write
+      packages: write
+    steps:
+      - name: Checkout tag metadata without persistent credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify tag identity using workflow-owned commands
+        id: release_meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git cat-file -t "${GITHUB_REF_NAME}")" = "tag"
+          test "$(git rev-list -n 1 "${GITHUB_REF_NAME}")" = "${GITHUB_SHA}"
+          version="$(python -c 'import json; print(json.load(open("release/release-metadata.json"))["version"])')"
+          declared_tag="$(python -c 'import json; value=json.load(open("release/release-metadata.json"))["tag"]; print(value or "")')"
+          image_name="ghcr.io/${GITHUB_REPOSITORY,,}"
+          test "${GITHUB_REF_NAME}" = "v${version}"
+          test "${declared_tag}" = "${GITHUB_REF_NAME}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "image_name=${image_name}" >> "$GITHUB_OUTPUT"
+          echo "VERSION=${version}" >> "$GITHUB_ENV"
+          echo "IMAGE_NAME=${image_name}" >> "$GITHUB_ENV"
+
+      - name: Download prebuilt release inputs from this workflow run
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: scaffold-arena-release-${{ steps.release_meta.outputs.version }}
+          path: release-dist
+
+      - name: Verify downloaded artifacts before privilege use
+        shell: bash
+        run: |
+          set -euo pipefail
+          (cd release-dist/public && sha256sum --check SHA256SUMS)
+          (cd release-dist/internal && sha256sum --check IMAGE_SHA256SUMS)
+
+      - name: Refuse to overwrite an existing GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1; then
+            echo "Release ${GITHUB_REF_NAME} already exists; immutable releases are never overwritten." >&2
+            exit 1
+          fi
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Keylessly sign public release checksums
+        shell: bash
+        run: >-
+          cosign sign-blob
+          --yes
+          --bundle release-dist/public/SHA256SUMS.sigstore.json
+          release-dist/public/SHA256SUMS
+
+      - name: Keylessly sign Harness Mechanism Atlas digest
+        shell: bash
+        run: >-
+          cosign sign-blob
+          --yes
+          --bundle release-dist/public/harness-mechanism-atlas-v1.digest.sigstore.json
+          release-dist/public/harness-mechanism-atlas-v1.digest.json
+
+      - name: Attest public release artifact build provenance
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-checksums: release-dist/public/SHA256SUMS
+
+      - name: Attest source archive SBOM
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: release-dist/public/scaffold-arena-source-${{ steps.release_meta.outputs.version }}.tar.gz
+          sbom-path: release-dist/public/scaffold-arena-${{ steps.release_meta.outputs.version }}.spdx.json
+
+      - name: Authenticate to GitHub Container Registry
+        shell: bash
+        run: echo "${{ github.token }}" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
+
+      - name: Refuse to overwrite an existing OCI version tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          if docker manifest inspect "${IMAGE_NAME}:${VERSION}" >/dev/null 2>&1; then
+            echo "OCI tag ${IMAGE_NAME}:${VERSION} already exists; release tags are immutable." >&2
+            exit 1
+          fi
+
+      - name: Load and publish the prebuilt OCI image
+        id: image
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker load --input "release-dist/internal/scaffold-arena-image-${VERSION}.docker.tar"
+          docker tag "scaffold-arena-release:${VERSION}" "${IMAGE_NAME}:${VERSION}"
+          docker push "${IMAGE_NAME}:${VERSION}" | tee /tmp/scaffold-arena-image-push.txt
+          digest="$(sed -n 's/^.*digest: \(sha256:[a-f0-9]\{64\}\).*$/\1/p' /tmp/scaffold-arena-image-push.txt | tail -n 1)"
+          test -n "${digest}"
+          echo "digest=${digest}" >> "$GITHUB_OUTPUT"
+
+      - name: Keylessly sign OCI image digest
+        shell: bash
+        run: cosign sign --yes "${IMAGE_NAME}@${{ steps.image.outputs.digest }}"
+
+      - name: Attest OCI image provenance in GitHub and registry
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-name: ${{ steps.release_meta.outputs.image_name }}
+          subject-digest: ${{ steps.image.outputs.digest }}
+          push-to-registry: true
+
+      - name: Create GitHub release after every prior gate succeeds
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: >-
+          gh release create "${GITHUB_REF_NAME}"
+          release-dist/public/*
+          --verify-tag
+          --generate-notes
+          --title "Scaffold Arena ${VERSION}"

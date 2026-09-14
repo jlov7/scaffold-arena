@@ -1,0 +1,61 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/review-v1-calibration-adjudication-result.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Portable, protocol-v1 adjudication record bound to blinded packet evidence.",
+  "properties": {
+    "adjudicator_pseudonym": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Adjudicator Pseudonym",
+      "type": "string"
+    },
+    "decision": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Decision",
+      "type": "string"
+    },
+    "evidence_artifact_digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Evidence Artifact Digest",
+      "type": "string"
+    },
+    "final_scores": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "minProperties": 1,
+      "title": "Final Scores",
+      "type": "object"
+    },
+    "rationale": {
+      "minLength": 1,
+      "title": "Rationale",
+      "type": "string"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "target_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Target Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "target_id",
+    "run_id",
+    "adjudicator_pseudonym",
+    "final_scores",
+    "decision",
+    "rationale",
+    "evidence_artifact_digest"
+  ],
+  "title": "CalibrationAdjudicationResult",
+  "type": "object"
+}

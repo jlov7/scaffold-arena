@@ -1,0 +1,29 @@
+{
+  "study_id": "flagship-prereg-v1",
+  "study_kind": "flagship",
+  "claim_ceiling": "Protocol and recorded-fixture readiness only; no provider execution, empirical, causal, cost, energy, deployment, or product claim.",
+  "bundle_created_at": "2026-08-20T00:00:00Z",
+  "preregistration": {
+    "artifact_uri": "fixtures/preregistration.md",
+    "artifact_hash": "ddffe9ba9c96086449e076909b5821ac4216938efdd50ae11435be0f9addd4bd",
+    "publication_state": "hold_not_public",
+    "publication_id": null,
+    "published_at": null
+  },
+  "frozen_bindings": {
+    "models": [{"id": "local-model-a", "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}, {"id": "local-model-b", "digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}],
+    "harnesses": [{"id": "baseline-harness", "digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}, {"id": "mechanism-harness", "digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"}],
+    "runtimes": [{"id": "ollama-local", "kind": "ollama", "identity_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", "paid_cost_policy": "zero_paid_cost_local_energy_unknown"}, {"id": "lmstudio-local", "kind": "lm_studio", "identity_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", "paid_cost_policy": "zero_paid_cost_local_energy_unknown"}],
+    "evaluators": [{"id": "deterministic-evaluator-v1", "digest": "1111111111111111111111111111111111111111111111111111111111111111"}],
+    "sampling_digest": "2222222222222222222222222222222222222222222222222222222222222222",
+    "budget_digest": "3333333333333333333333333333333333333333333333333333333333333333",
+    "stopping_digest": "4444444444444444444444444444444444444444444444444444444444444444",
+    "exclusions_digest": "5555555555555555555555555555555555555555555555555555555555555555",
+    "severe_failure_digest": "6666666666666666666666666666666666666666666666666666666666666666",
+    "analysis_digest": "7777777777777777777777777777777777777777777777777777777777777777",
+    "multiplicity_digest": "8888888888888888888888888888888888888888888888888888888888888888"
+  },
+  "matrix": {"models": ["local-model-a", "local-model-b"], "harnesses": ["baseline-harness", "mechanism-harness"], "tasks": ["task-reasoning", "task-extraction"], "domains": ["domain-synthetic-a", "domain-synthetic-b"], "cohorts": ["flagship"], "repetitions": 1},
+  "cohorts": [{"cohort_id": "flagship", "role": "flagship", "task_ids": ["task-reasoning", "task-extraction"], "domain_ids": ["domain-synthetic-a", "domain-synthetic-b"], "model_ids": ["local-model-a", "local-model-b"]}],
+  "runtime_admissions": [{"runtime_id": "ollama-local", "kind": "ollama", "endpoint_identity_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"}, {"runtime_id": "lmstudio-local", "kind": "lm_studio", "endpoint_identity_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"}]
+}

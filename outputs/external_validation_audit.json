@@ -1,0 +1,19 @@
+{
+  "schema_version": "0.1",
+  "generated_at": "2026-05-23T00:00:00Z",
+  "status": "blocked_no_external_validation",
+  "ledger": "outputs/external_validation.json",
+  "evidence_count": 0,
+  "independent_reproduction_count": 0,
+  "public_critique_count": 0,
+  "human_annotation_batch_count": 0,
+  "validation_error_count": 0,
+  "validation_errors": [],
+  "blockers_before_95": [
+    "Obtain at least one independent clean-room reproduction or serious external critique.",
+    "Record public URLs or repo artifacts for every external evidence item.",
+    "Do not mark outputs/external_validation.json completed until concrete evidence records exist.",
+    "Do not treat external validation as live benchmark or human calibration evidence by itself."
+  ],
+  "claim_boundary": "This audit validates external reproduction, public critique, and human annotation batch records when they exist. With zero evidence records it is a blocker ledger, not external validation evidence, not live benchmark evidence, and not human calibration evidence."
+}

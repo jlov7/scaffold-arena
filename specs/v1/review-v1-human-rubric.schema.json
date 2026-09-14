@@ -1,0 +1,79 @@
+{
+  "$defs": {
+    "RubricDimension": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_0": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Anchor 0",
+          "type": "string"
+        },
+        "anchor_1": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Anchor 1",
+          "type": "string"
+        },
+        "instruction": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Instruction",
+          "type": "string"
+        },
+        "metric_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Metric Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric_id",
+        "instruction",
+        "anchor_0",
+        "anchor_1"
+      ],
+      "title": "RubricDimension",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/review-v1-human-rubric.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "digest": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Digest",
+      "type": "string"
+    },
+    "dimensions": {
+      "items": {
+        "$ref": "#/$defs/RubricDimension"
+      },
+      "minItems": 1,
+      "title": "Dimensions",
+      "type": "array"
+    },
+    "rubric_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Rubric Id",
+      "type": "string"
+    },
+    "version": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "rubric_id",
+    "version",
+    "digest",
+    "dimensions"
+  ],
+  "title": "HumanRubric",
+  "type": "object"
+}

@@ -1,0 +1,2187 @@
+{
+  "$defs": {
+    "AdequacyRule": {
+      "additionalProperties": false,
+      "properties": {
+        "minimum_completed_attempts": {
+          "minimum": 1,
+          "title": "Minimum Completed Attempts",
+          "type": "integer"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        },
+        "required_balance": {
+          "default": true,
+          "title": "Required Balance",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "minimum_completed_attempts",
+        "rationale"
+      ],
+      "title": "AdequacyRule",
+      "type": "object"
+    },
+    "AggregateBudgetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_total_cost_usd": {
+          "minimum": 0.0,
+          "title": "Max Total Cost Usd",
+          "type": "number"
+        },
+        "max_total_tokens": {
+          "minimum": 1,
+          "title": "Max Total Tokens",
+          "type": "integer"
+        },
+        "max_total_tool_calls": {
+          "minimum": 0,
+          "title": "Max Total Tool Calls",
+          "type": "integer"
+        },
+        "max_wall_time_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "Max Wall Time Seconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "max_total_cost_usd",
+        "max_total_tokens",
+        "max_total_tool_calls",
+        "max_wall_time_seconds",
+        "max_attempts"
+      ],
+      "title": "AggregateBudgetSpec",
+      "type": "object"
+    },
+    "BudgetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_attempts": {
+          "minimum": 1,
+          "title": "Max Attempts",
+          "type": "integer"
+        },
+        "max_context_tokens": {
+          "description": "Maximum input context consumption, measured in provider-reported tokens.",
+          "minimum": 1,
+          "title": "Max Context Tokens",
+          "type": "integer"
+        },
+        "max_cost_usd": {
+          "minimum": 0.0,
+          "title": "Max Cost Usd",
+          "type": "number"
+        },
+        "max_latency_seconds": {
+          "exclusiveMinimum": 0.0,
+          "title": "Max Latency Seconds",
+          "type": "number"
+        },
+        "max_tokens": {
+          "minimum": 1,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "max_tool_calls": {
+          "minimum": 0,
+          "title": "Max Tool Calls",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_attempts",
+        "max_cost_usd",
+        "max_latency_seconds",
+        "max_tokens",
+        "max_tool_calls",
+        "max_context_tokens"
+      ],
+      "title": "BudgetSpec",
+      "type": "object"
+    },
+    "CapabilityRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "enum": [
+            "tools",
+            "state",
+            "checkpoint",
+            "memory",
+            "delegation",
+            "streaming",
+            "usage",
+            "sandboxing"
+          ],
+          "title": "Capability",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "capability"
+      ],
+      "title": "CapabilityRequirement",
+      "type": "object"
+    },
+    "CompatibilityRange": {
+      "additionalProperties": false,
+      "properties": {
+        "protocol_max": {
+          "minLength": 1,
+          "title": "Protocol Max",
+          "type": "string"
+        },
+        "protocol_min": {
+          "minLength": 1,
+          "title": "Protocol Min",
+          "type": "string"
+        }
+      },
+      "required": [
+        "protocol_min",
+        "protocol_max"
+      ],
+      "title": "CompatibilityRange",
+      "type": "object"
+    },
+    "CustomTreatment": {
+      "additionalProperties": false,
+      "properties": {
+        "assignments": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]{1,127}$": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          "title": "Assignments",
+          "type": "object"
+        },
+        "treatment_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Treatment Id"
+        }
+      },
+      "required": [
+        "assignments"
+      ],
+      "title": "CustomTreatment",
+      "type": "object"
+    },
+    "DeterministicMetric": {
+      "additionalProperties": false,
+      "properties": {
+        "metric_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Metric Id",
+          "type": "string"
+        },
+        "oracle": {
+          "minLength": 1,
+          "title": "Oracle",
+          "type": "string"
+        },
+        "weight": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metric_id",
+        "weight",
+        "oracle"
+      ],
+      "title": "DeterministicMetric",
+      "type": "object"
+    },
+    "EvidenceSource": {
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "enum": [
+            "synthetic",
+            "public",
+            "private",
+            "restricted"
+          ],
+          "title": "Classification",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "source_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "source_uri": {
+          "minLength": 1,
+          "title": "Source Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "source_uri",
+        "content_hash",
+        "classification"
+      ],
+      "title": "EvidenceSource",
+      "type": "object"
+    },
+    "ExperimentSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "adequacy_rule": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AdequacyRule"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "aggregate_budget": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AggregateBudgetSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "budgets": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BudgetSpec"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "claim_bearing": {
+          "default": false,
+          "title": "Claim Bearing",
+          "type": "boolean"
+        },
+        "claim_ceiling": {
+          "default": "protocol evidence only",
+          "title": "Claim Ceiling",
+          "type": "string"
+        },
+        "custom_design": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/CustomTreatment"
+          },
+          "title": "Custom Design",
+          "type": "array"
+        },
+        "design": {
+          "default": "full",
+          "enum": [
+            "full",
+            "fractional",
+            "custom"
+          ],
+          "title": "Design",
+          "type": "string"
+        },
+        "deterministic_weight": {
+          "maximum": 1.0,
+          "minimum": 0.7,
+          "title": "Deterministic Weight",
+          "type": "number"
+        },
+        "experiment_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Experiment Id",
+          "type": "string"
+        },
+        "extensions": {
+          "additionalProperties": true,
+          "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+          "title": "Extensions",
+          "type": "object"
+        },
+        "factors": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/FactorSpec"
+          },
+          "title": "Factors",
+          "type": "array"
+        },
+        "freeze_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Freeze Hash"
+        },
+        "frozen": {
+          "default": false,
+          "title": "Frozen",
+          "type": "boolean"
+        },
+        "frozen_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Frozen At"
+        },
+        "harness_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Harness Ids",
+          "type": "array"
+        },
+        "hypotheses": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Hypotheses",
+          "type": "array"
+        },
+        "interactions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/OutcomeInteraction"
+          },
+          "title": "Interactions",
+          "type": "array"
+        },
+        "manipulation_checks": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ManipulationCheck"
+          },
+          "title": "Manipulation Checks",
+          "type": "array"
+        },
+        "model_endpoints": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ModelEndpoint"
+          },
+          "title": "Model Endpoints",
+          "type": "array"
+        },
+        "multiple_comparison_correction": {
+          "default": "none",
+          "enum": [
+            "none",
+            "bonferroni",
+            "holm",
+            "benjamini_hochberg"
+          ],
+          "title": "Multiple Comparison Correction",
+          "type": "string"
+        },
+        "owner_approval": {
+          "default": "pending",
+          "enum": [
+            "pending",
+            "approved",
+            "rejected"
+          ],
+          "title": "Owner Approval",
+          "type": "string"
+        },
+        "predecessor_experiment_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Predecessor Experiment Id"
+        },
+        "predecessor_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "deprecated": true,
+          "title": "Predecessor Version"
+        },
+        "primary_outcomes": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Primary Outcomes",
+          "type": "array"
+        },
+        "protocol_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "questions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Questions",
+          "type": "array"
+        },
+        "randomization_blocks": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/RandomizationBlock"
+          },
+          "title": "Randomization Blocks",
+          "type": "array"
+        },
+        "randomization_seed": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Randomization Seed",
+          "type": "integer"
+        },
+        "repetitions": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Repetitions",
+          "type": "integer"
+        },
+        "sampling": {
+          "$ref": "#/$defs/SamplingSpec"
+        },
+        "scenario_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Scenario Ids",
+          "type": "array"
+        },
+        "stopping_rules": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/StoppingRule"
+          },
+          "title": "Stopping Rules",
+          "type": "array"
+        },
+        "study_pack_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Study Pack Hash"
+        },
+        "study_pack_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Study Pack Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "experiment_id",
+        "study_pack_id",
+        "scenario_ids",
+        "harness_ids",
+        "deterministic_weight"
+      ],
+      "title": "ExperimentSpec",
+      "type": "object"
+    },
+    "FactorSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "baseline": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline"
+        },
+        "capability_requirements": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/CapabilityRequirement"
+          },
+          "title": "Capability Requirements",
+          "type": "array"
+        },
+        "declarative_config": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Declarative Config",
+          "type": "object"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "expected_benefit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Benefit"
+        },
+        "expected_tax": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Tax"
+        },
+        "extensions": {
+          "additionalProperties": true,
+          "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+          "title": "Extensions",
+          "type": "object"
+        },
+        "factor_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Factor Id",
+          "type": "string"
+        },
+        "falsifying_result": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Falsifying Result"
+        },
+        "fixed_infrastructure": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Fixed Infrastructure",
+          "type": "object"
+        },
+        "incompatible_level_combinations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/IncompatibleLevelCombination"
+          },
+          "title": "Incompatible Level Combinations",
+          "type": "array"
+        },
+        "incompatible_with": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Incompatible With",
+          "type": "array"
+        },
+        "kind": {
+          "enum": [
+            "binary",
+            "categorical",
+            "ordinal"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "levels": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Levels",
+          "type": "array"
+        },
+        "manipulation_checks": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ManipulationCheck"
+          },
+          "title": "Manipulation Checks",
+          "type": "array"
+        },
+        "no_op_levels": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "No Op Levels",
+          "type": "array"
+        },
+        "prohibited_co_mutations": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Prohibited Co Mutations",
+          "type": "array"
+        },
+        "sham_treatment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ShamTreatment"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "treatment_mutations": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TreatmentMutation"
+          },
+          "title": "Treatment Mutations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "factor_id",
+        "kind",
+        "levels",
+        "description"
+      ],
+      "title": "FactorSpec",
+      "type": "object"
+    },
+    "FaultMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "enum": [
+            "input",
+            "tool",
+            "context",
+            "state",
+            "policy"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "expected_recovery": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected Recovery"
+        },
+        "fault_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Fault Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fault_id",
+        "category",
+        "description"
+      ],
+      "title": "FaultMetadata",
+      "type": "object"
+    },
+    "FaultScheduleEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "fault_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Fault Id",
+          "type": "string"
+        },
+        "ordinal": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Ordinal",
+          "type": "integer"
+        },
+        "trigger": {
+          "enum": [
+            "start",
+            "request",
+            "tool_call",
+            "state_transition",
+            "response"
+          ],
+          "title": "Trigger",
+          "type": "string"
+        }
+      },
+      "required": [
+        "fault_id",
+        "trigger",
+        "description"
+      ],
+      "title": "FaultScheduleEntry",
+      "type": "object"
+    },
+    "GraderSpec": {
+      "additionalProperties": false,
+      "description": "A data-only grader declaration owned by a StudyPack.",
+      "properties": {
+        "config": {
+          "additionalProperties": true,
+          "title": "Config",
+          "type": "object"
+        },
+        "digest": {
+          "description": "Built-ins use the canonical declaration digest. Installed plugins use the separately supplied trusted artifact or code digest.",
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "grader_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Grader Id",
+          "type": "string"
+        },
+        "implementation": {
+          "anyOf": [
+            {
+              "enum": [
+                "schema",
+                "exact_field",
+                "source_provenance",
+                "forbidden_token",
+                "state_oracle",
+                "manipulation_fidelity",
+                "context_handoff_delivery"
+              ],
+              "type": "string"
+            },
+            {
+              "const": "installed_plugin",
+              "type": "string"
+            }
+          ],
+          "title": "Implementation"
+        },
+        "kind": {
+          "enum": [
+            "deterministic",
+            "qualitative"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "metric_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metric Id"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "weight": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0.0,
+              "maximum": 1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Weight"
+        }
+      },
+      "required": [
+        "grader_id",
+        "version",
+        "implementation",
+        "kind",
+        "digest"
+      ],
+      "title": "GraderSpec",
+      "type": "object"
+    },
+    "HarnessCapabilities": {
+      "additionalProperties": false,
+      "properties": {
+        "checkpoint": {
+          "default": false,
+          "title": "Checkpoint",
+          "type": "boolean"
+        },
+        "delegation": {
+          "default": false,
+          "title": "Delegation",
+          "type": "boolean"
+        },
+        "memory": {
+          "default": false,
+          "title": "Memory",
+          "type": "boolean"
+        },
+        "sandboxing": {
+          "default": false,
+          "title": "Sandboxing",
+          "type": "boolean"
+        },
+        "state": {
+          "default": false,
+          "title": "State",
+          "type": "boolean"
+        },
+        "streaming": {
+          "default": false,
+          "title": "Streaming",
+          "type": "boolean"
+        },
+        "tools": {
+          "default": false,
+          "title": "Tools",
+          "type": "boolean"
+        },
+        "usage": {
+          "default": false,
+          "title": "Usage",
+          "type": "boolean"
+        }
+      },
+      "title": "HarnessCapabilities",
+      "type": "object"
+    },
+    "HarnessSchemaHashes": {
+      "additionalProperties": false,
+      "properties": {
+        "config_schema_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Config Schema Hash"
+        },
+        "input_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Hash"
+        },
+        "output_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Hash"
+        },
+        "trace_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Trace Hash"
+        }
+      },
+      "title": "HarnessSchemaHashes",
+      "type": "object"
+    },
+    "HarnessSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter": {
+          "enum": [
+            "http",
+            "cli",
+            "recorded",
+            "in_process"
+          ],
+          "title": "Adapter",
+          "type": "string"
+        },
+        "adapter_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adapter Digest"
+        },
+        "adapter_identity": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Adapter Identity"
+        },
+        "allowed_tools": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Allowed Tools",
+          "type": "array"
+        },
+        "capabilities": {
+          "$ref": "#/$defs/HarnessCapabilities"
+        },
+        "claim_eligibility": {
+          "default": "fixture_only",
+          "enum": [
+            "fixture_only",
+            "protocol_only",
+            "live_provider",
+            "externally_validated"
+          ],
+          "title": "Claim Eligibility",
+          "type": "string"
+        },
+        "configuration": {
+          "additionalProperties": true,
+          "title": "Configuration",
+          "type": "object"
+        },
+        "effective_configuration_hash": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Configuration Hash"
+        },
+        "execution_mode": {
+          "default": "recorded",
+          "enum": [
+            "local",
+            "container",
+            "remote",
+            "recorded"
+          ],
+          "title": "Execution Mode",
+          "type": "string"
+        },
+        "extensions": {
+          "additionalProperties": true,
+          "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+          "title": "Extensions",
+          "type": "object"
+        },
+        "harness_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Harness Id",
+          "type": "string"
+        },
+        "isolation": {
+          "default": "none",
+          "enum": [
+            "none",
+            "process",
+            "container",
+            "remote_sandbox"
+          ],
+          "title": "Isolation",
+          "type": "string"
+        },
+        "protocol_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "retries": {
+          "default": 0,
+          "maximum": 10,
+          "minimum": 0,
+          "title": "Retries",
+          "type": "integer"
+        },
+        "schema_hashes": {
+          "$ref": "#/$defs/HarnessSchemaHashes"
+        },
+        "timeout_seconds": {
+          "default": 120,
+          "maximum": 3600,
+          "minimum": 1,
+          "title": "Timeout Seconds",
+          "type": "integer"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "harness_id",
+        "version",
+        "adapter"
+      ],
+      "title": "HarnessSpec",
+      "type": "object"
+    },
+    "IncompatibleLevelCombination": {
+      "additionalProperties": false,
+      "properties": {
+        "assignments": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]{1,127}$": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          "title": "Assignments",
+          "type": "object"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assignments",
+        "reason"
+      ],
+      "title": "IncompatibleLevelCombination",
+      "type": "object"
+    },
+    "InitialStateRef": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Snapshot Hash",
+          "type": "string"
+        },
+        "state_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "State Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state_id",
+        "snapshot_hash"
+      ],
+      "title": "InitialStateRef",
+      "type": "object"
+    },
+    "ManipulationCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Expected Value"
+        },
+        "factor_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Factor Id",
+          "type": "string"
+        },
+        "oracle": {
+          "minLength": 1,
+          "title": "Oracle",
+          "type": "string"
+        }
+      },
+      "required": [
+        "factor_id",
+        "expected_value",
+        "oracle"
+      ],
+      "title": "ManipulationCheck",
+      "type": "object"
+    },
+    "ModelEndpoint": {
+      "additionalProperties": false,
+      "properties": {
+        "endpoint_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Endpoint Digest"
+        },
+        "endpoint_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Endpoint Id",
+          "type": "string"
+        },
+        "model": {
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "provider": {
+          "minLength": 1,
+          "title": "Provider",
+          "type": "string"
+        }
+      },
+      "required": [
+        "endpoint_id",
+        "provider",
+        "model"
+      ],
+      "title": "ModelEndpoint",
+      "type": "object"
+    },
+    "OutcomeInteraction": {
+      "additionalProperties": false,
+      "properties": {
+        "factor_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Factor Ids",
+          "type": "array"
+        },
+        "interaction_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Interaction Id",
+          "type": "string"
+        },
+        "outcome_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Outcome Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "interaction_id",
+        "factor_ids",
+        "outcome_id"
+      ],
+      "title": "OutcomeInteraction",
+      "type": "object"
+    },
+    "OutputContract": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "format": {
+          "enum": [
+            "json",
+            "text",
+            "tool_call"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "schema_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Schema Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_hash",
+        "format",
+        "description"
+      ],
+      "title": "OutputContract",
+      "type": "object"
+    },
+    "PackAuthor": {
+      "additionalProperties": false,
+      "properties": {
+        "affiliation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Affiliation"
+        },
+        "name": {
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "orcid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Orcid"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "PackAuthor",
+      "type": "object"
+    },
+    "PreregistrationReference": {
+      "additionalProperties": false,
+      "properties": {
+        "content_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "reference_uri": {
+          "minLength": 1,
+          "title": "Reference Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reference_uri",
+        "content_hash"
+      ],
+      "title": "PreregistrationReference",
+      "type": "object"
+    },
+    "RandomizationBlock": {
+      "additionalProperties": false,
+      "properties": {
+        "block_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Block Id",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "scenario",
+            "model",
+            "harness",
+            "cluster"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "values": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "title": "Values",
+          "type": "array"
+        }
+      },
+      "required": [
+        "block_id",
+        "unit",
+        "values"
+      ],
+      "title": "RandomizationBlock",
+      "type": "object"
+    },
+    "ReferenceSolution": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Artifact Hash",
+          "type": "string"
+        },
+        "reference_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Reference Id",
+          "type": "string"
+        },
+        "solvability_proof": {
+          "minLength": 1,
+          "title": "Solvability Proof",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reference_id",
+        "artifact_hash",
+        "solvability_proof"
+      ],
+      "title": "ReferenceSolution",
+      "type": "object"
+    },
+    "SamplingSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "max_tokens": {
+          "default": 1024,
+          "minimum": 1,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "temperature": {
+          "default": 0.0,
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "top_p": {
+          "default": 1.0,
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Top P",
+          "type": "number"
+        }
+      },
+      "title": "SamplingSpec",
+      "type": "object"
+    },
+    "ScenarioSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "allowed_claims": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Claims",
+          "type": "array"
+        },
+        "cluster_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cluster Id"
+        },
+        "control_role": {
+          "default": "candidate",
+          "enum": [
+            "candidate",
+            "positive",
+            "negative",
+            "anti_cheat"
+          ],
+          "title": "Control Role",
+          "type": "string"
+        },
+        "data_classification": {
+          "default": "synthetic",
+          "enum": [
+            "synthetic",
+            "public",
+            "private",
+            "restricted"
+          ],
+          "title": "Data Classification",
+          "type": "string"
+        },
+        "deterministic_metrics": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/DeterministicMetric"
+          },
+          "title": "Deterministic Metrics",
+          "type": "array"
+        },
+        "evidence_sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/EvidenceSource"
+          },
+          "title": "Evidence Sources",
+          "type": "array"
+        },
+        "extensions": {
+          "additionalProperties": true,
+          "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+          "title": "Extensions",
+          "type": "object"
+        },
+        "fault_definitions": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/FaultMetadata"
+          },
+          "title": "Fault Definitions",
+          "type": "array"
+        },
+        "fault_metadata": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FaultMetadata"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "fault_schedule": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/FaultScheduleEntry"
+          },
+          "title": "Fault Schedule",
+          "type": "array"
+        },
+        "final_state_oracle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StateOracle"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "initial_state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InitialStateRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "limitations": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "manipulation_checks": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ManipulationCheck"
+          },
+          "title": "Manipulation Checks",
+          "type": "array"
+        },
+        "output_contract": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputContract"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "pair_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pair Id"
+        },
+        "paired_scenario_id": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Paired Scenario Id"
+        },
+        "prohibited_behavior": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Prohibited Behavior",
+          "type": "array"
+        },
+        "prompt": {
+          "minLength": 1,
+          "title": "Prompt",
+          "type": "string"
+        },
+        "protocol_version": {
+          "const": "1.0",
+          "default": "1.0",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "reference_solution": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReferenceSolution"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "scenario_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Scenario Id",
+          "type": "string"
+        },
+        "severe_failure_rules": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SevereFailureRule"
+          },
+          "title": "Severe Failure Rules",
+          "type": "array"
+        },
+        "source_label": {
+          "default": "synthetic",
+          "enum": [
+            "synthetic",
+            "provided",
+            "mixed"
+          ],
+          "title": "Source Label",
+          "type": "string"
+        },
+        "state_oracle": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StateOracle"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tags": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "task_family": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Task Family",
+          "type": "string"
+        },
+        "title": {
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "tool_fixtures": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ToolFixture"
+          },
+          "title": "Tool Fixtures",
+          "type": "array"
+        },
+        "variant": {
+          "default": "clean",
+          "enum": [
+            "clean",
+            "stress"
+          ],
+          "title": "Variant",
+          "type": "string"
+        }
+      },
+      "required": [
+        "scenario_id",
+        "title",
+        "task_family",
+        "prompt"
+      ],
+      "title": "ScenarioSpec",
+      "type": "object"
+    },
+    "SevereFailureRule": {
+      "additionalProperties": false,
+      "properties": {
+        "condition": {
+          "minLength": 1,
+          "title": "Condition",
+          "type": "string"
+        },
+        "consequence": {
+          "minLength": 1,
+          "title": "Consequence",
+          "type": "string"
+        },
+        "rule_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Rule Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "condition",
+        "consequence"
+      ],
+      "title": "SevereFailureRule",
+      "type": "object"
+    },
+    "ShamTreatment": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "levels": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Levels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label",
+        "description"
+      ],
+      "title": "ShamTreatment",
+      "type": "object"
+    },
+    "StateOracle": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "expected": {
+          "title": "Expected"
+        },
+        "kind": {
+          "enum": [
+            "exact_match",
+            "json_schema",
+            "predicate",
+            "state_snapshot"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "oracle_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Oracle Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "oracle_id",
+        "kind",
+        "expected",
+        "description"
+      ],
+      "title": "StateOracle",
+      "type": "object"
+    },
+    "StoppingRule": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "enum": [
+            "stop",
+            "hold",
+            "escalate"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "condition": {
+          "minLength": 1,
+          "title": "Condition",
+          "type": "string"
+        },
+        "rule_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Rule Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rule_id",
+        "condition",
+        "action"
+      ],
+      "title": "StoppingRule",
+      "type": "object"
+    },
+    "ToolFixture": {
+      "additionalProperties": false,
+      "properties": {
+        "contract_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Contract Hash",
+          "type": "string"
+        },
+        "fixture_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Fixture Hash",
+          "type": "string"
+        },
+        "tool_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Tool Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool_id",
+        "fixture_hash",
+        "contract_hash"
+      ],
+      "title": "ToolFixture",
+      "type": "object"
+    },
+    "TreatmentMutation": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Level"
+        },
+        "operation": {
+          "enum": [
+            "set",
+            "enable",
+            "disable",
+            "select"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "target": {
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "target",
+        "operation",
+        "level"
+      ],
+      "title": "TreatmentMutation",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/study-pack.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed_claims": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Allowed Claims",
+      "type": "array"
+    },
+    "authors": {
+      "items": {
+        "$ref": "#/$defs/PackAuthor"
+      },
+      "minItems": 1,
+      "title": "Authors",
+      "type": "array"
+    },
+    "compatibility": {
+      "$ref": "#/$defs/CompatibilityRange"
+    },
+    "description": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Description"
+    },
+    "experiments": {
+      "items": {
+        "$ref": "#/$defs/ExperimentSpec"
+      },
+      "title": "Experiments",
+      "type": "array"
+    },
+    "extensions": {
+      "additionalProperties": true,
+      "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+      "title": "Extensions",
+      "type": "object"
+    },
+    "graders": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/GraderSpec"
+      },
+      "title": "Graders",
+      "type": "array"
+    },
+    "harnesses": {
+      "items": {
+        "$ref": "#/$defs/HarnessSpec"
+      },
+      "title": "Harnesses",
+      "type": "array"
+    },
+    "license_spdx": {
+      "minLength": 1,
+      "title": "License Spdx",
+      "type": "string"
+    },
+    "limitations": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Limitations",
+      "type": "array"
+    },
+    "preregistration": {
+      "$ref": "#/$defs/PreregistrationReference"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "scenarios": {
+      "items": {
+        "$ref": "#/$defs/ScenarioSpec"
+      },
+      "title": "Scenarios",
+      "type": "array"
+    },
+    "study_pack_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Study Pack Id",
+      "type": "string"
+    },
+    "title": {
+      "minLength": 1,
+      "title": "Title",
+      "type": "string"
+    },
+    "version": {
+      "minLength": 1,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "study_pack_id",
+    "version",
+    "title",
+    "license_spdx",
+    "authors",
+    "compatibility",
+    "allowed_claims",
+    "limitations",
+    "preregistration",
+    "scenarios",
+    "harnesses",
+    "experiments"
+  ],
+  "title": "StudyPack",
+  "type": "object"
+}

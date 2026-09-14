@@ -1,0 +1,1 @@
+.sa-review { display:grid; gap:16px }.sa-review-field,.sa-review-scores label { display:grid; gap:6px; margin:10px 0 }.sa-review-field textarea,.sa-review-content { min-height:10rem; max-height:28rem; overflow:auto; white-space:pre-wrap }.sa-review-scores { display:grid; gap:10px }.sa-review-scores small { color:var(--sa-text-muted) }

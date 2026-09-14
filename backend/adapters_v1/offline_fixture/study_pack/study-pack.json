@@ -1,0 +1,217 @@
+{
+  "protocol_version": "1.0",
+  "study_pack_id": "offline-demo-v1",
+  "version": "1.0.0",
+  "title": "Offline synthetic StudyPack demonstration",
+  "license_spdx": "MIT",
+  "authors": [{"name": "Scaffold Arena"}],
+  "compatibility": {"protocol_min": "1.0", "protocol_max": "1.0"},
+  "allowed_claims": [
+    "Synthetic recorded-fixture demonstration only.",
+    "Local protocol import, freeze, expansion, and deterministic-control behavior only."
+  ],
+  "limitations": [
+    "This pack contains no provider invocation, live benchmark result, cost observation, latency observation, or causal conclusion.",
+    "Recorded fixtures establish deterministic contract behavior only; integrity does not establish truth."
+  ],
+  "preregistration": {
+    "reference_uri": "fixtures/preregistration.md",
+    "content_hash": "f73e9807dc9ea3337f3847c297c677fc67257379c21c4b12646442cb41971312"
+  },
+  "description": "A bundled, non-executing demonstration using synthetic recorded fixtures and the protocol-v1 P/V/R/M factor contract.",
+  "scenarios": [
+    {
+      "scenario_id": "candidate-clean",
+      "title": "Synthetic clean candidate",
+      "task_family": "offline_fixture",
+      "prompt": "SYNTHETIC FIXTURE. Return JSON with answer P0-OK and status completed. No live-provider claim is permitted.",
+      "source_label": "synthetic",
+      "data_classification": "synthetic",
+      "control_role": "candidate",
+      "cluster_id": "offline-p0",
+      "variant": "clean",
+      "pair_id": "offline-p0-pair",
+      "paired_scenario_id": "candidate-stress",
+      "initial_state": {"state_id": "offline-p0-initial", "snapshot_hash": "d4aa2a7a16472b0270ba5914477268e0aaf6e647794bac753e1bdf78f7f066fd"},
+      "reference_solution": {"reference_id": "offline-p0-reference", "artifact_hash": "71d34b3048d80958c26ffdbac13e24353a6a26f651b5699bf69242eb8069ec21", "solvability_proof": "The required values appear in fixtures/sources/synthetic-briefing.json and the matching response is stored at fixtures/reference-solutions/expected-response.json."},
+      "evidence_sources": [{"source_id": "offline-p0-source", "source_uri": "fixtures/sources/synthetic-briefing.json", "content_hash": "52a0ca7eb55be574c6f2937171703a6a33608e78fcd396f7af00c5ef33737e20", "classification": "synthetic"}],
+      "output_contract": {"schema_hash": "eba728be911092a219860b56f927e75ac8818c11ee95f95f96b0db0248269ebd", "format": "json", "description": "fixtures/contracts/response.schema.json; return the synthetic answer and status fields."},
+      "allowed_claims": ["Synthetic recorded-fixture comparison only."],
+      "limitations": ["No live-provider or causal-performance claim is licensed."],
+      "final_state_oracle": {"oracle_id": "offline-p0-state", "kind": "predicate", "expected": {"case_state": "completed"}, "description": "Recorded evaluation context must retain the synthetic completed state."},
+      "deterministic_metrics": [
+        {"metric_id": "exact-response", "weight": 0.7, "oracle": "exact-response"},
+        {"metric_id": "fixture-claim-guard", "weight": 0.15, "oracle": "fixture-claim-guard"},
+        {"metric_id": "final-state", "weight": 0.15, "oracle": "final-state"}
+      ],
+      "severe_failure_rules": [{"rule_id": "fixture-claim-ceiling-breach", "condition": "Output asserts forbidden live-provider evidence.", "consequence": "Set mission success to zero and retain the fixture-only claim ceiling."}],
+      "tags": ["synthetic", "offline", "fixture-only"]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "title": "Synthetic stressed candidate",
+      "task_family": "offline_fixture",
+      "prompt": "SYNTHETIC FIXTURE. A context fault is scheduled; still return JSON with answer P0-OK and status completed. No live-provider claim is permitted.",
+      "source_label": "synthetic",
+      "data_classification": "synthetic",
+      "control_role": "candidate",
+      "cluster_id": "offline-p0",
+      "variant": "stress",
+      "pair_id": "offline-p0-pair",
+      "paired_scenario_id": "candidate-clean",
+      "fault_metadata": {"fault_id": "synthetic-context-noise", "category": "context", "description": "A recorded synthetic distractor is present.", "expected_recovery": "Retain the labelled synthetic answer and completed final state."},
+      "fault_schedule": [{"fault_id": "synthetic-context-noise", "trigger": "request", "ordinal": 0, "description": "Inject only the recorded synthetic distractor at request start."}],
+      "initial_state": {"state_id": "offline-p0-initial", "snapshot_hash": "d4aa2a7a16472b0270ba5914477268e0aaf6e647794bac753e1bdf78f7f066fd"},
+      "reference_solution": {"reference_id": "offline-p0-reference", "artifact_hash": "71d34b3048d80958c26ffdbac13e24353a6a26f651b5699bf69242eb8069ec21", "solvability_proof": "The required values appear in fixtures/sources/synthetic-briefing.json and the matching response is stored at fixtures/reference-solutions/expected-response.json."},
+      "evidence_sources": [{"source_id": "offline-p0-source", "source_uri": "fixtures/sources/synthetic-briefing.json", "content_hash": "52a0ca7eb55be574c6f2937171703a6a33608e78fcd396f7af00c5ef33737e20", "classification": "synthetic"}],
+      "output_contract": {"schema_hash": "eba728be911092a219860b56f927e75ac8818c11ee95f95f96b0db0248269ebd", "format": "json", "description": "fixtures/contracts/response.schema.json; return the synthetic answer and status fields."},
+      "allowed_claims": ["Synthetic recorded-fixture comparison only."],
+      "limitations": ["The scheduled fault is not a real runtime fault injection."],
+      "final_state_oracle": {"oracle_id": "offline-p0-state", "kind": "predicate", "expected": {"case_state": "completed"}, "description": "Recorded evaluation context must retain the synthetic completed state."},
+      "deterministic_metrics": [
+        {"metric_id": "exact-response", "weight": 0.7, "oracle": "exact-response"},
+        {"metric_id": "fixture-claim-guard", "weight": 0.15, "oracle": "fixture-claim-guard"},
+        {"metric_id": "final-state", "weight": 0.15, "oracle": "final-state"}
+      ],
+      "severe_failure_rules": [{"rule_id": "fixture-claim-ceiling-breach", "condition": "Output asserts forbidden live-provider evidence.", "consequence": "Set mission success to zero and retain the fixture-only claim ceiling."}],
+      "tags": ["synthetic", "offline", "fixture-only", "stress"]
+    },
+    {
+      "scenario_id": "positive-control",
+      "title": "Synthetic positive control",
+      "task_family": "offline_fixture",
+      "prompt": "SYNTHETIC CONTROL. Return the declared synthetic response.",
+      "source_label": "synthetic",
+      "data_classification": "synthetic",
+      "control_role": "positive",
+      "reference_solution": {"reference_id": "offline-p0-reference", "artifact_hash": "71d34b3048d80958c26ffdbac13e24353a6a26f651b5699bf69242eb8069ec21", "solvability_proof": "The expected fixture is at fixtures/outputs/positive-control.json."},
+      "evidence_sources": [{"source_id": "offline-p0-source", "source_uri": "fixtures/sources/synthetic-briefing.json", "content_hash": "52a0ca7eb55be574c6f2937171703a6a33608e78fcd396f7af00c5ef33737e20", "classification": "synthetic"}],
+      "output_contract": {"schema_hash": "eba728be911092a219860b56f927e75ac8818c11ee95f95f96b0db0248269ebd", "format": "json", "description": "fixtures/contracts/response.schema.json."},
+      "final_state_oracle": {"oracle_id": "offline-p0-state", "kind": "predicate", "expected": {"case_state": "completed"}, "description": "Recorded evaluation context must retain the synthetic completed state."},
+      "deterministic_metrics": [{"metric_id": "exact-response", "weight": 0.7, "oracle": "exact-response"}, {"metric_id": "fixture-claim-guard", "weight": 0.15, "oracle": "fixture-claim-guard"}, {"metric_id": "final-state", "weight": 0.15, "oracle": "final-state"}]
+    },
+    {
+      "scenario_id": "negative-control",
+      "title": "Synthetic negative control",
+      "task_family": "offline_fixture",
+      "prompt": "SYNTHETIC CONTROL. This recorded output deliberately violates the answer and final-state expectations.",
+      "source_label": "synthetic",
+      "data_classification": "synthetic",
+      "control_role": "negative",
+      "reference_solution": {"reference_id": "offline-p0-reference", "artifact_hash": "71d34b3048d80958c26ffdbac13e24353a6a26f651b5699bf69242eb8069ec21", "solvability_proof": "fixtures/outputs/negative-control.json intentionally differs from the reference response."},
+      "evidence_sources": [{"source_id": "offline-p0-source", "source_uri": "fixtures/sources/synthetic-briefing.json", "content_hash": "52a0ca7eb55be574c6f2937171703a6a33608e78fcd396f7af00c5ef33737e20", "classification": "synthetic"}],
+      "output_contract": {"schema_hash": "eba728be911092a219860b56f927e75ac8818c11ee95f95f96b0db0248269ebd", "format": "json", "description": "fixtures/contracts/response.schema.json."},
+      "final_state_oracle": {"oracle_id": "offline-p0-state", "kind": "predicate", "expected": {"case_state": "failed"}, "description": "The deliberately broken recorded context remains failed."},
+      "deterministic_metrics": [{"metric_id": "exact-response", "weight": 0.7, "oracle": "exact-response"}, {"metric_id": "fixture-claim-guard", "weight": 0.15, "oracle": "fixture-claim-guard"}, {"metric_id": "final-state", "weight": 0.15, "oracle": "final-state"}]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "title": "Synthetic anti-cheat control",
+      "task_family": "offline_fixture",
+      "prompt": "SYNTHETIC CONTROL. This recorded output has the expected answer but makes a forbidden claim, so the claim guard must fail closed.",
+      "source_label": "synthetic",
+      "data_classification": "synthetic",
+      "control_role": "anti_cheat",
+      "reference_solution": {"reference_id": "offline-p0-reference", "artifact_hash": "71d34b3048d80958c26ffdbac13e24353a6a26f651b5699bf69242eb8069ec21", "solvability_proof": "fixtures/outputs/anti-cheat-control.json includes the forbidden claim token despite matching answer fields."},
+      "evidence_sources": [{"source_id": "offline-p0-source", "source_uri": "fixtures/sources/synthetic-briefing.json", "content_hash": "52a0ca7eb55be574c6f2937171703a6a33608e78fcd396f7af00c5ef33737e20", "classification": "synthetic"}],
+      "output_contract": {"schema_hash": "eba728be911092a219860b56f927e75ac8818c11ee95f95f96b0db0248269ebd", "format": "json", "description": "fixtures/contracts/response.schema.json."},
+      "final_state_oracle": {"oracle_id": "offline-p0-state", "kind": "predicate", "expected": {"case_state": "completed"}, "description": "Recorded evaluation context may be complete, but the claim guard remains binding."},
+      "deterministic_metrics": [{"metric_id": "exact-response", "weight": 0.7, "oracle": "exact-response"}, {"metric_id": "fixture-claim-guard", "weight": 0.15, "oracle": "fixture-claim-guard"}, {"metric_id": "final-state", "weight": 0.15, "oracle": "final-state"}],
+      "severe_failure_rules": [{"rule_id": "fixture-claim-ceiling-breach", "condition": "Output asserts forbidden live-provider evidence.", "consequence": "Set mission success to zero and retain the fixture-only claim ceiling."}]
+    }
+  ],
+  "graders": [
+    {"grader_id": "exact-response", "version": "1", "implementation": "exact_field", "kind": "deterministic", "config": {"expected": {"answer": "P0-OK", "status": "completed"}}, "digest": "3c89bbfa8f884d9d790718cff2668f8c5c307fde441a0cd7093e65a462e549a6"},
+    {"grader_id": "fixture-claim-guard", "version": "1", "implementation": "forbidden_token", "kind": "deterministic", "config": {"forbidden_tokens": ["live-provider", "fabricated-live-result"], "severe_rule_id": "fixture-claim-ceiling-breach"}, "digest": "bb11acf421890dfa2d4767f6bddbba5647f24a86c777be5fc602eb1e4580bc68"},
+    {"grader_id": "final-state", "version": "1", "implementation": "state_oracle", "kind": "deterministic", "config": {"state_key": "case_state", "expected": "completed", "failure_rule_id": "case-state-mismatch"}, "digest": "5f899c294a972b57042b5defb3d7a7f7ae732e390f555fd565c6ad182307fb19"}
+  ],
+  "harnesses": [{
+    "harness_id": "offline-recorded",
+    "version": "1.0.0",
+    "adapter": "recorded",
+    "adapter_identity": "offline-demo-fixture",
+    "adapter_digest": "c851d3b117f63028a13d467d52cae0c88589320b307745b0460c25d3e62d291f",
+    "timeout_seconds": 5,
+    "retries": 0,
+    "configuration": {
+      "fixture_mode": "offline-demo-v1",
+      "fixture_truth_table_sha256": "92587ad86a7623b55b57fe1efcd5b4d84da907dd729e30be0ee719a7886c738d",
+      "recorded_usage": {
+        "authority": "bundled-offline-demo-v1",
+        "evidence_source": "fixture_recorded",
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "context_tokens": 0,
+        "tool_calls": 0,
+        "actual_cost_usd": 0.0
+      }
+    },
+    "effective_configuration_hash": "5cb37b14885738185e80e26ea93ed8837f504bf4313b1e714a02d6459c70592a",
+    "capabilities": {"state": true, "checkpoint": true, "memory": true, "usage": true},
+    "execution_mode": "recorded",
+    "isolation": "none",
+    "claim_eligibility": "fixture_only"
+  }],
+  "experiments": [{
+    "experiment_id": "offline-p0-pvrm",
+    "study_pack_id": "offline-demo-v1",
+    "scenario_ids": ["candidate-clean", "candidate-stress", "positive-control", "negative-control", "anti-cheat-control"],
+    "harness_ids": ["offline-recorded"],
+    "questions": ["How do declared P/V/R/M scaffold assignments behave against synthetic recorded controls?"],
+    "hypotheses": ["This pack makes no live or causal performance hypothesis; it only exercises protocol declarations and deterministic controls."],
+    "model_endpoints": [{"endpoint_id": "recorded-fixture", "provider": "recorded", "model": "offline-demo-v1", "endpoint_digest": "5146f853f4be70353ce768cca1a57d7e653ef2a15da5bf26bccd7b8c2175080a"}],
+    "sampling": {"temperature": 0.0, "top_p": 1.0, "max_tokens": 64},
+    "repetitions": 1,
+    "randomization_seed": 0,
+    "budgets": {"max_attempts": 80, "max_cost_usd": 0.0, "max_latency_seconds": 5.0, "max_tokens": 64, "max_tool_calls": 0, "max_context_tokens": 2048},
+    "aggregate_budget": {"max_total_cost_usd": 0.0, "max_total_tokens": 5120, "max_total_tool_calls": 0, "max_wall_time_seconds": 400.0, "max_attempts": 80},
+    "factors": [
+      {"factor_id": "planning", "kind": "binary", "levels": [false, true], "baseline": false, "description": "Explicit plan artifact with validated transitions.", "treatment_mutations": [{"target": "planning", "operation": "enable", "level": true}], "declarative_config": {"mechanism": "planning", "compute_units": 2, "context_bytes": 1024}, "fixed_infrastructure": {"runtime": "factors_v1", "runtime_state": "not_run"}, "prohibited_co_mutations": ["provider", "model", "sampling", "task_prompt", "evaluator"], "manipulation_checks": [{"factor_id": "planning", "expected_value": true, "oracle": "planning-delivery"}], "sham_treatment": {"label": "planning-matched-sham", "description": "Compute/context-matched sham; it establishes delivery only, not outcome causality.", "levels": [false]}, "capability_requirements": [{"capability": "state", "required": true}]},
+      {"factor_id": "verification", "kind": "binary", "levels": [false, true], "baseline": false, "description": "Agent-side evidence-linked pre-finalization verification.", "treatment_mutations": [{"target": "verification", "operation": "enable", "level": true}], "declarative_config": {"mechanism": "verification", "compute_units": 2, "context_bytes": 1024}, "fixed_infrastructure": {"runtime": "factors_v1", "runtime_state": "not_run"}, "prohibited_co_mutations": ["provider", "model", "sampling", "task_prompt", "evaluator"], "manipulation_checks": [{"factor_id": "verification", "expected_value": true, "oracle": "verification-delivery"}], "sham_treatment": {"label": "verification-matched-sham", "description": "Compute/context-matched sham; it establishes delivery only, not outcome causality.", "levels": [false]}, "capability_requirements": [{"capability": "state", "required": true}]},
+      {"factor_id": "recovery", "kind": "binary", "levels": [false, true], "baseline": false, "description": "Declared-transient checkpoint recovery controls.", "treatment_mutations": [{"target": "recovery", "operation": "enable", "level": true}], "declarative_config": {"mechanism": "recovery", "compute_units": 2, "context_bytes": 1024}, "fixed_infrastructure": {"runtime": "factors_v1", "runtime_state": "not_run"}, "prohibited_co_mutations": ["provider", "model", "sampling", "task_prompt", "evaluator"], "manipulation_checks": [{"factor_id": "recovery", "expected_value": true, "oracle": "recovery-delivery"}], "sham_treatment": {"label": "recovery-matched-sham", "description": "Compute/context-matched sham; it establishes delivery only, not outcome causality.", "levels": [false]}, "capability_requirements": [{"capability": "checkpoint", "required": true}]},
+      {"factor_id": "memory", "kind": "binary", "levels": [false, true], "baseline": false, "description": "Bounded within-episode sourced memory.", "treatment_mutations": [{"target": "memory", "operation": "enable", "level": true}], "declarative_config": {"mechanism": "memory", "compute_units": 2, "context_bytes": 1024}, "fixed_infrastructure": {"runtime": "factors_v1", "runtime_state": "not_run"}, "prohibited_co_mutations": ["provider", "model", "sampling", "task_prompt", "evaluator"], "manipulation_checks": [{"factor_id": "memory", "expected_value": true, "oracle": "memory-delivery"}], "sham_treatment": {"label": "memory-matched-sham", "description": "Compute/context-matched sham; it establishes delivery only, not outcome causality.", "levels": [false]}, "capability_requirements": [{"capability": "memory", "required": true}]}
+    ],
+    "design": "full",
+    "deterministic_weight": 1.0,
+    "primary_outcomes": ["exact-response", "fixture-claim-guard", "final-state"],
+    "adequacy_rule": {"minimum_completed_attempts": 80, "required_balance": true, "rationale": "All 16 P/V/R/M arms across the five recorded synthetic scenarios are required for the offline demonstration."},
+    "claim_ceiling": "Synthetic recorded fixtures only; no provider, empirical, causal, deployment, or product claim.",
+    "claim_bearing": false,
+    "owner_approval": "approved",
+    "extensions": {
+      "org.scaffold-arena.analysis-v1": {
+        "registered_factors": [
+          {"factor_id": "planning", "levels": [false, true]},
+          {"factor_id": "verification", "levels": [false, true]},
+          {"factor_id": "recovery", "levels": [false, true]},
+          {"factor_id": "memory", "levels": [false, true]}
+        ],
+        "primary_main_effects": [
+          {"effect_id": "planning_fixture_difference", "factor_id": "planning", "control_level": false, "treatment_level": true, "outcome": "success"},
+          {"effect_id": "verification_fixture_difference", "factor_id": "verification", "control_level": false, "treatment_level": true, "outcome": "success"},
+          {"effect_id": "recovery_fixture_difference", "factor_id": "recovery", "control_level": false, "treatment_level": true, "outcome": "success"},
+          {"effect_id": "memory_fixture_difference", "factor_id": "memory", "control_level": false, "treatment_level": true, "outcome": "success"}
+        ],
+        "secondary_interactions": [
+          {"interaction_id": "planning_verification_fixture_interaction", "factor_a": "planning", "control_a": false, "treatment_a": true, "factor_b": "verification", "control_b": false, "treatment_b": true, "outcome": "success", "minimum_effective_pairs": 2, "minimum_clusters": 2}
+        ],
+        "gates": {
+          "preregistered_design": true,
+          "comparison_invariants_pass": true,
+          "minimum_manipulation_fidelity": 0.95,
+          "minimum_trace_completeness": 0.95,
+          "require_evaluator_independence": true,
+          "require_held_out_tasks": true,
+          "external_fitter_receipt": null
+        },
+        "options": {
+          "pass_k": 2,
+          "bootstrap_resamples": 2,
+          "bootstrap_seed": 0,
+          "minimum_clusters": 2
+        }
+      }
+    }
+  }]
+}

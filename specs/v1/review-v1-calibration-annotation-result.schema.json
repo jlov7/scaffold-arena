@@ -1,0 +1,55 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/review-v1-calibration-annotation-result.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Portable, protocol-v1 annotation record for the release-facing packet.",
+  "properties": {
+    "annotator_pseudonym": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Annotator Pseudonym",
+      "type": "string"
+    },
+    "assignment_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Assignment Id",
+      "type": "string"
+    },
+    "blind_to_scaffold": {
+      "const": true,
+      "default": true,
+      "title": "Blind To Scaffold",
+      "type": "boolean"
+    },
+    "dimension_scores": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "minProperties": 1,
+      "title": "Dimension Scores",
+      "type": "object"
+    },
+    "run_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "target_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Target Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "target_id",
+    "run_id",
+    "assignment_id",
+    "annotator_pseudonym",
+    "dimension_scores"
+  ],
+  "title": "CalibrationAnnotationResult",
+  "type": "object"
+}

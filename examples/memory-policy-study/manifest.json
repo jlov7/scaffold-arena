@@ -1,0 +1,27 @@
+{
+  "schema_version": "scaffold-arena.public-example/1",
+  "example_id": "memory-policy-study",
+  "status": "PASS",
+  "run": {
+    "cwd": "repository-root",
+    "command": "uv run --project backend arena demo --path /tmp/scaffold-arena-memory-policy-study",
+    "expected_exit_code": 0,
+    "output": "/tmp/scaffold-arena-memory-policy-study"
+  },
+  "inputs": [
+    {"path": "study_packs/offline-demo-v1/study-pack.json", "role": "synthetic P/V/R/M StudyPack"},
+    {"path": "study_packs/offline-demo-v1/fixtures/runtime-truth-table.json", "role": "80-row recorded truth table"}
+  ],
+  "expected": {
+    "verdict": "PASS",
+    "mode": "verified_fixture_replay",
+    "evidence_class": "fixture",
+    "study_pack": "offline-demo-v1@1.0.0",
+    "verified_truth_table_rows": 80,
+    "provider_execution_started": false
+  },
+  "evidence_ceiling": "Bundled recorded fixture and protocol validation only; no memory, model, empirical, causal, generalization, or live-provider claim.",
+  "focused_test": "backend/tests/examples_v1/test_public_examples.py::test_memory_policy_example_keeps_fixture_ceiling",
+  "cleanup": ["rm -rf /tmp/scaffold-arena-memory-policy-study"],
+  "pinned_screenshot": {"status": "HOLD", "reason": "No dedicated memory-effect capture is claimed; product-tour Study Canvas evidence remains synthetic and limitation-labelled."}
+}

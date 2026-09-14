@@ -1,0 +1,66 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/episode.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "episode_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Episode Id",
+      "type": "string"
+    },
+    "experiment_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Experiment Id",
+      "type": "string"
+    },
+    "harness_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Harness Id",
+      "type": "string"
+    },
+    "protocol_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "scenario_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Scenario Id",
+      "type": "string"
+    },
+    "seed": {
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "treatment": {
+      "patternProperties": {
+        "^[a-z][a-z0-9_-]{1,127}$": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ]
+        }
+      },
+      "title": "Treatment",
+      "type": "object"
+    }
+  },
+  "required": [
+    "episode_id",
+    "experiment_id",
+    "scenario_id",
+    "harness_id",
+    "seed"
+  ],
+  "title": "Episode",
+  "type": "object"
+}

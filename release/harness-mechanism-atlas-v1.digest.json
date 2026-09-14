@@ -1,0 +1,61 @@
+{
+  "atlas_id": "harness-mechanism-atlas-v1",
+  "canonicalization": "arena-json-v1",
+  "entries": [
+    {
+      "path": "backend/genome_v1/atlas.py",
+      "sha256": "sha256:b9c90b2598df507c7ea2c8c9c45de16d88d421c1533058879908518425722624"
+    },
+    {
+      "path": "backend/genome_v1/__init__.py",
+      "sha256": "sha256:f5d661b0efcac2f6e59b798df89dba4b64669c042553e85d5e8828e8a4782e94"
+    },
+    {
+      "path": "backend/genome_v1/data/harness_mechanism_atlas_v1.json",
+      "sha256": "sha256:b16986f91e107d93270b6fe797a4ce861ffc617110e129cf957fe100f449222f"
+    },
+    {
+      "path": "backend/genome_v1/data/harness_mechanism_atlas_citations_v1.json",
+      "sha256": "sha256:8361c22a7cf877de41f433f92c8faa06793bb45d97990caea157c18962bbd5ce"
+    },
+    {
+      "path": "backend/genome_v1/data/standards_catalog_v1.json",
+      "sha256": "sha256:d92eee2f6781779bf7917a020e0bf3a095f38e8012e9302b01f9adea99ac60d8"
+    },
+    {
+      "path": "specs/v1/harness-mechanism-atlas.schema.json",
+      "sha256": "sha256:591ddab60c5731b41064d29390ee8d113dfabf27b83498716fa21a86e3e2c117"
+    },
+    {
+      "path": "specs/v1/harness-mechanism-atlas-citation-manifest.schema.json",
+      "sha256": "sha256:caf003dc47ebe040b5fbabefe054675808def6f0a92dbed42c974a37595a6ed5"
+    },
+    {
+      "path": "specs/v1/harness-mechanism-atlas-release-digest.schema.json",
+      "sha256": "sha256:a49374e69d3597914ca374ccda050c5afbeb7fc1e0af717e10636ce0fdbf72a2"
+    },
+    {
+      "path": "scripts/generate-harness-mechanism-atlas.py",
+      "sha256": "sha256:e45416f99b1552311ddd7d029677d99a82f705bf0322a9c8708efebe8e907020"
+    },
+    {
+      "path": "scripts/validate-harness-mechanism-atlas.py",
+      "sha256": "sha256:7f024181ba4959c5d2a7738cc41af5bc16bc25e204b7aa4daa12b98384571e6d"
+    },
+    {
+      "path": "backend/tests/genome_v1/test_atlas_v1.py",
+      "sha256": "sha256:41310aa4262b1e79605530630f9f7bce6586e4eb124de084d7f4c2c17b0d3d4a"
+    },
+    {
+      "path": "scripts/tests/test_harness_mechanism_atlas.py",
+      "sha256": "sha256:6d0178f053e4d4ddec56cbcd88d882bae140ee7b1c954af19b8a6d54ce62b4ea"
+    },
+    {
+      "path": "docs/harness-mechanism-atlas-v1.md",
+      "sha256": "sha256:676c9e4c3eb44e8af866687a101f1413c8927f9a298a3d43616f528baa0489ef"
+    }
+  ],
+  "release_digest": "sha256:8a1290143894c610046ccfdc3b32941a5cb846f9c7c8b21c40906227916a4376",
+  "release_digest_schema": "scaffold-arena.harness-mechanism-atlas-release-digest/1",
+  "source_date": "2026-08-18"
+}

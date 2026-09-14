@@ -1,0 +1,34 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/review-v1-annotation-submission.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "annotator_pseudonym": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Annotator Pseudonym",
+      "type": "string"
+    },
+    "assignment_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Assignment Id",
+      "type": "string"
+    },
+    "dimension_scores": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "minProperties": 1,
+      "title": "Dimension Scores",
+      "type": "object"
+    }
+  },
+  "required": [
+    "assignment_id",
+    "annotator_pseudonym",
+    "dimension_scores"
+  ],
+  "title": "AnnotationSubmission",
+  "type": "object"
+}

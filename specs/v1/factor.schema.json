@@ -1,0 +1,423 @@
+{
+  "$defs": {
+    "CapabilityRequirement": {
+      "additionalProperties": false,
+      "properties": {
+        "capability": {
+          "enum": [
+            "tools",
+            "state",
+            "checkpoint",
+            "memory",
+            "delegation",
+            "streaming",
+            "usage",
+            "sandboxing"
+          ],
+          "title": "Capability",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "capability"
+      ],
+      "title": "CapabilityRequirement",
+      "type": "object"
+    },
+    "IncompatibleLevelCombination": {
+      "additionalProperties": false,
+      "properties": {
+        "assignments": {
+          "patternProperties": {
+            "^[a-z][a-z0-9_-]{1,127}$": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "boolean"
+                }
+              ]
+            }
+          },
+          "title": "Assignments",
+          "type": "object"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assignments",
+        "reason"
+      ],
+      "title": "IncompatibleLevelCombination",
+      "type": "object"
+    },
+    "ManipulationCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Expected Value"
+        },
+        "factor_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Factor Id",
+          "type": "string"
+        },
+        "oracle": {
+          "minLength": 1,
+          "title": "Oracle",
+          "type": "string"
+        }
+      },
+      "required": [
+        "factor_id",
+        "expected_value",
+        "oracle"
+      ],
+      "title": "ManipulationCheck",
+      "type": "object"
+    },
+    "ShamTreatment": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "label": {
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "levels": {
+          "default": [],
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "title": "Levels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "label",
+        "description"
+      ],
+      "title": "ShamTreatment",
+      "type": "object"
+    },
+    "TreatmentMutation": {
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "title": "Level"
+        },
+        "operation": {
+          "enum": [
+            "set",
+            "enable",
+            "disable",
+            "select"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "target": {
+          "minLength": 1,
+          "title": "Target",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Value"
+        }
+      },
+      "required": [
+        "target",
+        "operation",
+        "level"
+      ],
+      "title": "TreatmentMutation",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/factor.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "baseline": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Baseline"
+    },
+    "capability_requirements": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/CapabilityRequirement"
+      },
+      "title": "Capability Requirements",
+      "type": "array"
+    },
+    "declarative_config": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Declarative Config",
+      "type": "object"
+    },
+    "description": {
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "expected_benefit": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Benefit"
+    },
+    "expected_tax": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Tax"
+    },
+    "extensions": {
+      "additionalProperties": true,
+      "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+      "title": "Extensions",
+      "type": "object"
+    },
+    "factor_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Factor Id",
+      "type": "string"
+    },
+    "falsifying_result": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Falsifying Result"
+    },
+    "fixed_infrastructure": {
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Fixed Infrastructure",
+      "type": "object"
+    },
+    "incompatible_level_combinations": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/IncompatibleLevelCombination"
+      },
+      "title": "Incompatible Level Combinations",
+      "type": "array"
+    },
+    "incompatible_with": {
+      "default": [],
+      "items": {
+        "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+        "type": "string"
+      },
+      "title": "Incompatible With",
+      "type": "array"
+    },
+    "kind": {
+      "enum": [
+        "binary",
+        "categorical",
+        "ordinal"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "levels": {
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "Levels",
+      "type": "array"
+    },
+    "manipulation_checks": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ManipulationCheck"
+      },
+      "title": "Manipulation Checks",
+      "type": "array"
+    },
+    "no_op_levels": {
+      "default": [],
+      "items": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "integer"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      },
+      "title": "No Op Levels",
+      "type": "array"
+    },
+    "prohibited_co_mutations": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Prohibited Co Mutations",
+      "type": "array"
+    },
+    "sham_treatment": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ShamTreatment"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "treatment_mutations": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/TreatmentMutation"
+      },
+      "title": "Treatment Mutations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "factor_id",
+    "kind",
+    "levels",
+    "description"
+  ],
+  "title": "FactorSpec",
+  "type": "object"
+}

@@ -1,0 +1,27 @@
+{
+  "schema_version": "scaffold-arena.public-example/1",
+  "example_id": "recovery-fault-injection",
+  "status": "PASS",
+  "run": {
+    "cwd": "repository-root",
+    "command": "uv run --project backend python scripts/check-lifecycle-model.py --depth 8 --generations 2",
+    "expected_exit_code": 0,
+    "output": "stdout (JSON)"
+  },
+  "inputs": [
+    {"path": "scripts/check-lifecycle-model.py", "role": "bounded checker"},
+    {"path": "backend/execution_v1/formal_model.py", "role": "finite lifecycle model"},
+    {"path": "scripts/tests/test_lifecycle_model.py", "role": "checker tests"},
+    {"path": "backend/tests/execution_v1/test_lifecycle_formal_model.py", "role": "model tests"}
+  ],
+  "expected": {
+    "status": "pass",
+    "provider_execution_started": false,
+    "network_requested": false,
+    "real_fault_injected": false
+  },
+  "evidence_ceiling": "Bounded engineering state model and tests only; not production recovery, fault-injection, availability, durability, security, or independent assurance.",
+  "focused_test": "backend/tests/examples_v1/test_public_examples.py::test_recovery_example_runs_bounded_model",
+  "cleanup": [],
+  "pinned_screenshot": {"status": "HOLD", "reason": "A model PASS is not a recovery result; no dedicated fault-injection screenshot is claimed."}
+}

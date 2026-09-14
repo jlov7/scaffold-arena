@@ -1,0 +1,114 @@
+{
+  "schema_version": "0.1",
+  "generated_at": "2026-05-23T00:00:00Z",
+  "mode": "fixture_statistical_audit",
+  "run_count": 54,
+  "task_families": [
+    "extraction",
+    "privacy",
+    "research",
+    "risk",
+    "strategy",
+    "tool_use"
+  ],
+  "bootstrap_seed": 20260523,
+  "bootstrap_samples": 2000,
+  "minimum_required_separation_points": 20,
+  "all_families_pass": true,
+  "families": [
+    {
+      "task_family": "extraction",
+      "positive_n": 3,
+      "negative_n": 6,
+      "positive_mean": 92.5,
+      "negative_mean": 47.15,
+      "separation_points": 45.35,
+      "bootstrap_ci95": {
+        "low": 22.72,
+        "high": 67.98
+      },
+      "cohen_d": 1.443,
+      "probability_superiority": 1.0,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "privacy",
+      "positive_n": 3,
+      "negative_n": 6,
+      "positive_mean": 100.0,
+      "negative_mean": 55.6,
+      "separation_points": 44.4,
+      "bootstrap_ci95": {
+        "low": 44.4,
+        "high": 44.4
+      },
+      "cohen_d": null,
+      "probability_superiority": 1.0,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "research",
+      "positive_n": 3,
+      "negative_n": 6,
+      "positive_mean": 100.0,
+      "negative_mean": 53.4,
+      "separation_points": 46.6,
+      "bootstrap_ci95": {
+        "low": 36.13,
+        "high": 57.07
+      },
+      "cohen_d": 3.206,
+      "probability_superiority": 1.0,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "risk",
+      "positive_n": 3,
+      "negative_n": 6,
+      "positive_mean": 97.4,
+      "negative_mean": 11.8,
+      "separation_points": 85.6,
+      "bootstrap_ci95": {
+        "low": 85.6,
+        "high": 85.6
+      },
+      "cohen_d": null,
+      "probability_superiority": 1.0,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "strategy",
+      "positive_n": 3,
+      "negative_n": 6,
+      "positive_mean": 100.0,
+      "negative_mean": 50.25,
+      "separation_points": 49.75,
+      "bootstrap_ci95": {
+        "low": 45.85,
+        "high": 53.65
+      },
+      "cohen_d": 9.186,
+      "probability_superiority": 1.0,
+      "passes_minimum": true
+    },
+    {
+      "task_family": "tool_use",
+      "positive_n": 3,
+      "negative_n": 6,
+      "positive_mean": 100.0,
+      "negative_mean": 53.9,
+      "separation_points": 46.1,
+      "bootstrap_ci95": {
+        "low": 39.43,
+        "high": 52.77
+      },
+      "cohen_d": 4.979,
+      "probability_superiority": 1.0,
+      "passes_minimum": true
+    }
+  ],
+  "limitations": [
+    "This is a statistical audit of deterministic fixture controls, not live provider/model performance.",
+    "It checks whether known-good and known-bad artifacts are separable before live benchmark claims are allowed."
+  ]
+}

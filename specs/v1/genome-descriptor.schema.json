@@ -1,0 +1,922 @@
+{
+  "$defs": {
+    "AcpAgentIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "display_name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Display Name",
+          "type": "string"
+        },
+        "distribution": {
+          "enum": [
+            "binary",
+            "npx",
+            "uvx"
+          ],
+          "title": "Distribution",
+          "type": "string"
+        },
+        "distribution_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Distribution Digest"
+        },
+        "distribution_ref": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Distribution Ref",
+          "type": "string"
+        },
+        "executable_argv": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Executable Argv",
+          "type": "array"
+        },
+        "license_spdx": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Spdx"
+        },
+        "repository_uri": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Repository Uri"
+        },
+        "source_snapshot": {
+          "$ref": "#/$defs/AcpRegistrySnapshot"
+        },
+        "version": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "agent_id",
+        "display_name",
+        "version",
+        "distribution",
+        "distribution_ref",
+        "executable_argv",
+        "source_snapshot"
+      ],
+      "title": "AcpAgentIdentity",
+      "type": "object"
+    },
+    "AcpBridgePolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "elicitation": {
+          "default": "deny",
+          "enum": [
+            "deny",
+            "human_pending"
+          ],
+          "title": "Elicitation",
+          "type": "string"
+        },
+        "filesystem": {
+          "default": "deny",
+          "enum": [
+            "deny",
+            "workspace_only"
+          ],
+          "title": "Filesystem",
+          "type": "string"
+        },
+        "home_root_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Home Root Digest",
+          "type": "string"
+        },
+        "max_artifact_bytes": {
+          "maximum": 10000000000,
+          "minimum": 0,
+          "title": "Max Artifact Bytes",
+          "type": "integer"
+        },
+        "max_event_count": {
+          "maximum": 10000000,
+          "minimum": 1,
+          "title": "Max Event Count",
+          "type": "integer"
+        },
+        "max_idle_seconds": {
+          "maximum": 86400,
+          "minimum": 1,
+          "title": "Max Idle Seconds",
+          "type": "integer"
+        },
+        "max_memory_bytes": {
+          "default": 536870912,
+          "maximum": 137438953472,
+          "minimum": 16777216,
+          "title": "Max Memory Bytes",
+          "type": "integer"
+        },
+        "max_message_bytes": {
+          "maximum": 100000000,
+          "minimum": 1,
+          "title": "Max Message Bytes",
+          "type": "integer"
+        },
+        "max_processes": {
+          "default": 16,
+          "maximum": 256,
+          "minimum": 1,
+          "title": "Max Processes",
+          "type": "integer"
+        },
+        "max_stderr_bytes": {
+          "maximum": 1000000000,
+          "minimum": 0,
+          "title": "Max Stderr Bytes",
+          "type": "integer"
+        },
+        "max_stdout_bytes": {
+          "maximum": 1000000000,
+          "minimum": 0,
+          "title": "Max Stdout Bytes",
+          "type": "integer"
+        },
+        "max_wall_time_seconds": {
+          "maximum": 86400,
+          "minimum": 1,
+          "title": "Max Wall Time Seconds",
+          "type": "integer"
+        },
+        "permission_requests": {
+          "default": "deny",
+          "enum": [
+            "deny",
+            "human_pending"
+          ],
+          "title": "Permission Requests",
+          "type": "string"
+        },
+        "protocol_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Protocol Version",
+          "type": "string"
+        },
+        "terminal": {
+          "default": "deny",
+          "enum": [
+            "deny",
+            "isolated_only"
+          ],
+          "title": "Terminal",
+          "type": "string"
+        },
+        "transport": {
+          "const": "stdio",
+          "default": "stdio",
+          "title": "Transport",
+          "type": "string"
+        },
+        "workspace_root_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Workspace Root Digest",
+          "type": "string"
+        },
+        "xdg_roots_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Xdg Roots Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "max_wall_time_seconds",
+        "max_idle_seconds",
+        "max_message_bytes",
+        "max_event_count",
+        "max_stdout_bytes",
+        "max_stderr_bytes",
+        "max_artifact_bytes",
+        "home_root_digest",
+        "xdg_roots_digest",
+        "workspace_root_digest"
+      ],
+      "title": "AcpBridgePolicy",
+      "type": "object"
+    },
+    "AcpRegistrySnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "agent_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 256,
+          "minItems": 1,
+          "title": "Agent Ids",
+          "type": "array"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "content_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Content Digest",
+          "type": "string"
+        },
+        "registry_schema_version": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Registry Schema Version",
+          "type": "string"
+        },
+        "registry_uri": {
+          "const": "https://cdn.agentclientprotocol.com/registry/v1/latest/registry.json",
+          "title": "Registry Uri",
+          "type": "string"
+        },
+        "source_revision": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Revision"
+        }
+      },
+      "required": [
+        "registry_uri",
+        "registry_schema_version",
+        "content_digest",
+        "captured_at",
+        "agent_ids"
+      ],
+      "title": "AcpRegistrySnapshot",
+      "type": "object"
+    },
+    "Authority": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_ceiling": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Claim Ceiling",
+          "type": "string"
+        },
+        "exclusions": {
+          "default": [],
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Exclusions",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 128,
+          "minItems": 1,
+          "title": "Limitations",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "declared",
+            "observed",
+            "fixture_verified",
+            "live_observed",
+            "independently_reproduced"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "claim_ceiling",
+        "limitations"
+      ],
+      "title": "Authority",
+      "type": "object"
+    },
+    "Capability": {
+      "additionalProperties": false,
+      "properties": {
+        "capability_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Capability Id",
+          "type": "string"
+        },
+        "domain": {
+          "enum": [
+            "tools",
+            "state",
+            "checkpoint",
+            "memory",
+            "delegation",
+            "streaming",
+            "usage",
+            "sandboxing",
+            "approval",
+            "telemetry",
+            "cancellation",
+            "cleanup"
+          ],
+          "title": "Domain",
+          "type": "string"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "mode": {
+          "enum": [
+            "declared",
+            "observed",
+            "verified",
+            "unsupported",
+            "unknown"
+          ],
+          "title": "Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "capability_id",
+        "domain",
+        "mode"
+      ],
+      "title": "Capability",
+      "type": "object"
+    },
+    "Component": {
+      "additionalProperties": false,
+      "properties": {
+        "capability_ids": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Capability Ids",
+          "type": "array"
+        },
+        "compatibility_requirements": {
+          "default": [],
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Compatibility Requirements",
+          "type": "array"
+        },
+        "component_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Component Id",
+          "type": "string"
+        },
+        "config_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Config Digest"
+        },
+        "kind": {
+          "enum": [
+            "model",
+            "orchestrator",
+            "agent_runtime",
+            "tool_transport",
+            "tool",
+            "memory",
+            "state_store",
+            "checkpoint",
+            "approval_policy",
+            "sandbox",
+            "evaluator",
+            "telemetry",
+            "cli",
+            "adapter",
+            "artifact_store",
+            "ui"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "license_spdx": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Spdx"
+        },
+        "lifecycle": {
+          "enum": [
+            "declared",
+            "observed",
+            "verified"
+          ],
+          "title": "Lifecycle",
+          "type": "string"
+        },
+        "mutability": {
+          "default": "unknown",
+          "enum": [
+            "immutable",
+            "mutable",
+            "unknown"
+          ],
+          "title": "Mutability",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "observability_surfaces": {
+          "default": [],
+          "items": {
+            "enum": [
+              "none",
+              "logs",
+              "metrics",
+              "traces",
+              "events"
+            ],
+            "type": "string"
+          },
+          "title": "Observability Surfaces",
+          "type": "array"
+        },
+        "security_responsibilities": {
+          "default": [],
+          "items": {
+            "enum": [
+              "none",
+              "access_control",
+              "data_boundary",
+              "execution_boundary",
+              "secret_handling"
+            ],
+            "type": "string"
+          },
+          "title": "Security Responsibilities",
+          "type": "array"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SourceBinding"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "version": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        }
+      },
+      "required": [
+        "component_id",
+        "kind",
+        "name",
+        "lifecycle"
+      ],
+      "title": "Component",
+      "type": "object"
+    },
+    "ProtocolBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "protocol_id": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Protocol Id",
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/SourceBinding"
+        },
+        "support_level": {
+          "enum": [
+            "catalog_only",
+            "descriptor_only",
+            "import_only",
+            "fixture_conformance",
+            "observed_adapter",
+            "claim_eligible"
+          ],
+          "title": "Support Level",
+          "type": "string"
+        },
+        "unsupported_claims": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 128,
+          "minItems": 1,
+          "title": "Unsupported Claims",
+          "type": "array"
+        },
+        "version": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "protocol_id",
+        "version",
+        "source",
+        "support_level",
+        "unsupported_claims"
+      ],
+      "title": "ProtocolBinding",
+      "type": "object"
+    },
+    "Relation": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 128,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "object_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Object Id",
+          "type": "string"
+        },
+        "predicate": {
+          "enum": [
+            "contains",
+            "invokes",
+            "delegates_to",
+            "calls",
+            "stores",
+            "emits",
+            "evaluates",
+            "guards",
+            "exports"
+          ],
+          "title": "Predicate",
+          "type": "string"
+        },
+        "relation_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Relation Id",
+          "type": "string"
+        },
+        "subject_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Subject Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "relation_id",
+        "subject_id",
+        "predicate",
+        "object_id"
+      ],
+      "title": "Relation",
+      "type": "object"
+    },
+    "SourceBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "content_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Digest"
+        },
+        "license_spdx": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Spdx"
+        },
+        "provenance": {
+          "enum": [
+            "official_primary",
+            "local_observation",
+            "user_declared",
+            "fixture"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "title": "Retrieved At",
+          "type": "string"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revision"
+        },
+        "source_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Date"
+        },
+        "source_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "uri": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "uri",
+        "retrieved_at",
+        "provenance"
+      ],
+      "title": "SourceBinding",
+      "type": "object"
+    },
+    "Subject": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "harness_stack",
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "name"
+      ],
+      "title": "Subject",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/genome-descriptor.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "A content-addressed harness-stack declaration, never an execution plan.",
+  "properties": {
+    "acp_identity": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AcpAgentIdentity"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "acp_policy": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/AcpBridgePolicy"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "authority": {
+      "$ref": "#/$defs/Authority"
+    },
+    "canonicalization": {
+      "const": "arena-json-v1",
+      "default": "arena-json-v1",
+      "title": "Canonicalization",
+      "type": "string"
+    },
+    "capabilities": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Capability"
+      },
+      "maxItems": 256,
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "components": {
+      "items": {
+        "$ref": "#/$defs/Component"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "title": "Components",
+      "type": "array"
+    },
+    "extensions": {
+      "additionalProperties": true,
+      "description": "Immutable JSON metadata keyed by lowercase reverse-DNS namespaces (for example, org.genome.compatibility).",
+      "title": "Extensions",
+      "type": "object"
+    },
+    "genome_digest": {
+      "anyOf": [
+        {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Genome Digest"
+    },
+    "genome_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Genome Id",
+      "type": "string"
+    },
+    "protocols": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/ProtocolBinding"
+      },
+      "maxItems": 128,
+      "title": "Protocols",
+      "type": "array"
+    },
+    "relations": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/Relation"
+      },
+      "maxItems": 512,
+      "title": "Relations",
+      "type": "array"
+    },
+    "schema": {
+      "const": "scaffold-arena.genome/1",
+      "default": "scaffold-arena.genome/1",
+      "title": "Schema",
+      "type": "string"
+    },
+    "source_bindings": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/SourceBinding"
+      },
+      "maxItems": 256,
+      "title": "Source Bindings",
+      "type": "array"
+    },
+    "subject": {
+      "$ref": "#/$defs/Subject"
+    }
+  },
+  "required": [
+    "genome_id",
+    "subject",
+    "components",
+    "authority"
+  ],
+  "title": "GenomeDescriptor",
+  "type": "object"
+}

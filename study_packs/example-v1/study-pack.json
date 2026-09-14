@@ -1,0 +1,50 @@
+{
+  "protocol_version": "1.0",
+  "study_pack_id": "example-pack",
+  "version": "1.0.0",
+  "title": "Example synthetic clean-stress pack",
+  "license_spdx": "MIT",
+  "authors": [{"name": "Scaffold Arena"}],
+  "compatibility": {"protocol_min": "1.0", "protocol_max": "1.0"},
+  "allowed_claims": ["Synthetic fixture comparison only."],
+  "limitations": ["The example cannot establish live-provider performance or causal truth."],
+  "preregistration": {"reference_uri": "synthetic://example-v1/preregistration", "content_hash": "7777777777777777777777777777777777777777777777777777777777777777"},
+  "description": "A declarative, synthetic protocol-v1 example.",
+  "scenarios": [
+    {
+      "protocol_version": "1.0",
+      "scenario_id": "clean-case",
+      "title": "Clean case",
+      "task_family": "extraction",
+      "prompt": "Extract the explicitly labelled synthetic value.",
+      "data_classification": "synthetic",
+      "cluster_id": "synthetic-cluster",
+      "pair_id": "case-pair",
+      "paired_scenario_id": "stress-case",
+      "initial_state": {"state_id": "initial-state", "snapshot_hash": "0000000000000000000000000000000000000000000000000000000000000000"},
+      "reference_solution": {"reference_id": "reference-answer", "artifact_hash": "1111111111111111111111111111111111111111111111111111111111111111", "solvability_proof": "The labelled synthetic value appears exactly once."},
+      "evidence_sources": [{"source_id": "synthetic-source", "source_uri": "synthetic://example", "content_hash": "2222222222222222222222222222222222222222222222222222222222222222", "classification": "synthetic"}],
+      "output_contract": {"schema_hash": "3333333333333333333333333333333333333333333333333333333333333333", "format": "text", "description": "Return the labelled value only."},
+      "allowed_claims": ["Synthetic fixture comparison only."],
+      "limitations": ["This example does not establish live-provider performance."],
+      "final_state_oracle": {"oracle_id": "value-oracle", "kind": "exact_match", "expected": "42", "description": "Expected synthetic value."},
+      "deterministic_metrics": [{"metric_id": "exactness", "weight": 1.0, "oracle": "value-oracle"}]
+    },
+    {
+      "protocol_version": "1.0",
+      "scenario_id": "stress-case",
+      "title": "Stress case",
+      "task_family": "extraction",
+      "prompt": "Extract the explicitly labelled synthetic value despite noise.",
+      "variant": "stress",
+      "data_classification": "synthetic",
+      "pair_id": "case-pair",
+      "paired_scenario_id": "clean-case",
+      "fault_metadata": {"fault_id": "noise", "category": "context", "description": "Synthetic distractor."},
+      "fault_schedule": [{"fault_id": "noise", "trigger": "start", "description": "Inject a synthetic distractor."}],
+      "final_state_oracle": {"oracle_id": "value-oracle", "kind": "exact_match", "expected": "42", "description": "Expected synthetic value."}
+    }
+  ],
+  "harnesses": [{"protocol_version": "1.0", "harness_id": "recorded-harness", "version": "1.0.0", "adapter": "recorded", "adapter_identity": "scaffold-arena.recorded", "adapter_digest": "4444444444444444444444444444444444444444444444444444444444444444", "capabilities": {"usage": true}, "configuration": {"fixture_mode": "strict"}, "effective_configuration_hash": "b285c86217499f636308e82f108be3990e58231d43737b180e999ab3991adac6", "schema_hashes": {"input_hash": "5555555555555555555555555555555555555555555555555555555555555555", "config_schema_hash": "8888888888888888888888888888888888888888888888888888888888888888"}, "execution_mode": "recorded", "isolation": "process", "claim_eligibility": "fixture_only"}],
+  "experiments": [{"protocol_version": "1.0", "experiment_id": "example-experiment", "study_pack_id": "example-pack", "study_pack_hash": "6666666666666666666666666666666666666666666666666666666666666666", "scenario_ids": ["clean-case", "stress-case"], "harness_ids": ["recorded-harness"], "questions": ["Does this declared mutation change synthetic extraction outcomes?"], "hypotheses": ["The mutation improves a synthetic fixture score."], "model_endpoints": [{"endpoint_id": "recorded-model", "provider": "recorded", "model": "fixture", "endpoint_digest": "9999999999999999999999999999999999999999999999999999999999999999"}], "sampling": {"max_tokens": 64}, "repetitions": 1, "randomization_seed": 0, "budgets": {"max_attempts": 4, "max_cost_usd": 1.0, "max_latency_seconds": 1, "max_tokens": 64, "max_tool_calls": 0, "max_context_tokens": 2048}, "aggregate_budget": {"max_total_cost_usd": 4.0, "max_total_tokens": 4096, "max_total_tool_calls": 0, "max_wall_time_seconds": 30, "max_attempts": 4}, "factors": [{"factor_id": "structured-output", "kind": "binary", "levels": [false, true], "description": "Use the declared output contract.", "treatment_mutations": [{"target": "output.format", "operation": "enable", "level": true}], "manipulation_checks": [{"factor_id": "structured-output", "expected_value": true, "oracle": "trace payload"}], "expected_benefit": "More parseable fixture output.", "expected_tax": "Extra output restriction.", "falsifying_result": "No improvement on the deterministic metric."}], "deterministic_weight": 0.7, "primary_outcomes": ["exactness"], "adequacy_rule": {"minimum_completed_attempts": 2, "required_balance": true, "rationale": "Both clean and stress scenarios must complete."}, "claim_ceiling": "Synthetic fixture comparison only.", "owner_approval": "pending"}]
+}

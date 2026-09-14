@@ -1,0 +1,41 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/aggregate-budget.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "max_attempts": {
+      "minimum": 1,
+      "title": "Max Attempts",
+      "type": "integer"
+    },
+    "max_total_cost_usd": {
+      "minimum": 0.0,
+      "title": "Max Total Cost Usd",
+      "type": "number"
+    },
+    "max_total_tokens": {
+      "minimum": 1,
+      "title": "Max Total Tokens",
+      "type": "integer"
+    },
+    "max_total_tool_calls": {
+      "minimum": 0,
+      "title": "Max Total Tool Calls",
+      "type": "integer"
+    },
+    "max_wall_time_seconds": {
+      "exclusiveMinimum": 0.0,
+      "title": "Max Wall Time Seconds",
+      "type": "number"
+    }
+  },
+  "required": [
+    "max_total_cost_usd",
+    "max_total_tokens",
+    "max_total_tool_calls",
+    "max_wall_time_seconds",
+    "max_attempts"
+  ],
+  "title": "AggregateBudgetSpec",
+  "type": "object"
+}

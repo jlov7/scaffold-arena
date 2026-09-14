@@ -1,0 +1,26 @@
+# Default ownership. CODEOWNERS is effective only when repository rules require review.
+* @jlov7
+
+# Protocol, evidence, security, and release boundaries require maintainer review.
+/backend/protocol_v1/ @jlov7
+/backend/evidence_v1/ @jlov7
+/backend/evaluation_v1/ @jlov7
+/backend/execution_v1/ @jlov7
+/backend/persistence_v1/ @jlov7
+/backend/auth_v1/ @jlov7
+/backend/artifacts_v1/ @jlov7
+/backend/migrations/ @jlov7
+/specs/ @jlov7
+/study_packs/ @jlov7
+/.github/workflows/ @jlov7
+/release/ @jlov7
+/scripts/verify-release-metadata.py @jlov7
+/SECURITY.md @jlov7
+/CITATION.cff @jlov7
+/CHANGELOG.md @jlov7
+
+# Product and documentation surfaces remain explicitly owned.
+/frontend/ @jlov7
+/docs/ @jlov7
+/README.md @jlov7
+/CONTRIBUTING.md @jlov7

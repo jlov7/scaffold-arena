@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="title desc">
+  <title id="title">Scaffold Arena illustrative controlled workflow</title>
+  <desc id="desc">A deterministic animated diagram visualizing one synthetic task across example mechanism configurations, then independently evaluated and recorded as fixture evidence. It depicts a controlled workflow, not the full sixteen-arm matrix or benchmark results.</desc>
+  <style>
+    :root { color-scheme: dark; }
+    .bg { fill: #08111f; }
+    .grid { stroke: #193047; stroke-width: 1; opacity: .7; }
+    .card { fill: #0d1c2d; stroke: #29445f; stroke-width: 1.5; }
+    .fixture { fill: #112940; stroke: #4cc9f0; }
+    .eval { fill: #182639; stroke: #91e6b2; }
+    .evidence { fill: #231d43; stroke: #b79cff; }
+    .label { fill: #d9ebfb; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 18px; font-weight: 650; }
+    .detail { fill: #9bb8d1; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 14px; }
+    .eyebrow { fill: #4cc9f0; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 13px; font-weight: 700; letter-spacing: 1.3px; }
+    .line { fill: none; stroke: #5b7f9e; stroke-width: 2; stroke-linecap: round; }
+    .flow { fill: none; stroke: #4cc9f0; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 5 12; animation: flow 2.4s linear infinite; }
+    .pulse { transform-origin: center; animation: pulse 2.4s ease-in-out infinite; }
+    .pulse.two { animation-delay: .55s; }
+    .pulse.three { animation-delay: 1.1s; }
+    .pulse.four { animation-delay: 1.65s; }
+    @keyframes flow { to { stroke-dashoffset: -34; } }
+    @keyframes pulse { 50% { opacity: .58; transform: scale(1.018); } }
+    @media (prefers-reduced-motion: reduce) { .flow, .pulse { animation: none; } }
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #f7fbff; } .grid { stroke: #c8d9e8; } .card { fill: #ffffff; stroke: #7894ac; }
+      .fixture { fill: #e8f8ff; stroke: #087ea4; } .eval { fill: #ecfbf1; stroke: #1f7a45; }
+      .evidence { fill: #f3efff; stroke: #6941c6; } .label { fill: #10243a; } .detail { fill: #38536b; }
+      .eyebrow { fill: #087ea4; } .line { stroke: #5b7892; } .flow { stroke: #087ea4; }
+    }
+  </style>
+  <rect class="bg" width="1200" height="560" rx="28"/>
+  <g class="grid">
+    <path d="M0 72H1200M0 152H1200M0 232H1200M0 312H1200M0 392H1200M0 472H1200"/>
+    <path d="M80 0V560M240 0V560M400 0V560M560 0V560M720 0V560M880 0V560M1040 0V560"/>
+  </g>
+  <text x="62" y="62" class="eyebrow">OFFLINE-DEMO-V1 · SYNTHETIC FIXTURE · NO PROVIDER CALLS</text>
+  <g class="pulse">
+    <rect class="card fixture" x="62" y="178" width="224" height="182" rx="16"/>
+    <text x="88" y="226" class="label">One fixed task</text>
+    <text x="88" y="255" class="detail">Prompt · tools · evidence</text>
+    <text x="88" y="280" class="detail">environment · budget</text>
+    <text x="88" y="326" class="eyebrow">HELD CONSTANT</text>
+  </g>
+  <path class="line" d="M286 269H350M350 269V141M350 269V227M350 269V313M350 269V399"/>
+  <path class="flow" d="M286 269H350M350 269V141M350 269V227M350 269V313M350 269V399"/>
+  <g class="pulse two">
+    <rect class="card" x="390" y="101" width="252" height="80" rx="14"/>
+    <text x="414" y="134" class="label">Planning</text><text x="414" y="159" class="detail">factor example</text>
+  </g>
+  <g class="pulse three">
+    <rect class="card" x="390" y="187" width="252" height="80" rx="14"/>
+    <text x="414" y="220" class="label">Verification</text><text x="414" y="245" class="detail">factor example</text>
+  </g>
+  <g class="pulse four">
+    <rect class="card" x="390" y="273" width="252" height="80" rx="14"/>
+    <text x="414" y="306" class="label">Recovery</text><text x="414" y="331" class="detail">factor example</text>
+  </g>
+  <g class="pulse two">
+    <rect class="card" x="390" y="359" width="252" height="80" rx="14"/>
+    <text x="414" y="392" class="label">Memory</text><text x="414" y="417" class="detail">factor example</text>
+  </g>
+  <path class="line" d="M642 141H712M642 227H712M642 313H712M642 399H712M712 141V399"/>
+  <path class="flow" d="M642 141H712M642 227H712M642 313H712M642 399H712M712 141V399"/>
+  <g class="pulse three">
+    <rect class="card eval" x="752" y="178" width="200" height="182" rx="16"/>
+    <text x="778" y="226" class="label">Evaluate</text>
+    <text x="778" y="255" class="detail">deterministic-first</text>
+    <text x="778" y="280" class="detail">quality · safety · cost</text>
+    <text x="778" y="304" class="detail">trace divergence</text>
+    <text x="778" y="326" class="eyebrow" style="fill:#1f7a45">FIXTURE OUTPUTS</text>
+  </g>
+  <path class="line" d="M952 269H1000"/><path class="flow" d="M952 269H1000"/>
+  <g class="pulse four">
+    <rect class="card evidence" x="1000" y="178" width="146" height="182" rx="16"/>
+    <text x="1024" y="226" class="label">Evidence</text>
+    <text x="1024" y="255" class="detail">trace</text>
+    <text x="1024" y="279" class="detail">receipt</text>
+    <text x="1024" y="303" class="detail">reproduce</text>
+    <text x="1024" y="326" class="eyebrow" style="fill:#6941c6">RECEIPT</text>
+  </g>
+  <text x="62" y="508" class="detail">Same model, different mechanisms — an illustrative controlled workflow, not a full matrix or outcome ranking.</text>
+</svg>

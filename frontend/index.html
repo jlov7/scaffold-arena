@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f1e9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111315" media="(prefers-color-scheme: dark)" />
+    <meta name="robots" content="index,follow" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob:; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://*.railway.app ws: wss:; object-src 'none'; base-uri 'self'; form-action 'self'"
+    />
+    <meta
+      name="description"
+      content="Run controlled experiments on AI harness mechanisms—planning, context, memory, verification, recovery, routing, cost, and safety—with explicit evidence limits."
+    />
+    <link rel="canonical" href="https://scaffold-arena.vercel.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Scaffold Arena" />
+    <meta property="og:title" content="Scaffold Arena | AI Harness Engineering Workbench" />
+    <meta
+      property="og:description"
+      content="Compare, diagnose, improve, and prove AI harness mechanisms under frozen experimental controls. Fixture evidence remains separate from live results."
+    />
+    <meta property="og:image" content="https://scaffold-arena.vercel.app/og-image.png" />
+    <meta property="og:image:alt" content="Scaffold Arena workbench for controlled AI harness experiments" />
+    <meta property="og:url" content="https://scaffold-arena.vercel.app/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Scaffold Arena | AI Harness Engineering Workbench" />
+    <meta
+      name="twitter:description"
+      content="Controlled experiments for AI harness engineering, with explicit evidence boundaries and reproducible outputs."
+    />
+    <meta name="twitter:image" content="https://scaffold-arena.vercel.app/og-image.png" />
+    <meta name="twitter:image:alt" content="Scaffold Arena workbench for controlled AI harness experiments" />
+    <script>
+      (() => {
+        try {
+          const stored = localStorage.getItem('scaffold_arena_theme')
+          const storedTextScale = localStorage.getItem('scaffold_arena_text_scale')
+          if (
+            storedTextScale === 'comfortable' ||
+            storedTextScale === 'standard' ||
+            storedTextScale === 'dense'
+          ) {
+            document.documentElement.setAttribute('data-text-scale', storedTextScale)
+          } else {
+            document.documentElement.setAttribute('data-text-scale', 'comfortable')
+          }
+          if (stored === 'dark' || stored === 'light') {
+            document.documentElement.setAttribute('data-theme', stored)
+            return
+          }
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light')
+        } catch {
+          document.documentElement.setAttribute('data-text-scale', 'comfortable')
+          document.documentElement.setAttribute('data-theme', 'dark')
+        }
+      })()
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+    <title>Scaffold Arena | AI Harness Engineering Workbench</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

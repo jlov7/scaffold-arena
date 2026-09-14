@@ -1,0 +1,66 @@
+{
+  "schema_version": "scaffold-arena.counterfactual-replay/1",
+  "mode": "fixture",
+  "binding": {
+    "checkpoint_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "initial_state_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "pre_divergence_trace_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "environment_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "dependencies_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "model_identity_digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "runtime_identity_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "task_pack_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "evaluator_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "evaluator_configuration_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "evaluation_configuration_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "base_genome_digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "candidate_genome_digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+  },
+  "intervention": {
+    "mechanism_id": "context_compaction",
+    "base_mechanism_digest": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "candidate_mechanism_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+    "intervention_spec_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+    "applied_control_receipt_digest": "sha256:abababababababababababababababababababababababababababababababab",
+    "declared_change_count": 1
+  },
+  "semantic_diff": {
+    "source_diff_digest": "sha256:bcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbc",
+    "changed_mechanism_ids": ["context_compaction"],
+    "recommended_packs": ["context-survival-v1"]
+  },
+  "allocation": {
+    "allocation_digest": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+    "allocation_kind": "paired",
+    "development_item_digests": ["sha256:dededededededededededededededededededededededededededededededede"],
+    "holdout_item_digests": ["sha256:efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef"],
+    "replay_item_digests": ["sha256:dededededededededededededededededededededededededededededededede"]
+  },
+  "analysis_plan": {
+    "preregistration_digest": "sha256:0101010101010101010101010101010101010101010101010101010101010101",
+    "stopping_rule_digest": "sha256:1212121212121212121212121212121212121212121212121212121212121212",
+    "exclusion_rule_digest": "sha256:2323232323232323232323232323232323232323232323232323232323232323",
+    "primary_endpoint": "quality_score",
+    "planned_repetitions": 2,
+    "deterministic_score_weight": 0.7,
+    "evaluator_blinded": true,
+    "confirmatory_holdout_declared": true,
+    "causal_claim_requested": false
+  },
+  "pairs": [
+    {
+      "pair_id": "pair_one",
+      "task_item_digest": "sha256:dededededededededededededededededededededededededededededededede",
+      "repetition": 1,
+      "base": {"result_digest": "sha256:3434343434343434343434343434343434343434343434343434343434343434", "trace_digest": "sha256:4545454545454545454545454545454545454545454545454545454545454545", "evaluator_output_digest": "sha256:5656565656565656565656565656565656565656565656565656565656565656", "quality_score": 0.60, "latency_state": "observed", "latency_ms": 100, "usage": {"state": "unknown"}, "fidelity_state": "observed", "fidelity_level": "applied", "process_safety": "pass", "severe_failure_codes": []},
+      "candidate": {"result_digest": "sha256:6767676767676767676767676767676767676767676767676767676767676767", "trace_digest": "sha256:7878787878787878787878787878787878787878787878787878787878787878", "evaluator_output_digest": "sha256:8989898989898989898989898989898989898989898989898989898989898989", "quality_score": 0.70, "latency_state": "observed", "latency_ms": 105, "usage": {"state": "unknown"}, "fidelity_state": "observed", "fidelity_level": "applied", "process_safety": "pass", "severe_failure_codes": []}
+    },
+    {
+      "pair_id": "pair_two",
+      "task_item_digest": "sha256:dededededededededededededededededededededededededededededededede",
+      "repetition": 2,
+      "base": {"result_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999", "trace_digest": "sha256:abababababababababababababababababababababababababababababababab", "evaluator_output_digest": "sha256:bcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbc", "quality_score": 0.55, "latency_state": "observed", "latency_ms": 102, "usage": {"state": "unknown"}, "fidelity_state": "observed", "fidelity_level": "applied", "process_safety": "pass", "severe_failure_codes": []},
+      "candidate": {"result_digest": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd", "trace_digest": "sha256:dededededededededededededededededededededededededededededededede", "evaluator_output_digest": "sha256:efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef", "quality_score": 0.68, "latency_state": "observed", "latency_ms": 107, "usage": {"state": "unknown"}, "fidelity_state": "observed", "fidelity_level": "applied", "process_safety": "pass", "severe_failure_codes": []}
+    }
+  ]
+}

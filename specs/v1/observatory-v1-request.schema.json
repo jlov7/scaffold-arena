@@ -1,0 +1,54 @@
+{
+  "$id": "https://scaffold-arena.local/specs/v1/observatory-v1-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attempt_ids": {
+      "items": {
+        "pattern": "^[a-zA-Z0-9_-]{1,64}$",
+        "type": "string"
+      },
+      "maxItems": 100,
+      "minItems": 1,
+      "title": "Attempt Ids",
+      "type": "array"
+    },
+    "diagnostic_partial_mode": {
+      "const": false,
+      "default": false,
+      "title": "Diagnostic Partial Mode",
+      "type": "boolean"
+    },
+    "source_artifact_digest": {
+      "anyOf": [
+        {
+          "pattern": "^(?:sha256:)?[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Artifact Digest"
+    },
+    "xray_analysis_digest": {
+      "anyOf": [
+        {
+          "pattern": "^(?:sha256:)?[a-f0-9]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Xray Analysis Digest"
+    }
+  },
+  "required": [
+    "attempt_ids"
+  ],
+  "title": "ObservatoryRequest",
+  "type": "object"
+}

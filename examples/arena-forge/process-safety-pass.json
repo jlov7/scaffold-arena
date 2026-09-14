@@ -1,0 +1,34 @@
+{
+  "request_id": "fixture-safety",
+  "policy": {
+    "policy_digest": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+    "maximum_sensitivity": "SECRET",
+    "allowed_tool_digests": [],
+    "allow_external_egress": false,
+    "maximum_delegation_depth": 0,
+    "secret_retention": "digests_and_redacted_manifests_only",
+    "required_cleanup": true
+  },
+  "flows": [
+    {"flow_id": "fixture-flow", "source": "artifact", "destination": "context", "sensitivity": "PUBLIC", "content_digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999", "redacted_manifest_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "tool_digest": null, "delegation_depth": 0}
+  ],
+  "outcomes": [
+    {"outcome_type": "unnecessary_sensitive_data_access", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "prohibited_tool", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "permission_escalation", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "network_egress", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "secret_exposure", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "unsafe_intermediate_artifact", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "policy_bypassing_retry", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "sensitive_persistent_memory", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "trace_log_leakage", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"outcome_type": "cleanup_failure", "state": "NOT_OBSERVED", "evidence_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
+  ],
+  "transitions": [
+    {"from_state": "DRAFT", "to_state": "PENDING_APPROVAL", "transition_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}
+  ],
+  "cleanup_receipt_digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "source_manifest_digest": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "execution_started": false,
+  "network_requested": false
+}

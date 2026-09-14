@@ -1,0 +1,517 @@
+{
+  "schema_version": "1.0",
+  "claim_boundary": "These pinned public visuals are synthetic UI-mock or illustrative fixture workflow documentation only: fixture evidence only. They are not a replay of the full offline fixture, benchmark, live-provider, human-usability, accessibility-certification, or release-assurance evidence.",
+  "assets": [
+    {
+      "path": "docs/assets/scaffold-arena-hero.svg",
+      "sha256": "8874360d3d89309a9711ef08e2551fa11699352dfdf272b972e8c46a4f5ddb8f",
+      "accessibility": {
+        "role": "img",
+        "aria_labelledby": "title desc",
+        "title_id": "title",
+        "description_id": "desc",
+        "freeze_media_query": "@media (prefers-reduced-motion: reduce)",
+        "light_media_query": "@media (prefers-color-scheme: light)",
+        "determinism_copy": "deterministic"
+      },
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "fixture_source": "study_packs/offline-demo-v1/study-pack.json",
+        "input_hashes": {
+          "fixture_source": "b06d93be7ccbafd9578b60fe0f485afcc57031b46c1cc6b114a05c42675a189c"
+        },
+        "fixture_inputs": {
+          "study_pack": {
+            "path": "study_packs/offline-demo-v1/study-pack.json",
+            "sha256": "b06d93be7ccbafd9578b60fe0f485afcc57031b46c1cc6b114a05c42675a189c"
+          },
+          "runtime_truth_table": {
+            "path": "study_packs/offline-demo-v1/fixtures/runtime-truth-table.json",
+            "sha256": "92587ad86a7623b55b57fe1efcd5b4d84da907dd729e30be0ee719a7886c738d"
+          }
+        }
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/harness-home-xray-desktop.png",
+      "sha256": "d92cf0c94f2cb9544e372a5b9aedad60fdf088096f212dc759ea35c84dff23c0",
+      "surface_id": "harness-home-xray",
+      "alt_text": "Desktop blocked Harness Home / X-Ray showing Captured source required; inspection cannot discover or execute an uncaptured source.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "d92cf0c94f2cb9544e372a5b9aedad60fdf088096f212dc759ea35c84dff23c0",
+        "render": {
+          "route": "/workbench/xray",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 1440,
+            "height": 956
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/harness-home-xray-mobile.png",
+      "sha256": "dab3d9d553a5683bf6adef4e8483bbd11a6c065581f1f23f27dcf1b211204b03",
+      "surface_id": "harness-home-xray",
+      "alt_text": "Mobile blocked Harness Home / X-Ray showing Captured source required; inspection cannot discover or execute an uncaptured source.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "dab3d9d553a5683bf6adef4e8483bbd11a6c065581f1f23f27dcf1b211204b03",
+        "render": {
+          "route": "/workbench/xray",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 390,
+            "height": 973
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/study-canvas-desktop.png",
+      "sha256": "d25031794cd7fa6725792977091abbf7abeade90af2fc135d98ec781a825cd24",
+      "surface_id": "study-canvas",
+      "alt_text": "Desktop synthetic fixture Study Canvas showing offline-demo-v1 metadata and the not benchmark evidence boundary.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "d25031794cd7fa6725792977091abbf7abeade90af2fc135d98ec781a825cd24",
+        "render": {
+          "route": "/workbench/studies",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 1440,
+            "height": 956
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/study-canvas-mobile.png",
+      "sha256": "684afa60fd4c75fa42406d4b29c3995282cab9b934960ddf2161870e959c25f2",
+      "surface_id": "study-canvas",
+      "alt_text": "Mobile synthetic fixture Study Canvas showing offline-demo-v1 metadata and the not benchmark evidence boundary.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "684afa60fd4c75fa42406d4b29c3995282cab9b934960ddf2161870e959c25f2",
+        "render": {
+          "route": "/workbench/studies",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 390,
+            "height": 1056
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/run-cockpit-desktop.png",
+      "sha256": "1e7986cdb9c487b376fa7bfa581efeb6a10f54995d1ad85233272da45f212391",
+      "surface_id": "run-cockpit",
+      "alt_text": "Desktop synthetic fixture Run Cockpit showing Execution HOLD because no durable preflight report or provider request exists.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "1e7986cdb9c487b376fa7bfa581efeb6a10f54995d1ad85233272da45f212391",
+        "render": {
+          "route": "/workbench/execute?experiment_id=fixture-created-experiment",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 1440,
+            "height": 1182
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/run-cockpit-mobile.png",
+      "sha256": "d1e72d210bfbd37c35c626a842bca13e0ca53caf21a97ba56323b91528668297",
+      "surface_id": "run-cockpit",
+      "alt_text": "Mobile synthetic fixture Run Cockpit showing Execution HOLD because no durable preflight report or provider request exists.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "d1e72d210bfbd37c35c626a842bca13e0ca53caf21a97ba56323b91528668297",
+        "render": {
+          "route": "/workbench/execute?experiment_id=fixture-created-experiment",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 390,
+            "height": 1641
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/decision-canvas-desktop.png",
+      "sha256": "7b242bc2cba6b5fa98b35aed0d18eebd5a9adb81bb49a05647c1dcf4b95c3d25",
+      "surface_id": "decision-canvas",
+      "alt_text": "Desktop empty Decision Canvas showing no durable analysis report; no effect, winner, cost, or confidence is inferred.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "7b242bc2cba6b5fa98b35aed0d18eebd5a9adb81bb49a05647c1dcf4b95c3d25",
+        "render": {
+          "route": "/workbench/analyze?experiment_id=fixture-created-experiment&execution_id=fixture-execution",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 1440,
+            "height": 956
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/decision-canvas-mobile.png",
+      "sha256": "df4ff39fec93cafafb2f567b626f595f51cae5c5b9257b5d90f1a62e7abfa0b2",
+      "surface_id": "decision-canvas",
+      "alt_text": "Mobile empty Decision Canvas showing no durable analysis report; no effect, winner, cost, or confidence is inferred.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "df4ff39fec93cafafb2f567b626f595f51cae5c5b9257b5d90f1a62e7abfa0b2",
+        "render": {
+          "route": "/workbench/analyze?experiment_id=fixture-created-experiment&execution_id=fixture-execution",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 390,
+            "height": 1109
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/trace-counterfactual-desktop.png",
+      "sha256": "ea63e73fdac9df0012065d769e9f4aa6c63a6b8b5738a7a4494c9d35e2dba1ea",
+      "surface_id": "trace-counterfactual-lab",
+      "alt_text": "Desktop provider-free paired fixture replay in Trace / Counterfactual Lab showing HOLD, unknown usage, and no posted comment.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "ea63e73fdac9df0012065d769e9f4aa6c63a6b8b5738a7a4494c9d35e2dba1ea",
+        "render": {
+          "route": "/workbench/counterfactual",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 1440,
+            "height": 2323
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/trace-counterfactual-mobile.png",
+      "sha256": "7587a0b976d5af100770d1633f2b02b62e38468e5c17d177df0cc027573e288b",
+      "surface_id": "trace-counterfactual-lab",
+      "alt_text": "Mobile provider-free paired fixture replay in Trace / Counterfactual Lab showing HOLD, unknown usage, and no posted comment.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "7587a0b976d5af100770d1633f2b02b62e38468e5c17d177df0cc027573e288b",
+        "render": {
+          "route": "/workbench/counterfactual",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 390,
+            "height": 3257
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/evidence-room-desktop.png",
+      "sha256": "2c1e556cfcfacc72692e28e182d0b8571b21622d76b6a54111d2298fa4e2f237",
+      "surface_id": "evidence-room",
+      "alt_text": "Desktop empty Evidence Room showing Integrity is not truth and no durable evidence or decision briefs.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "2c1e556cfcfacc72692e28e182d0b8571b21622d76b6a54111d2298fa4e2f237",
+        "render": {
+          "route": "/workbench/evidence?execution_id=fixture-execution",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 1440,
+            "height": 2420
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    },
+    {
+      "path": "docs/assets/screenshots/v1/product-tour/evidence-room-mobile.png",
+      "sha256": "497683bf5a7173342b8684706eceb8365d9a057d9350efd51ecd8a269d995870",
+      "surface_id": "evidence-room",
+      "alt_text": "Mobile empty Evidence Room showing Integrity is not truth and no durable evidence or decision briefs.",
+      "provenance": {
+        "source_base_commit": "1a5967aa70892470ac58e0fa95bc6bc299a17b28",
+        "source_state": "base_commit_plus_pinned_inputs",
+        "generator": "frontend/tests/visual/product-tour-v1.spec.ts",
+        "fixture_source": "frontend/tests/support/workbenchV1Mock.ts",
+        "input_hashes": {
+          "generator": "2b9170cf5a26d19f9c38dc2b93b3699c4c4294e41e825c8f29bb844b0f7735ff",
+          "fixture_source": "20a1eaaf8a37b4a4316ba8f255bf43f4d4fa4e21654bf2cd12a2990a21811cf9"
+        },
+        "fixture_kind": "synthetic_ui_mock",
+        "png_sha256": "497683bf5a7173342b8684706eceb8365d9a057d9350efd51ecd8a269d995870",
+        "render": {
+          "route": "/workbench/evidence?execution_id=fixture-execution",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "color_scheme": "dark",
+          "device_scale_factor": 2,
+          "screenshot_scale": "css",
+          "png_dimensions": {
+            "width": 390,
+            "height": 2781
+          }
+        },
+        "source_tree": "frontend/src",
+        "source_tree_sha256": "1a0b9e6be0fc462b30d848ce5338e3b2e261fdb531c968bc3498f13241ca1a62",
+        "render_inputs": {
+          "frontend/index.html": "5517f9391f75d7a4beddbd32f080ac40deac0b7432959d8e0258a2cf9019a17d",
+          "frontend/playwright.config.ts": "1ac5a7d1b67a1b7000ae88d4b08428b1ee05e806afac8a39d71f3020b9ef4d78",
+          "frontend/pnpm-lock.yaml": "5d9802c5c6c961523005f8d1176dd0fa8615d132f9e204ab8bec3ef3ad288077"
+        },
+        "browser_identity": "Ubuntu 24.04.4 LTS (x86_64); Google Chrome 153.0.8010.36; @playwright/test 1.60.0"
+      }
+    }
+  ]
+}

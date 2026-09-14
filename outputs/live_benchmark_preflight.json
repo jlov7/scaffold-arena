@@ -1,0 +1,76 @@
+{
+  "schema_version": "0.1",
+  "generated_at": "2026-05-23T00:00:00Z",
+  "status": "static_live_benchmark_preflight_not_live_evidence",
+  "model": {
+    "model_id": "claude-haiku-4-5",
+    "label": "Claude Haiku 4.5",
+    "provider": "anthropic",
+    "provider_key_env": "ANTHROPIC_API_KEY",
+    "pricing_source": "backend/config/models.py"
+  },
+  "task_ids": [
+    "extraction",
+    "risk",
+    "research",
+    "tool_use",
+    "privacy",
+    "strategy"
+  ],
+  "scaffold_ids": [
+    "bare",
+    "plan_execute_verify",
+    "tool_error_recovery",
+    "memory_critique"
+  ],
+  "repeat_count": 3,
+  "expected_run_count": 72,
+  "expected_outputs": {
+    "run_dir": "outputs/live_benchmark_runs",
+    "summary": "outputs/live_benchmark_summary.json"
+  },
+  "command": [
+    "uv",
+    "run",
+    "--project",
+    "backend",
+    "python",
+    "scripts/run-benchmark-pack.py",
+    "--mode",
+    "live",
+    "--model-id",
+    "claude-haiku-4-5",
+    "--tasks",
+    "extraction,risk,research,tool_use,privacy,strategy",
+    "--scaffolds",
+    "bare,plan_execute_verify,tool_error_recovery,memory_critique",
+    "--repeats",
+    "3"
+  ],
+  "command_display": "uv run --project backend python scripts/run-benchmark-pack.py --mode live --model-id claude-haiku-4-5 --tasks extraction,risk,research,tool_use,privacy,strategy --scaffolds bare,plan_execute_verify,tool_error_recovery,memory_critique --repeats 3",
+  "fixture_usage_estimate": {
+    "source": "Deterministic fixture controls have no observed provider usage and cannot estimate live cost.",
+    "status": "unavailable_no_provider_usage",
+    "fixture_run_count": 54,
+    "estimated_input_tokens": null,
+    "estimated_output_tokens": null,
+    "estimated_cost_usd": null,
+    "limitations": [
+      "Deterministic fixture controls invoke no provider, so they contain no observed provider usage.",
+      "Live token and cost estimates are unavailable until provider-backed measurements exist."
+    ]
+  },
+  "model_registry_size": 8,
+  "blockers_before_95": [
+    "Set a valid ANTHROPIC_API_KEY; static preflight does not verify key validity.",
+    "Run the live benchmark command and commit raw outputs/live_benchmark_runs artifacts.",
+    "Inspect outputs/live_benchmark_summary.json for repeated-trial variance and confidence intervals.",
+    "Follow with independent human annotations and external reproduction before lifting strict rubric caps."
+  ],
+  "claim_boundary": "This preflight proves that the live benchmark plan is wired and reproducible. It is not live model evidence and does not remove the strict frontier rubric cap.",
+  "limitations": [
+    "No provider request is made by this static check.",
+    "Provider key presence and validity are intentionally not written into this release artifact.",
+    "Live benchmark results must be generated separately and labeled mode=live."
+  ]
+}

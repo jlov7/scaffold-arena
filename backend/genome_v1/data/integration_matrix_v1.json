@@ -1,0 +1,43 @@
+{
+  "claim_ceiling": "Source-dated catalog metadata and synthetic fixture shapes only; no execution, interoperability, safety, deployment, or performance claim.",
+  "entries": [
+    {
+      "catalog_standard_id": null,
+      "claim_ceiling": "Synthetic native descriptor fixture only; no external runtime claim.",
+      "fixture": "backend/genome_v1/fixtures/native-genome-v1.json",
+      "integration_id": "native-genome-v1",
+      "source_date": "2026-08-18",
+      "support_status": "synthetic_fixture_shape_only"
+    },
+    {
+      "catalog_standard_id": "otel-core",
+      "catalog_support_level": "catalog_only",
+      "claim_ceiling": "Source-dated catalog metadata and synthetic fixture shapes only; no execution, interoperability, safety, deployment, or performance claim.",
+      "fixture": "backend/genome_v1/fixtures/otel-recorded-metadata-v1.json",
+      "integration_id": "otel",
+      "source_date": "2026-08-18",
+      "support_status": "synthetic_recorded_metadata_only"
+    },
+    {
+      "catalog_standard_id": "a2a",
+      "catalog_support_level": "catalog_only",
+      "claim_ceiling": "Source-dated catalog metadata and synthetic fixture shapes only; no execution, interoperability, safety, deployment, or performance claim.",
+      "fixture": "backend/genome_v1/fixtures/a2a-recorded-metadata-v1.json",
+      "integration_id": "a2a",
+      "source_date": "2026-08-18",
+      "support_status": "synthetic_recorded_metadata_only"
+    },
+    {
+      "catalog_standard_id": "mcp",
+      "catalog_support_level": "catalog_only",
+      "claim_ceiling": "Source-dated catalog metadata and synthetic fixture shapes only; no execution, interoperability, safety, deployment, or performance claim.",
+      "fixture": "backend/genome_v1/fixtures/mcp-recorded-metadata-v1.json",
+      "integration_id": "mcp",
+      "source_date": "2026-08-18",
+      "support_status": "synthetic_recorded_metadata_only"
+    }
+  ],
+  "generated_from": "backend/genome_v1/data/standards_catalog_v1.json",
+  "matrix_schema": "scaffold-arena.genome-integration-matrix/1",
+  "source_date": "2026-08-18"
+}

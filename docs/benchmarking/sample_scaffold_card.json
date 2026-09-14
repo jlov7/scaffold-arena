@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.1",
+  "scaffold_id": "plan_execute_verify",
+  "name": "Plan -> Execute -> Verify",
+  "description": "A scaffold that asks the model to plan, produce the answer, then verify the answer against the task schema and requirements.",
+  "phases": [
+    "plan",
+    "execute",
+    "verify"
+  ],
+  "config_schema": {
+    "type": "object",
+    "properties": {
+      "max_repair_attempts": { "type": "integer", "minimum": 0, "maximum": 3 }
+    }
+  },
+  "evidence_controls": [
+    "Final output is evaluated by deterministic metrics.",
+    "Token usage is preserved for cost calculation.",
+    "Verification phase must not invent facts outside the scenario."
+  ],
+  "overreach_risks": [
+    "The verification phase may rationalize unsupported output instead of correcting it.",
+    "The plan may add requirements not present in the scenario."
+  ],
+  "expected_failure_modes": [
+    "schema_missing_required_fields",
+    "unsupported_claims",
+    "scaffold_overreach"
+  ],
+  "limitations": [
+    "This scaffold can improve structure without guaranteeing factual correctness.",
+    "It should be compared on named scenarios, not treated as generally superior."
+  ]
+}

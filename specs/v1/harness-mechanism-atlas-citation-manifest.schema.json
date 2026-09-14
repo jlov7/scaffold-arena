@@ -1,0 +1,194 @@
+{
+  "$defs": {
+    "AtlasCitation": {
+      "additionalProperties": false,
+      "properties": {
+        "citation_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Citation Id",
+          "type": "string"
+        },
+        "content_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Content Digest"
+        },
+        "license_spdx": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "License Spdx"
+        },
+        "limitations": {
+          "items": {
+            "maxLength": 4096,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Limitations",
+          "type": "array"
+        },
+        "revision_discoverability": {
+          "enum": [
+            "pinned",
+            "not_discoverable",
+            "not_captured"
+          ],
+          "title": "Revision Discoverability",
+          "type": "string"
+        },
+        "source_date": {
+          "title": "Source Date",
+          "type": "string"
+        },
+        "source_kind": {
+          "enum": [
+            "official_spec",
+            "official_docs",
+            "official_repository",
+            "local_repository_source"
+          ],
+          "title": "Source Kind",
+          "type": "string"
+        },
+        "source_path": {
+          "anyOf": [
+            {
+              "maxLength": 512,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Path"
+        },
+        "source_revision": {
+          "anyOf": [
+            {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Revision"
+        },
+        "supported_family_ids": {
+          "default": [],
+          "items": {
+            "enum": [
+              "native_scaffold",
+              "graph_orchestrator",
+              "sdk_runtime",
+              "coding_cli",
+              "tool_protocol",
+              "agent_protocol",
+              "telemetry_surface"
+            ],
+            "type": "string"
+          },
+          "maxItems": 8,
+          "title": "Supported Family Ids",
+          "type": "array"
+        },
+        "supported_mechanism_ids": {
+          "default": [],
+          "items": {
+            "pattern": "^[a-z][a-z0-9_.-]{2,127}$",
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Supported Mechanism Ids",
+          "type": "array"
+        },
+        "url": {
+          "pattern": "^https://[^\\s?#]+(?:[?#][^\\s]*)?$",
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "citation_id",
+        "source_kind",
+        "url",
+        "source_date",
+        "revision_discoverability",
+        "limitations"
+      ],
+      "title": "AtlasCitation",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/harness-mechanism-atlas-citation-manifest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "canonicalization": {
+      "const": "arena-json-v1",
+      "default": "arena-json-v1",
+      "title": "Canonicalization",
+      "type": "string"
+    },
+    "citations": {
+      "items": {
+        "$ref": "#/$defs/AtlasCitation"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "title": "Citations",
+      "type": "array"
+    },
+    "manifest_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Manifest Digest",
+      "type": "string"
+    },
+    "manifest_id": {
+      "const": "harness-mechanism-atlas-citations-v1",
+      "default": "harness-mechanism-atlas-citations-v1",
+      "title": "Manifest Id",
+      "type": "string"
+    },
+    "manifest_schema": {
+      "const": "scaffold-arena.harness-mechanism-atlas-citations/1",
+      "default": "scaffold-arena.harness-mechanism-atlas-citations/1",
+      "title": "Manifest Schema",
+      "type": "string"
+    },
+    "source_date": {
+      "title": "Source Date",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_date",
+    "citations",
+    "manifest_digest"
+  ],
+  "title": "AtlasCitationManifest",
+  "type": "object"
+}

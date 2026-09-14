@@ -1,0 +1,8 @@
+{
+  "schema_version": "scaffold-arena-release-metadata-v1",
+  "version": "0.9.1",
+  "status": "release-candidate",
+  "protocol_version": "1.0",
+  "tag": "v0.9.1",
+  "released_at": "2026-08-23"
+}

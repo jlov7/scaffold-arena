@@ -1,0 +1,79 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+*.db
+*.db-shm
+*.db-wal
+
+# Node
+node_modules/
+frontend/dist/
+
+# Environment
+.env
+*.env.local
+*.env.development
+*.env.production
+*.env.test
+*.secrets
+backend/.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage/
+playwright-report/
+test-results/
+output/
+
+# Build artifacts
+*.pdf
+
+# Specstory
+.specstory/
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Internal planning
+Planning/
+
+# Cursor
+.cursorindexingignore
+
+# Local agent/tooling state
+.codex/
+.playwright-cli/
+.rodney/
+
+# Frontend generated artifacts
+frontend/coverage/
+frontend/lighthouse-reports/
+frontend/playwright-report/
+frontend/test-results/
+frontend/.lighthouseci/
+
+# Runtime storage
+backend/data/*.db
+backend/data/artifacts-v1/
+.pnpm-store/
+.playwright-mcp/

@@ -1,0 +1,18 @@
+{
+  "schema": "scaffold-arena.genome/1",
+  "genome_id": "fixture-native-genome",
+  "subject": {"kind": "harness_stack", "name": "Synthetic native Genome fixture"},
+  "components": [
+    {"component_id": "fixture-model", "kind": "model", "name": "Recorded fixture model", "version": "synthetic-1", "config_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "capability_ids": ["fixture-telemetry"], "lifecycle": "declared"}
+  ],
+  "relations": [],
+  "capabilities": [
+    {"capability_id": "fixture-telemetry", "domain": "telemetry", "mode": "declared", "evidence_refs": []}
+  ],
+  "protocols": [],
+  "source_bindings": [],
+  "authority": {"status": "fixture_verified", "claim_ceiling": "synthetic descriptor fixture only", "limitations": ["No external runtime was invoked."], "exclusions": ["No model-quality, safety, or interoperability claim."]},
+  "extensions": {},
+  "canonicalization": "arena-json-v1",
+  "genome_digest": null
+}

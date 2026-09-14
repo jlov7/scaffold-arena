@@ -1,0 +1,281 @@
+{
+  "$defs": {
+    "ExpectedTradeoff": {
+      "additionalProperties": false,
+      "properties": {
+        "cost": {
+          "enum": [
+            "increase",
+            "decrease",
+            "neutral",
+            "unknown"
+          ],
+          "title": "Cost",
+          "type": "string"
+        },
+        "latency": {
+          "enum": [
+            "increase",
+            "decrease",
+            "neutral",
+            "unknown"
+          ],
+          "title": "Latency",
+          "type": "string"
+        },
+        "quality": {
+          "enum": [
+            "improve",
+            "regress",
+            "neutral",
+            "unknown"
+          ],
+          "title": "Quality",
+          "type": "string"
+        },
+        "rationale_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Rationale Digest",
+          "type": "string"
+        },
+        "safety": {
+          "enum": [
+            "improve",
+            "regress",
+            "neutral",
+            "unknown"
+          ],
+          "title": "Safety",
+          "type": "string"
+        }
+      },
+      "required": [
+        "quality",
+        "safety",
+        "cost",
+        "latency",
+        "rationale_digest"
+      ],
+      "title": "ExpectedTradeoff",
+      "type": "object"
+    },
+    "FalsifiablePrediction": {
+      "additionalProperties": false,
+      "properties": {
+        "direction": {
+          "enum": [
+            "increase",
+            "decrease",
+            "no_more_than"
+          ],
+          "title": "Direction",
+          "type": "string"
+        },
+        "metric_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Metric Id",
+          "type": "string"
+        },
+        "prediction_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Prediction Digest",
+          "type": "string"
+        },
+        "threshold": {
+          "maximum": 1000000,
+          "minimum": 0.0,
+          "title": "Threshold",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metric_id",
+        "direction",
+        "threshold",
+        "prediction_digest"
+      ],
+      "title": "FalsifiablePrediction",
+      "type": "object"
+    },
+    "MechanismChange": {
+      "additionalProperties": false,
+      "description": "The sole change Forge is allowed to propose for one candidate.",
+      "properties": {
+        "base_mechanism_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Base Mechanism Digest",
+          "type": "string"
+        },
+        "candidate_mechanism_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Candidate Mechanism Digest",
+          "type": "string"
+        },
+        "declared_change_count": {
+          "const": 1,
+          "default": 1,
+          "title": "Declared Change Count",
+          "type": "integer"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        },
+        "patch_or_config_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Patch Or Config Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mechanism_id",
+        "base_mechanism_digest",
+        "candidate_mechanism_digest",
+        "patch_or_config_digest"
+      ],
+      "title": "MechanismChange",
+      "type": "object"
+    },
+    "RollbackBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "recovery_plan_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Recovery Plan Digest",
+          "type": "string"
+        },
+        "rollback_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Rollback Digest",
+          "type": "string"
+        },
+        "rollback_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Rollback Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rollback_id",
+        "rollback_digest",
+        "recovery_plan_digest"
+      ],
+      "title": "RollbackBinding",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/forge-v1-proposal.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Untrusted candidate mutation. It can never request execution or merge.",
+  "properties": {
+    "automatic_merge_requested": {
+      "const": false,
+      "default": false,
+      "title": "Automatic Merge Requested",
+      "type": "boolean"
+    },
+    "base_genome_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Base Genome Digest",
+      "type": "string"
+    },
+    "candidate_genome_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Candidate Genome Digest",
+      "type": "string"
+    },
+    "execution_requested": {
+      "const": false,
+      "default": false,
+      "title": "Execution Requested",
+      "type": "boolean"
+    },
+    "expected_tradeoff": {
+      "$ref": "#/$defs/ExpectedTradeoff"
+    },
+    "falsifiable_prediction": {
+      "$ref": "#/$defs/FalsifiablePrediction"
+    },
+    "mechanism_change": {
+      "$ref": "#/$defs/MechanismChange"
+    },
+    "proposal_id": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Proposal Id",
+      "type": "string"
+    },
+    "proposer_identity": {
+      "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+      "title": "Proposer Identity",
+      "type": "string"
+    },
+    "requested_claim_scope": {
+      "enum": [
+        "fixture_contract",
+        "recorded_observation",
+        "product_control"
+      ],
+      "title": "Requested Claim Scope",
+      "type": "string"
+    },
+    "rollback": {
+      "$ref": "#/$defs/RollbackBinding"
+    },
+    "scalar_optimization_requested": {
+      "const": false,
+      "default": false,
+      "title": "Scalar Optimization Requested",
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.forge-proposal/1",
+      "default": "scaffold-arena.forge-proposal/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "self_evaluation_requested": {
+      "const": false,
+      "default": false,
+      "title": "Self Evaluation Requested",
+      "type": "boolean"
+    },
+    "source_provenance_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Source Provenance Digest",
+      "type": "string"
+    },
+    "triggering_evidence_digests": {
+      "items": {
+        "pattern": "^sha256:[a-f0-9]{64}$",
+        "type": "string"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Triggering Evidence Digests",
+      "type": "array"
+    },
+    "untrusted": {
+      "const": true,
+      "default": true,
+      "title": "Untrusted",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "proposal_id",
+    "proposer_identity",
+    "source_provenance_digest",
+    "base_genome_digest",
+    "candidate_genome_digest",
+    "mechanism_change",
+    "falsifiable_prediction",
+    "expected_tradeoff",
+    "triggering_evidence_digests",
+    "rollback",
+    "requested_claim_scope"
+  ],
+  "title": "ForgeProposal",
+  "type": "object"
+}

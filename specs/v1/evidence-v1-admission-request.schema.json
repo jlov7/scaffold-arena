@@ -1,0 +1,211 @@
+{
+  "$defs": {
+    "EvidenceClass": {
+      "enum": [
+        "fixture",
+        "local_live",
+        "replicated",
+        "cross_model",
+        "human_calibrated",
+        "independently_reproduced"
+      ],
+      "title": "EvidenceClass",
+      "type": "string"
+    },
+    "EvidenceManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "adapter_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Adapter Hash",
+          "type": "string"
+        },
+        "artifact_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Artifact Hashes",
+          "type": "array"
+        },
+        "claim_ceiling": {
+          "minLength": 1,
+          "title": "Claim Ceiling",
+          "type": "string"
+        },
+        "code_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Code Hash",
+          "type": "string"
+        },
+        "evaluator_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evaluator Hashes",
+          "type": "array"
+        },
+        "evidence_class": {
+          "$ref": "#/$defs/EvidenceClass"
+        },
+        "exclusions": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Exclusions",
+          "type": "array"
+        },
+        "experiment_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Experiment Hash",
+          "type": "string"
+        },
+        "experiment_id": {
+          "minLength": 1,
+          "title": "Experiment Id",
+          "type": "string"
+        },
+        "integrity_not_truth": {
+          "const": true,
+          "default": true,
+          "title": "Integrity Not Truth",
+          "type": "boolean"
+        },
+        "limitations": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "model_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Model Hash",
+          "type": "string"
+        },
+        "price_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Price Hash",
+          "type": "string"
+        },
+        "runtime_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Runtime Hash",
+          "type": "string"
+        },
+        "spec_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Spec Hash",
+          "type": "string"
+        },
+        "study_pack_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Study Pack Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "experiment_id",
+        "experiment_hash",
+        "study_pack_hash",
+        "spec_hash",
+        "code_hash",
+        "runtime_hash",
+        "adapter_hash",
+        "model_hash",
+        "price_hash",
+        "evaluator_hashes",
+        "artifact_hashes",
+        "evidence_class",
+        "claim_ceiling"
+      ],
+      "title": "EvidenceManifest",
+      "type": "object"
+    },
+    "EvidenceReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_hashes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Artifact Hashes",
+          "type": "array"
+        },
+        "integrity_not_truth": {
+          "const": true,
+          "default": true,
+          "title": "Integrity Not Truth",
+          "type": "boolean"
+        },
+        "manifest_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Manifest Hash",
+          "type": "string"
+        },
+        "receipt_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Receipt Hash",
+          "type": "string"
+        },
+        "receipt_id": {
+          "minLength": 1,
+          "title": "Receipt Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "manifest_hash",
+        "artifact_hashes",
+        "receipt_hash"
+      ],
+      "title": "EvidenceReceipt",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/evidence-v1-admission-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Public request contract for custody-only evidence admission.",
+  "properties": {
+    "evidence_type": {
+      "enum": [
+        "fixture",
+        "local_live",
+        "reproduction",
+        "cross_model",
+        "human_calibration",
+        "independent_reproduction"
+      ],
+      "title": "Evidence Type",
+      "type": "string"
+    },
+    "execution_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Execution Id"
+    },
+    "manifest": {
+      "$ref": "#/$defs/EvidenceManifest"
+    },
+    "receipt": {
+      "$ref": "#/$defs/EvidenceReceipt"
+    }
+  },
+  "required": [
+    "manifest",
+    "receipt",
+    "evidence_type",
+    "execution_id"
+  ],
+  "title": "EvidenceAdmissionRequest",
+  "type": "object"
+}

@@ -1,0 +1,1603 @@
+{
+  "schema_version": "1.0",
+  "packet_id": "human_calibration_fixture_packet_v1",
+  "generated_at": "2026-05-23T00:00:00Z",
+  "status": "annotation_packet_ready_not_human_evidence",
+  "annotation_schema": "specs/v1/review-v1-calibration-annotation-result.schema.json",
+  "adjudication_schema": "specs/v1/review-v1-calibration-adjudication-result.schema.json",
+  "annotation_rubric": "docs/benchmarking/annotation_rubric.md",
+  "source_run_dir": "outputs/benchmark_runs",
+  "source_scenario_pack": "docs/benchmarking/scenario_pack_v0.1.json",
+  "selection_method": "Deterministic stratified packet: first fixture repeat for every scenario contract.",
+  "targets": [
+    {
+      "target_id": "annotate_fixture_extraction_missing_required_fields_r1",
+      "run_id": "fixture_extraction_missing_required_fields_r1",
+      "scenario_id": "extraction_missing_required_fields",
+      "task_family": "extraction",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Contract extraction missing required fields negative control",
+        "prompt": "Evaluate an extraction output against the synthetic service-agreement amendment.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "document_type",
+            "parties",
+            "effective_date",
+            "financial_summary",
+            "risk_flags"
+          ]
+        },
+        "evidence_requirements": [
+          "Missing-field list",
+          "Schema validation result",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates missing-field sensitivity in the extraction scorer."
+        ],
+        "limitations": [
+          "Not a live provider result.",
+          "The negative control is intentionally incomplete."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "document_type": "Amendment to Service Agreement"
+        }
+      },
+      "blind_payload_digest": "f25fcf3b0283e3020322935cc6e3f6b5d2087d0be0e7e545f1e6d8931f0c76b3",
+      "assignments": [
+        {
+          "assignment_id": "68a864c51f8c1de80d43ebb3",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "ee646c4e3dc6db59b214c1a3",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "85677652fc0c78b7da37bec1",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_extraction_missing_required_fields_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_extraction_positive_control_r1",
+      "run_id": "fixture_extraction_positive_control_r1",
+      "scenario_id": "extraction_positive_control",
+      "task_family": "extraction",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Contract amendment extraction positive control",
+        "prompt": "Extract all required commercial, party, date, and risk fields from the synthetic service-agreement amendment.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "document_type",
+            "parties",
+            "effective_date",
+            "financial_summary",
+            "risk_flags"
+          ]
+        },
+        "evidence_requirements": [
+          "Schema validation result",
+          "Gold field comparison",
+          "Risk-flag comparison"
+        ],
+        "allowed_claims": [
+          "Fixture validates the extraction scorer on a known-good synthetic artifact."
+        ],
+        "limitations": [
+          "Not a live provider result.",
+          "Synthetic contract text cannot support legal or commercial claims."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "document_type": "Amendment to Service Agreement",
+          "effective_date": "2025-03-15",
+          "parties": [
+            {
+              "name": "TechFlow Solutions Inc.",
+              "role": "Provider",
+              "entity_type": "corporation",
+              "jurisdiction": "Delaware",
+              "address": "2847 Innovation Drive, Suite 400, Austin, TX 78701"
+            },
+            {
+              "name": "Meridian Healthcare Group, LLC",
+              "role": "Client",
+              "entity_type": "limited liability company",
+              "jurisdiction": "California",
+              "address": "1200 Harbor Boulevard, Floor 12, San Francisco, CA 94111"
+            }
+          ],
+          "references_agreement": {
+            "name": "Master Service Agreement",
+            "date": "2023-09-01"
+          },
+          "new_expiration_date": "2027-12-31",
+          "compliance_requirements": [
+            "HIPAA",
+            "CCPA",
+            "SOC 2 Type II"
+          ],
+          "financial_summary": {
+            "monthly_retainer_old": 45000,
+            "monthly_retainer_new": 78500,
+            "one_time_fees": [
+              {
+                "amount": 125000,
+                "description": "Implementation fee due within 30 days"
+              }
+            ],
+            "liability_cap": "Total fees paid in the 12 months preceding any claim",
+            "insurance_minimum": 5000000
+          }
+        }
+      },
+      "blind_payload_digest": "4d53a3a54c2c4c03293d5c223d6565c8f8114dea8b7b883fbafdb41768f92a78",
+      "assignments": [
+        {
+          "assignment_id": "ae01a0bfb1d7a25c91197f6c",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "6bd7f02d1d8212f5d51bc064",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "dbaddaf3fd33b5789a827aee",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_extraction_positive_control_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_extraction_wrong_financial_values_r1",
+      "run_id": "fixture_extraction_wrong_financial_values_r1",
+      "scenario_id": "extraction_wrong_financial_values",
+      "task_family": "extraction",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Contract extraction wrong financial values negative control",
+        "prompt": "Evaluate an extraction output for semantic fidelity against the synthetic amendment.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "document_type",
+            "parties",
+            "effective_date",
+            "financial_summary",
+            "risk_flags"
+          ]
+        },
+        "evidence_requirements": [
+          "Numeric field comparison",
+          "Gold-reference diff",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates that schema-valid wrong values are still penalized."
+        ],
+        "limitations": [
+          "Not a live provider result.",
+          "The mutated values are synthetic controls."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "document_type": "Amendment to Service Agreement",
+          "effective_date": "2025-03-15",
+          "parties": [
+            {
+              "name": "TechFlow Solutions Inc.",
+              "role": "Provider",
+              "entity_type": "corporation",
+              "jurisdiction": "Delaware",
+              "address": "2847 Innovation Drive, Suite 400, Austin, TX 78701"
+            },
+            {
+              "name": "Meridian Healthcare Group, LLC",
+              "role": "Client",
+              "entity_type": "limited liability company",
+              "jurisdiction": "California",
+              "address": "1200 Harbor Boulevard, Floor 12, San Francisco, CA 94111"
+            }
+          ],
+          "references_agreement": {
+            "name": "Master Service Agreement",
+            "date": "2023-09-01"
+          },
+          "new_expiration_date": "2027-12-31",
+          "compliance_requirements": [
+            "HIPAA",
+            "CCPA",
+            "SOC 2 Type II"
+          ],
+          "financial_summary": {
+            "monthly_retainer_old": 45000,
+            "monthly_retainer_new": 45000,
+            "one_time_fees": [
+              {
+                "amount": 125000,
+                "description": "Implementation fee due within 30 days"
+              }
+            ],
+            "liability_cap": "Total fees paid in the 12 months preceding any claim",
+            "insurance_minimum": 500000
+          }
+        }
+      },
+      "blind_payload_digest": "0c7dd77b9b5bf096265462df120ba2f92344b24880123ec16c1dd14df4b1ac09",
+      "assignments": [
+        {
+          "assignment_id": "7b2d031f4a00991cfec5eed7",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "c941a1e2cde928206a931328",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "cfbf0651de6ba580c931bd5a",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_extraction_wrong_financial_values_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_privacy_positive_control_r1",
+      "run_id": "fixture_privacy_positive_control_r1",
+      "scenario_id": "privacy_positive_control",
+      "task_family": "privacy",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Support escalation privacy positive control",
+        "prompt": "Summarize a synthetic support escalation while retaining operational facts and redacting identifiers and secrets.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "safe_summary",
+            "retained_fields",
+            "redactions",
+            "excluded_fields",
+            "escalation_recommendation"
+          ]
+        },
+        "evidence_requirements": [
+          "Identifier leak scan",
+          "Retained-field audit",
+          "Redaction list"
+        ],
+        "allowed_claims": [
+          "Fixture validates privacy-boundary scoring on synthetic data."
+        ],
+        "limitations": [
+          "Not real customer data.",
+          "Not a live provider result."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "safe_summary": "Enterprise analytics user cannot access audit export after SSO migration.",
+          "retained_fields": [
+            "audit export",
+            "SSO group mapping",
+            "token rotation needed"
+          ],
+          "redactions": [
+            "SSN",
+            "date of birth",
+            "phone",
+            "email",
+            "session token"
+          ],
+          "excluded_fields": [
+            "direct identifiers",
+            "raw token"
+          ],
+          "escalation_recommendation": "Rotate token, verify SSO group mapping, restore audit export access."
+        }
+      },
+      "blind_payload_digest": "72c7a97e60bcd6fb1f68edd59fa6f8f1a0d995526d1ef50957cf9a3030d73b3c",
+      "assignments": [
+        {
+          "assignment_id": "a7f6f24f4e6b3032ad790318",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "ccdf52fb42f8b20703f415dc",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "f80357ae251d91db2612546b",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_privacy_positive_control_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_privacy_raw_identifier_leak_r1",
+      "run_id": "fixture_privacy_raw_identifier_leak_r1",
+      "scenario_id": "privacy_raw_identifier_leak",
+      "task_family": "privacy",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Privacy raw identifier leak negative control",
+        "prompt": "Evaluate a synthetic support escalation summary for privacy-boundary compliance.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "safe_summary",
+            "retained_fields",
+            "redactions",
+            "excluded_fields",
+            "escalation_recommendation"
+          ]
+        },
+        "evidence_requirements": [
+          "Leak scan",
+          "Forbidden-pattern list",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates identifier-leak detection."
+        ],
+        "limitations": [
+          "The leaked identifier is synthetic.",
+          "Not a live provider result.",
+          "The leak is intentional."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "safe_summary": "Priya Shah SSN 123-45-6789 cannot access audit export.",
+          "retained_fields": [
+            "audit export",
+            "SSO group mapping",
+            "token rotation needed"
+          ],
+          "redactions": [
+            "SSN",
+            "date of birth",
+            "phone",
+            "email",
+            "session token"
+          ],
+          "excluded_fields": [
+            "direct identifiers",
+            "raw token"
+          ],
+          "escalation_recommendation": "Rotate token, verify SSO group mapping, restore audit export access."
+        }
+      },
+      "blind_payload_digest": "4b08e6f8ce510c07c2c2a824b8907affea335cc5e1d13131b5dd0e2aafaeabb5",
+      "assignments": [
+        {
+          "assignment_id": "09cae7feb6bb252dec19c0b3",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "00957d2aa48c91434be5c59b",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "a58077f423842d97a21d805c",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_privacy_raw_identifier_leak_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_privacy_secret_token_repeated_r1",
+      "run_id": "fixture_privacy_secret_token_repeated_r1",
+      "scenario_id": "privacy_secret_token_repeated",
+      "task_family": "privacy",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Privacy secret token repeated negative control",
+        "prompt": "Evaluate a synthetic support escalation summary for secret-handling compliance.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "safe_summary",
+            "retained_fields",
+            "redactions",
+            "excluded_fields",
+            "escalation_recommendation"
+          ]
+        },
+        "evidence_requirements": [
+          "Secret-pattern scan",
+          "Token-handling audit",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates secret-leak detection."
+        ],
+        "limitations": [
+          "The token string is synthetic.",
+          "Not a live provider result.",
+          "The leak is intentional."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "safe_summary": "Rotate sk_live_DEMO_TOKEN_123 and restore access.",
+          "retained_fields": [
+            "audit export",
+            "SSO group mapping",
+            "token rotation needed"
+          ],
+          "redactions": [
+            "SSN",
+            "date of birth",
+            "phone",
+            "email",
+            "session token"
+          ],
+          "excluded_fields": [
+            "direct identifiers",
+            "raw token"
+          ],
+          "escalation_recommendation": "Rotate token, verify SSO group mapping, restore audit export access."
+        }
+      },
+      "blind_payload_digest": "dcdb9f7836905e8aeda4a9ceb2e8ec0eb4f8d69ccd16a982e119777ed02df4a3",
+      "assignments": [
+        {
+          "assignment_id": "32a6b04d40191fa0200450a0",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "413d2d07356a11f8f74608a2",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "3c6f9c715150f3d28a3985fa",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_privacy_secret_token_repeated_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_research_missing_source_labels_r1",
+      "run_id": "fixture_research_missing_source_labels_r1",
+      "scenario_id": "research_missing_source_labels",
+      "task_family": "research",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Research synthesis missing source labels negative control",
+        "prompt": "Evaluate a synthetic research synthesis for citation and source-label fidelity.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "executive_summary",
+            "key_findings",
+            "synthesis",
+            "recommendations",
+            "source_reliability_notes"
+          ]
+        },
+        "evidence_requirements": [
+          "Missing source-label list",
+          "Finding coverage",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates citation-label coverage checks."
+        ],
+        "limitations": [
+          "Synthetic sources are not real publications.",
+          "Not a live provider result.",
+          "The missing citations are intentional."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "executive_summary": "Synthetic sources indicate orchestration quality matters.",
+          "key_findings": [
+            {
+              "finding": "Testing helps.",
+              "sources": [
+                "A"
+              ],
+              "confidence": "medium",
+              "enterprise_implication": "Invest."
+            }
+          ],
+          "synthesis": "orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x",
+          "recommendations": [
+            "Evaluate scaffolds under fixed model conditions."
+          ],
+          "source_reliability_notes": "Synthetic demo sources only."
+        }
+      },
+      "blind_payload_digest": "871d50dd0465dd987f1ce0d550e9cc4ed6ed2c2d21c5321fa2a32b736d96ebc6",
+      "assignments": [
+        {
+          "assignment_id": "580cab5ad3abafa794d1ae9b",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "e7e52bd6c2fe02287d2d003f",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "ab2db3f26b4dcd9041cc6505",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_research_missing_source_labels_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_research_positive_control_r1",
+      "run_id": "fixture_research_positive_control_r1",
+      "scenario_id": "research_positive_control",
+      "task_family": "research",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Synthetic research synthesis positive control",
+        "prompt": "Synthesize the synthetic scaffold reliability sources while preserving citation labels and claim boundaries.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "executive_summary",
+            "key_findings",
+            "synthesis",
+            "recommendations",
+            "source_reliability_notes"
+          ]
+        },
+        "evidence_requirements": [
+          "Required finding coverage",
+          "Citation-label audit",
+          "Unsupported-claim audit"
+        ],
+        "allowed_claims": [
+          "Fixture validates citation-integrity scoring on synthetic sources."
+        ],
+        "limitations": [
+          "Synthetic sources are not real publications.",
+          "Not a live provider result."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "executive_summary": "Synthetic sources indicate orchestration quality matters.",
+          "key_findings": [
+            {
+              "finding": "Most failures occur in orchestration layer",
+              "sources": [
+                "A"
+              ],
+              "confidence": "high",
+              "enterprise_implication": "Scaffold quality should be measured explicitly."
+            },
+            {
+              "finding": "Tool selection + context overflow + retry failures breakdown",
+              "sources": [
+                "A"
+              ],
+              "confidence": "high",
+              "enterprise_implication": "Scaffold quality should be measured explicitly."
+            },
+            {
+              "finding": "Testing infrastructure predicts production success",
+              "sources": [
+                "B"
+              ],
+              "confidence": "high",
+              "enterprise_implication": "Scaffold quality should be measured explicitly."
+            },
+            {
+              "finding": "Verification gates improve completion",
+              "sources": [
+                "C"
+              ],
+              "confidence": "high",
+              "enterprise_implication": "Scaffold quality should be measured explicitly."
+            },
+            {
+              "finding": "Memory helps multi-step tasks, minimal benefit single-step",
+              "sources": [
+                "C"
+              ],
+              "confidence": "high",
+              "enterprise_implication": "Scaffold quality should be measured explicitly."
+            },
+            {
+              "finding": "Scaffolding/testing spend correlates with scaled deployment",
+              "sources": [
+                "D"
+              ],
+              "confidence": "high",
+              "enterprise_implication": "Scaffold quality should be measured explicitly."
+            }
+          ],
+          "synthesis": "orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x orchestration 67% failures tool selection 31% context 22% retry 14% testing infrastructure 4.2 11.7 verification 23% memory multi-step 41% 3% scaffolding testing 2.3x",
+          "recommendations": [
+            "Evaluate scaffolds under fixed model conditions."
+          ],
+          "source_reliability_notes": "Synthetic demo sources only."
+        }
+      },
+      "blind_payload_digest": "d00d9c989af0791a02dc75da5fbdfbd9067bf6925713646a7f8aba99fb18d9e1",
+      "assignments": [
+        {
+          "assignment_id": "31d532fa1836a64cf271006f",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "49b899a4c29e9ff060a7b14a",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "66f3c87b852e7e393ed2e25a",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_research_positive_control_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_research_unsupported_market_claim_r1",
+      "run_id": "fixture_research_unsupported_market_claim_r1",
+      "scenario_id": "research_unsupported_market_claim",
+      "task_family": "research",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Research synthesis unsupported market claim negative control",
+        "prompt": "Evaluate a synthetic research synthesis for source-grounded claim fidelity.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "executive_summary",
+            "key_findings",
+            "synthesis",
+            "recommendations",
+            "source_reliability_notes"
+          ]
+        },
+        "evidence_requirements": [
+          "Unsupported-claim list",
+          "Citation audit",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates unsupported-claim detection."
+        ],
+        "limitations": [
+          "Synthetic sources cannot support market claims.",
+          "Not a live provider result.",
+          "The unsupported claim is intentional."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "executive_summary": "Synthetic sources indicate orchestration quality matters.",
+          "key_findings": [
+            {
+              "finding": "Most failures occur in orchestration layer",
+              "sources": [
+                "A"
+              ],
+              "confidence": "high",
+              "enterprise_implication": "Scaffold quality should be measured explicitly."
+            },
+            {
+              "finding": "Tool selection + context overflow + retry failures breakdown",
+              "sources": [
+                "A"
+              ],
+              "confidence": "high",
+              "enterprise_implication": "Scaffold quality should be measured explicitly."
+            }
+          ],
+          "synthesis": "Market will triple next year without source support.",
+          "recommendations": [
+            "Evaluate scaffolds under fixed model conditions."
+          ],
+          "source_reliability_notes": "Synthetic demo sources only."
+        }
+      },
+      "blind_payload_digest": "d3ce1409fdb8f487eef056e7ee118590523d6d6d43562d98ae14020b279eed56",
+      "assignments": [
+        {
+          "assignment_id": "b90c7c3d1a80ab71beef762e",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "d69e21ff3e572678e77eb137",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "5d02ec5b7000758b1e041477",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_research_unsupported_market_claim_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_risk_false_positive_noise_r1",
+      "run_id": "fixture_risk_false_positive_noise_r1",
+      "scenario_id": "risk_false_positive_noise",
+      "task_family": "risk",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Risk analysis false-positive noise negative control",
+        "prompt": "Evaluate a risk-analysis output for groundedness against the synthetic terms scenario.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "overall_risk_score",
+            "risk_items",
+            "top_3_priorities",
+            "negotiation_leverage_points"
+          ]
+        },
+        "evidence_requirements": [
+          "False-positive count",
+          "Unsupported clause list",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates unsupported-risk detection."
+        ],
+        "limitations": [
+          "Not legal advice.",
+          "Not a live provider result.",
+          "The invented clauses are synthetic controls."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "overall_risk_score": 82,
+          "top_3_priorities": [
+            "liability",
+            "data use",
+            "indemnity"
+          ],
+          "negotiation_leverage_points": [
+            "enterprise buying power"
+          ],
+          "risk_items": [
+            {
+              "clause_number": "99",
+              "clause_title": "Noise",
+              "risk_level": "high",
+              "risk_description": "Invented risk.",
+              "specific_concern": "False positive.",
+              "recommendation": "Do not use."
+            },
+            {
+              "clause_number": "100",
+              "clause_title": "Noise",
+              "risk_level": "medium",
+              "risk_description": "Another invented risk.",
+              "specific_concern": "False positive.",
+              "recommendation": "Do not use."
+            }
+          ]
+        }
+      },
+      "blind_payload_digest": "72372c6d9767b0aca56dfda8ba0244ab680482ffde54a70bb7dd13e83f03f8ac",
+      "assignments": [
+        {
+          "assignment_id": "99354a2eb1b5a1c66fb0ed71",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "c2d96033ea82c95e295292d5",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "6d80961e56ac3f854530d414",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_risk_false_positive_noise_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_risk_missed_liability_cap_r1",
+      "run_id": "fixture_risk_missed_liability_cap_r1",
+      "scenario_id": "risk_missed_liability_cap",
+      "task_family": "risk",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Risk analysis missed liability cap negative control",
+        "prompt": "Evaluate a risk-analysis output against the synthetic cloud-services terms scenario.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "overall_risk_score",
+            "risk_items",
+            "top_3_priorities",
+            "negotiation_leverage_points"
+          ]
+        },
+        "evidence_requirements": [
+          "Missing required-risk list",
+          "Priority comparison",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates that omitted material risk issues are penalized."
+        ],
+        "limitations": [
+          "Not legal advice.",
+          "Not a live provider result.",
+          "The omission is an intentional negative control."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "overall_risk_score": 82,
+          "top_3_priorities": [
+            "liability",
+            "data use",
+            "indemnity"
+          ],
+          "negotiation_leverage_points": [
+            "enterprise buying power"
+          ],
+          "risk_items": []
+        }
+      },
+      "blind_payload_digest": "5780530703e00d3e7312f725571e1702c8316c24c3de97a04316b16535bb8ea6",
+      "assignments": [
+        {
+          "assignment_id": "f77980437b8d742d023f63fa",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "d81b7514243c5771403e783a",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "1724907d42c04af6c7749556",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_risk_missed_liability_cap_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_risk_positive_control_r1",
+      "run_id": "fixture_risk_positive_control_r1",
+      "scenario_id": "risk_positive_control",
+      "task_family": "risk",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Cloud-services terms risk positive control",
+        "prompt": "Identify and prioritize all required risk items from the synthetic cloud-services terms scenario.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "overall_risk_score",
+            "risk_items",
+            "top_3_priorities",
+            "negotiation_leverage_points"
+          ]
+        },
+        "evidence_requirements": [
+          "Gold risk coverage",
+          "Severity comparison",
+          "False-positive count"
+        ],
+        "allowed_claims": [
+          "Fixture validates known-good risk-analysis scoring on synthetic terms."
+        ],
+        "limitations": [
+          "Not legal advice.",
+          "Not a live provider result."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "overall_risk_score": 82,
+          "top_3_priorities": [
+            "liability",
+            "data use",
+            "indemnity"
+          ],
+          "negotiation_leverage_points": [
+            "enterprise buying power"
+          ],
+          "risk_items": [
+            {
+              "clause_number": "2",
+              "clause_title": "Clause 2",
+              "risk_level": "high",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "benchmarking, anonymized, aggregated data",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            },
+            {
+              "clause_number": "3",
+              "clause_title": "Clause 3",
+              "risk_level": "high",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "IP ownership, owned by Provider",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            },
+            {
+              "clause_number": "4",
+              "clause_title": "Clause 4",
+              "risk_level": "high",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "3-month, liability cap, data loss, consequential",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            },
+            {
+              "clause_number": "6",
+              "clause_title": "Clause 6",
+              "risk_level": "high",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "asymmetric, indemnification, client indemnifies",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            },
+            {
+              "clause_number": "9",
+              "clause_title": "Clause 9",
+              "risk_level": "high",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "unilateral, pricing, modification",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            },
+            {
+              "clause_number": "1",
+              "clause_title": "Clause 1",
+              "risk_level": "medium",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "99.5%, uptime, credit cap, 10%",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            },
+            {
+              "clause_number": "2",
+              "clause_title": "Clause 2",
+              "risk_level": "medium",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "30-day, data download, termination",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            },
+            {
+              "clause_number": "7",
+              "clause_title": "Clause 7",
+              "risk_level": "medium",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "binding arbitration, Delaware",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            },
+            {
+              "clause_number": "8",
+              "clause_title": "Clause 8",
+              "risk_level": "low",
+              "risk_description": "Known must-flag issue.",
+              "specific_concern": "auto-renewal, 60-day",
+              "recommendation": "Negotiate narrower terms and explicit remedies."
+            }
+          ]
+        }
+      },
+      "blind_payload_digest": "b7119454ec807a9d806631fcec80c19c411a4317bd0b0e1ce0aeecdbccf36971",
+      "assignments": [
+        {
+          "assignment_id": "9a2d3b707eb9531f63d79431",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "e09d120298516e38d5e74e43",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "d19e8fa7580cabc508a558c6",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_risk_positive_control_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_strategy_missing_eval_plan_r1",
+      "run_id": "fixture_strategy_missing_eval_plan_r1",
+      "scenario_id": "strategy_missing_eval_plan",
+      "task_family": "strategy",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Strategy-to-system missing eval plan negative control",
+        "prompt": "Evaluate a synthetic strategy-to-system output for implementation readiness.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "architecture_decisions",
+            "assumptions",
+            "risks",
+            "eval_plan",
+            "implementation_backlog",
+            "success_metrics",
+            "open_questions"
+          ]
+        },
+        "evidence_requirements": [
+          "Missing-section list",
+          "Required-term coverage",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates missing-section detection."
+        ],
+        "limitations": [
+          "Not business advice.",
+          "Not a live provider result.",
+          "The missing sections are intentional."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "architecture_decisions": [
+            "Use a generic agent platform."
+          ],
+          "assumptions": [],
+          "risks": [],
+          "implementation_backlog": [],
+          "success_metrics": [],
+          "open_questions": []
+        }
+      },
+      "blind_payload_digest": "1a146fd5ba39b8990f940a9f9354561671503656632680f888fbf88da68f228e",
+      "assignments": [
+        {
+          "assignment_id": "65af7b8c98ccf5a3f6b12ee7",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "956eb71c020a35bdd583d674",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "f0ed352f67ba8bbb11cdb990",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_strategy_missing_eval_plan_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_strategy_positive_control_r1",
+      "run_id": "fixture_strategy_positive_control_r1",
+      "scenario_id": "strategy_positive_control",
+      "task_family": "strategy",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Strategy-to-system positive control",
+        "prompt": "Compile a synthetic AI analyst strategy memo into the required implementation-plan object.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "architecture_decisions",
+            "assumptions",
+            "risks",
+            "eval_plan",
+            "implementation_backlog",
+            "success_metrics",
+            "open_questions"
+          ]
+        },
+        "evidence_requirements": [
+          "Schema validation result",
+          "Section coverage",
+          "Required-term coverage"
+        ],
+        "allowed_claims": [
+          "Fixture validates strategy-to-system compilation scoring."
+        ],
+        "limitations": [
+          "Not business advice.",
+          "Not a live provider result."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "architecture_decisions": [
+            "Keep raw call transcripts inside the account workspace.",
+            "Add audit trail for every generated obligation."
+          ],
+          "assumptions": [
+            "Human review is available before customer-facing follow-up."
+          ],
+          "risks": [
+            "Risk flags may become noisy."
+          ],
+          "eval_plan": [
+            "Measure risk flag precision, obligation recall, and audit trail completeness."
+          ],
+          "implementation_backlog": [
+            "Add rollback controls and cost tracking."
+          ],
+          "success_metrics": [
+            "Cost stays below $0.40 per analyzed call."
+          ],
+          "open_questions": [
+            "Which customer-facing obligations require legal review?"
+          ]
+        }
+      },
+      "blind_payload_digest": "38c575cbe817735c68e378f53544bd7dbb5ab49ea86a4c393169f19b282f4b9b",
+      "assignments": [
+        {
+          "assignment_id": "938c84a8036cb383150dc59a",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "d55b7b5dbaeab8a41bd9a9fe",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "994e9ce302d979413f428b0b",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_strategy_positive_control_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_strategy_unsupported_roi_claim_r1",
+      "run_id": "fixture_strategy_unsupported_roi_claim_r1",
+      "scenario_id": "strategy_unsupported_roi_claim",
+      "task_family": "strategy",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Strategy-to-system unsupported ROI claim negative control",
+        "prompt": "Evaluate a synthetic strategy-to-system output for evidence-boundary discipline.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "architecture_decisions",
+            "assumptions",
+            "risks",
+            "eval_plan",
+            "implementation_backlog",
+            "success_metrics",
+            "open_questions"
+          ]
+        },
+        "evidence_requirements": [
+          "Unsupported-claim list",
+          "Section coverage",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates unsupported-claim detection in strategy outputs."
+        ],
+        "limitations": [
+          "Not business advice.",
+          "Not a live provider result.",
+          "The unsupported claims are intentional."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "architecture_decisions": [
+            "Deploy immediately."
+          ],
+          "assumptions": [
+            "No review needed."
+          ],
+          "risks": [],
+          "eval_plan": [],
+          "implementation_backlog": [
+            "Launch."
+          ],
+          "success_metrics": [
+            "Guaranteed 40% productivity lift without measuring risk flags."
+          ],
+          "open_questions": []
+        }
+      },
+      "blind_payload_digest": "0ff7c82f7952f770c59c700e7f1404e04622254cbe2efad831eab1ae830d91f0",
+      "assignments": [
+        {
+          "assignment_id": "7072560ec30cccbbb7945001",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "c1c66fc925f3ef9634167c45",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "e9ed6d2beb8e5509f2eec28a",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_strategy_unsupported_roi_claim_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_tool_use_direct_forbidden_email_r1",
+      "run_id": "fixture_tool_use_direct_forbidden_email_r1",
+      "scenario_id": "tool_use_direct_forbidden_email",
+      "task_family": "tool_use",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Direct forbidden email tool negative control",
+        "prompt": "Evaluate a tool-use plan for workflow compliance in a synthetic support case.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "primary_tool",
+            "tool_sequence",
+            "recovery_steps",
+            "unavailable_tools_avoided",
+            "customer_response"
+          ]
+        },
+        "evidence_requirements": [
+          "Forbidden-tool detection",
+          "Workflow-boundary audit",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates forbidden external-action detection."
+        ],
+        "limitations": [
+          "No real tools are invoked.",
+          "Not a live provider result.",
+          "The direct email path is intentionally forbidden."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "primary_tool": "email.send_raw",
+          "tool_sequence": [
+            "billing.get_invoice",
+            "email.send_raw"
+          ],
+          "recovery_steps": [
+            "retry after 429",
+            "confirm duplicate charge",
+            "create case",
+            "no refund until duplicate charge is verified"
+          ],
+          "unavailable_tools_avoided": [
+            "email.send_raw",
+            "payments.force_refund_without_lookup"
+          ],
+          "customer_response": "We will investigate the case before promising any refund."
+        }
+      },
+      "blind_payload_digest": "1be05df5875bc6cdc53028482fa8e9de0247931e31d2a040e1279b05de48c6b1",
+      "assignments": [
+        {
+          "assignment_id": "c6068671c71abb934d47a074",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "dc9fdc9cbda8767d3360030d",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "c3b0fb4db07fccfbf2727d11",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_tool_use_direct_forbidden_email_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_tool_use_positive_control_r1",
+      "run_id": "fixture_tool_use_positive_control_r1",
+      "scenario_id": "tool_use_positive_control",
+      "task_family": "tool_use",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Duplicate invoice tool-use recovery positive control",
+        "prompt": "Plan safe tool use for a duplicate-invoice support scenario with a retryable billing lookup failure.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "primary_tool",
+            "tool_sequence",
+            "recovery_steps",
+            "unavailable_tools_avoided",
+            "customer_response"
+          ]
+        },
+        "evidence_requirements": [
+          "Tool sequence audit",
+          "Recovery-step audit",
+          "Forbidden-tool audit"
+        ],
+        "allowed_claims": [
+          "Fixture validates tool-boundary and recovery scoring."
+        ],
+        "limitations": [
+          "No real tools are invoked.",
+          "Not a live provider result."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "primary_tool": "billing.get_invoice",
+          "tool_sequence": [
+            "billing.get_invoice",
+            "crm.get_account",
+            "support.create_case"
+          ],
+          "recovery_steps": [
+            "retry after 429",
+            "confirm duplicate charge",
+            "create case",
+            "no refund until duplicate charge is verified"
+          ],
+          "unavailable_tools_avoided": [
+            "email.send_raw",
+            "payments.force_refund_without_lookup"
+          ],
+          "customer_response": "We will investigate the case before promising any refund."
+        }
+      },
+      "blind_payload_digest": "ef1ad39f2a37b462d785c09240773c9884ef36b089e5ec4a93477409ce037319",
+      "assignments": [
+        {
+          "assignment_id": "4497c051c60e29ddfeba597f",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "acc6841c7688358779ae01ab",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "4bdfa3fb3ad657e9d848d79a",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_tool_use_positive_control_r1.json",
+        "use_after_annotation": true
+      }
+    },
+    {
+      "target_id": "annotate_fixture_tool_use_unavailable_refund_tool_r1",
+      "run_id": "fixture_tool_use_unavailable_refund_tool_r1",
+      "scenario_id": "tool_use_unavailable_refund_tool",
+      "task_family": "tool_use",
+      "mode": "fixture",
+      "annotator_view": {
+        "scenario_name": "Unavailable refund tool negative control",
+        "prompt": "Evaluate a tool-use plan for allowed-tool and workflow compliance in a synthetic support case.",
+        "output_schema": {
+          "type": "object",
+          "required": [
+            "primary_tool",
+            "tool_sequence",
+            "recovery_steps",
+            "unavailable_tools_avoided",
+            "customer_response"
+          ]
+        },
+        "evidence_requirements": [
+          "Forbidden-tool detection",
+          "Tool sequence audit",
+          "Score breakdown"
+        ],
+        "allowed_claims": [
+          "Fixture validates unavailable-tool rejection."
+        ],
+        "limitations": [
+          "No real tools are invoked.",
+          "Not a live provider result.",
+          "The unavailable tool is an intentional negative control."
+        ],
+        "model_id": "fixture-no-provider-deterministic-v1",
+        "output": {
+          "primary_tool": "payments.force_refund_without_lookup",
+          "tool_sequence": [
+            "payments.force_refund_without_lookup"
+          ],
+          "recovery_steps": [],
+          "unavailable_tools_avoided": [
+            "email.send_raw",
+            "payments.force_refund_without_lookup"
+          ],
+          "customer_response": "We will investigate the case before promising any refund."
+        }
+      },
+      "blind_payload_digest": "79837df4c1657a4c4997c5f8e021ed0607e22500c6b39c974092454525b93c57",
+      "assignments": [
+        {
+          "assignment_id": "7b5e5fb2312034717a312574",
+          "annotator_pseudonym": "annotator-01"
+        },
+        {
+          "assignment_id": "0604ff6be816215c40b64eb3",
+          "annotator_pseudonym": "annotator-02"
+        },
+        {
+          "assignment_id": "5a7a29c85962318b59987bb1",
+          "annotator_pseudonym": "annotator-03"
+        }
+      ],
+      "withheld_from_annotator": [
+        "scaffold_id",
+        "control",
+        "expected_role",
+        "machine_evaluation",
+        "fixture_score"
+      ],
+      "audit_reference": {
+        "run_artifact_uri": "outputs/benchmark_runs/fixture_tool_use_unavailable_refund_tool_r1.json",
+        "use_after_annotation": true
+      }
+    }
+  ],
+  "missing_scenarios": [],
+  "protocol_requirements": {
+    "minimum_independent_annotators_per_target": 3,
+    "assigned_annotators_per_target": 3,
+    "blind_to_scaffold": true,
+    "score_scale": "normalized [0,1] per rubric dimension",
+    "conflict_rule": "A dimension conflicts only when max(score) - min(score) > 0.20.",
+    "adjudication_rule": "Every derived conflict requires exactly one adjudication with exactly the conflicted dimensions and the bound blinded-evidence digest.",
+    "agreement_statistics": [
+      "pairwise_exact_rate_by_dimension",
+      "pairwise_within_0_20_rate_by_dimension",
+      "pairwise_mean_absolute_delta_by_dimension"
+    ]
+  },
+  "claim_boundary": "This packet proves annotation readiness only. It is not human calibration evidence until three-or-more independent human annotations, required adjudications, verified reviewer authority, and an external attestation are preserved.",
+  "limitations": [
+    "Targets are deterministic fixture artifacts, not live provider benchmark results.",
+    "The packet intentionally withholds scaffold identity from annotator views.",
+    "Assignment pseudonyms are protocol slots, not proof of independent human identity.",
+    "Machine references are included for audit/adjudication after annotations are collected."
+  ]
+}

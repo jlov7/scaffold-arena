@@ -1,0 +1,74 @@
+{
+  "$defs": {
+    "AtlasReleaseEntry": {
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "maxLength": 512,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "title": "AtlasReleaseEntry",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/harness-mechanism-atlas-release-digest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "atlas_id": {
+      "const": "harness-mechanism-atlas-v1",
+      "default": "harness-mechanism-atlas-v1",
+      "title": "Atlas Id",
+      "type": "string"
+    },
+    "canonicalization": {
+      "const": "arena-json-v1",
+      "default": "arena-json-v1",
+      "title": "Canonicalization",
+      "type": "string"
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/AtlasReleaseEntry"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Entries",
+      "type": "array"
+    },
+    "release_digest": {
+      "pattern": "^sha256:[a-f0-9]{64}$",
+      "title": "Release Digest",
+      "type": "string"
+    },
+    "release_digest_schema": {
+      "const": "scaffold-arena.harness-mechanism-atlas-release-digest/1",
+      "default": "scaffold-arena.harness-mechanism-atlas-release-digest/1",
+      "title": "Release Digest Schema",
+      "type": "string"
+    },
+    "source_date": {
+      "title": "Source Date",
+      "type": "string"
+    }
+  },
+  "required": [
+    "source_date",
+    "entries",
+    "release_digest"
+  ],
+  "title": "AtlasReleaseDigest",
+  "type": "object"
+}

@@ -1,0 +1,1287 @@
+{
+  "schema_version": "bundled-offline-demo-fixture-truth-table-v1",
+  "claim_ceiling": "synthetic recorded fixture mapping only; no provider, empirical, or causal claim",
+  "factor_order": [
+    "planning",
+    "verification",
+    "recovery",
+    "memory"
+  ],
+  "rows": [
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": []
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": []
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": []
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": []
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": []
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": false,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": false,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "planning"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "planning"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": true,
+        "verification": false,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "candidate-clean.json",
+      "case_state": "completed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": false
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "candidate-clean.json",
+      "case_state": "completed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": false,
+        "memory": true
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "candidate-clean.json",
+      "case_state": "completed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "candidate-mechanism-miss.json",
+      "case_state": "failed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": false
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery"
+      ]
+    },
+    {
+      "scenario_id": "candidate-clean",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "candidate-clean.json",
+      "case_state": "completed",
+      "fixture_rule": "clean_requires_planning_and_verification",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "candidate-stress",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "candidate-stress.json",
+      "case_state": "completed",
+      "fixture_rule": "stress_requires_planning_verification_recovery_and_memory",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "positive-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "positive-control.json",
+      "case_state": "completed",
+      "fixture_rule": "positive_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "negative-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "negative-control.json",
+      "case_state": "failed",
+      "fixture_rule": "negative_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    },
+    {
+      "scenario_id": "anti-cheat-control",
+      "assignment": {
+        "planning": true,
+        "verification": true,
+        "recovery": true,
+        "memory": true
+      },
+      "output_file": "anti-cheat-control.json",
+      "case_state": "completed",
+      "fixture_rule": "anti_cheat_control_fixed",
+      "fixture_enabled_mechanisms": [
+        "planning",
+        "verification",
+        "recovery",
+        "memory"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,625 @@
+{
+  "$defs": {
+    "CohortAllocation": {
+      "additionalProperties": false,
+      "properties": {
+        "allocation_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Allocation Digest",
+          "type": "string"
+        },
+        "allocation_kind": {
+          "enum": [
+            "paired",
+            "randomized_paired"
+          ],
+          "title": "Allocation Kind",
+          "type": "string"
+        },
+        "development_item_digests": {
+          "items": {
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "maxItems": 512,
+          "minItems": 1,
+          "title": "Development Item Digests",
+          "type": "array"
+        },
+        "holdout_item_digests": {
+          "items": {
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "maxItems": 512,
+          "minItems": 1,
+          "title": "Holdout Item Digests",
+          "type": "array"
+        },
+        "replay_item_digests": {
+          "items": {
+            "pattern": "^sha256:[a-f0-9]{64}$",
+            "type": "string"
+          },
+          "maxItems": 512,
+          "minItems": 1,
+          "title": "Replay Item Digests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "allocation_digest",
+        "allocation_kind",
+        "development_item_digests",
+        "holdout_item_digests",
+        "replay_item_digests"
+      ],
+      "title": "CohortAllocation",
+      "type": "object"
+    },
+    "LiveAuthorization": {
+      "additionalProperties": false,
+      "description": "Attestation only: credentials themselves are never supplied or stored.",
+      "properties": {
+        "budget_usd": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000,
+          "title": "Budget Usd",
+          "type": "number"
+        },
+        "credentials_configured": {
+          "const": true,
+          "title": "Credentials Configured",
+          "type": "boolean"
+        },
+        "policy_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Policy Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "credentials_configured",
+        "budget_usd",
+        "policy_digest"
+      ],
+      "title": "LiveAuthorization",
+      "type": "object"
+    },
+    "MechanismIntervention": {
+      "additionalProperties": false,
+      "properties": {
+        "applied_control_receipt_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Applied Control Receipt Digest",
+          "type": "string"
+        },
+        "base_mechanism_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Base Mechanism Digest",
+          "type": "string"
+        },
+        "candidate_mechanism_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Candidate Mechanism Digest",
+          "type": "string"
+        },
+        "declared_change_count": {
+          "const": 1,
+          "default": 1,
+          "title": "Declared Change Count",
+          "type": "integer"
+        },
+        "intervention_spec_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Intervention Spec Digest",
+          "type": "string"
+        },
+        "mechanism_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Mechanism Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "mechanism_id",
+        "base_mechanism_digest",
+        "candidate_mechanism_digest",
+        "intervention_spec_digest",
+        "applied_control_receipt_digest"
+      ],
+      "title": "MechanismIntervention",
+      "type": "object"
+    },
+    "ReplayAnalysisPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "causal_claim_requested": {
+          "const": false,
+          "default": false,
+          "title": "Causal Claim Requested",
+          "type": "boolean"
+        },
+        "confirmatory_holdout_declared": {
+          "default": false,
+          "title": "Confirmatory Holdout Declared",
+          "type": "boolean"
+        },
+        "deterministic_score_weight": {
+          "maximum": 1.0,
+          "minimum": 0.7,
+          "title": "Deterministic Score Weight",
+          "type": "number"
+        },
+        "evaluator_blinded": {
+          "const": true,
+          "default": true,
+          "title": "Evaluator Blinded",
+          "type": "boolean"
+        },
+        "exclusion_rule_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Exclusion Rule Digest",
+          "type": "string"
+        },
+        "planned_repetitions": {
+          "maximum": 512,
+          "minimum": 1,
+          "title": "Planned Repetitions",
+          "type": "integer"
+        },
+        "preregistration_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Preregistration Digest",
+          "type": "string"
+        },
+        "primary_endpoint": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Primary Endpoint",
+          "type": "string"
+        },
+        "stopping_rule_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Stopping Rule Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "preregistration_digest",
+        "stopping_rule_digest",
+        "exclusion_rule_digest",
+        "primary_endpoint",
+        "planned_repetitions",
+        "deterministic_score_weight"
+      ],
+      "title": "ReplayAnalysisPlan",
+      "type": "object"
+    },
+    "ReplayBinding": {
+      "additionalProperties": false,
+      "description": "All branch-invariant pre-divergence inputs are bound once, not per branch.",
+      "properties": {
+        "base_genome_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Base Genome Digest",
+          "type": "string"
+        },
+        "candidate_genome_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Candidate Genome Digest",
+          "type": "string"
+        },
+        "checkpoint_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Checkpoint Digest",
+          "type": "string"
+        },
+        "dependencies_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Dependencies Digest",
+          "type": "string"
+        },
+        "environment_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Environment Digest",
+          "type": "string"
+        },
+        "evaluation_configuration_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evaluation Configuration Digest",
+          "type": "string"
+        },
+        "evaluator_blinded": {
+          "const": true,
+          "default": true,
+          "title": "Evaluator Blinded",
+          "type": "boolean"
+        },
+        "evaluator_configuration_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evaluator Configuration Digest",
+          "type": "string"
+        },
+        "evaluator_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evaluator Digest",
+          "type": "string"
+        },
+        "initial_state_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Initial State Digest",
+          "type": "string"
+        },
+        "model_identity_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Model Identity Digest",
+          "type": "string"
+        },
+        "pre_divergence_trace_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Pre Divergence Trace Digest",
+          "type": "string"
+        },
+        "runtime_identity_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Runtime Identity Digest",
+          "type": "string"
+        },
+        "task_pack_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Task Pack Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "checkpoint_digest",
+        "initial_state_digest",
+        "pre_divergence_trace_digest",
+        "environment_digest",
+        "dependencies_digest",
+        "model_identity_digest",
+        "runtime_identity_digest",
+        "task_pack_digest",
+        "evaluator_digest",
+        "evaluator_configuration_digest",
+        "evaluation_configuration_digest",
+        "base_genome_digest",
+        "candidate_genome_digest"
+      ],
+      "title": "ReplayBinding",
+      "type": "object"
+    },
+    "ReplayBranchOutcome": {
+      "additionalProperties": false,
+      "properties": {
+        "evaluator_output_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Evaluator Output Digest",
+          "type": "string"
+        },
+        "fidelity_level": {
+          "anyOf": [
+            {
+              "enum": [
+                "declared",
+                "assigned",
+                "available",
+                "triggered",
+                "applied",
+                "activated",
+                "observed",
+                "downstream_pathway_detected"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fidelity Level"
+        },
+        "fidelity_state": {
+          "enum": [
+            "observed",
+            "unknown",
+            "ineligible"
+          ],
+          "title": "Fidelity State",
+          "type": "string"
+        },
+        "latency_ms": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latency Ms"
+        },
+        "latency_state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "Latency State",
+          "type": "string"
+        },
+        "process_safety": {
+          "enum": [
+            "pass",
+            "fail",
+            "unknown"
+          ],
+          "title": "Process Safety",
+          "type": "string"
+        },
+        "quality_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Quality Score",
+          "type": "number"
+        },
+        "result_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Result Digest",
+          "type": "string"
+        },
+        "severe_failure_codes": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Severe Failure Codes",
+          "type": "array"
+        },
+        "trace_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Trace Digest",
+          "type": "string"
+        },
+        "usage": {
+          "$ref": "#/$defs/UsageObservation"
+        }
+      },
+      "required": [
+        "result_digest",
+        "trace_digest",
+        "evaluator_output_digest",
+        "quality_score",
+        "latency_state",
+        "usage",
+        "fidelity_state",
+        "process_safety"
+      ],
+      "title": "ReplayBranchOutcome",
+      "type": "object"
+    },
+    "ReplayPair": {
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "$ref": "#/$defs/ReplayBranchOutcome"
+        },
+        "candidate": {
+          "$ref": "#/$defs/ReplayBranchOutcome"
+        },
+        "pair_id": {
+          "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+          "title": "Pair Id",
+          "type": "string"
+        },
+        "repetition": {
+          "maximum": 512,
+          "minimum": 1,
+          "title": "Repetition",
+          "type": "integer"
+        },
+        "task_item_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Task Item Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pair_id",
+        "task_item_digest",
+        "repetition",
+        "base",
+        "candidate"
+      ],
+      "title": "ReplayPair",
+      "type": "object"
+    },
+    "SemanticMechanismDiff": {
+      "additionalProperties": false,
+      "properties": {
+        "changed_mechanism_ids": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "title": "Changed Mechanism Ids",
+          "type": "array"
+        },
+        "recommended_packs": {
+          "items": {
+            "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+            "type": "string"
+          },
+          "maxItems": 16,
+          "title": "Recommended Packs",
+          "type": "array"
+        },
+        "source_diff_digest": {
+          "pattern": "^sha256:[a-f0-9]{64}$",
+          "title": "Source Diff Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_diff_digest",
+        "changed_mechanism_ids"
+      ],
+      "title": "SemanticMechanismDiff",
+      "type": "object"
+    },
+    "UsageObservation": {
+      "additionalProperties": false,
+      "description": "Unknown usage is structurally null and can never be rendered as zero.",
+      "properties": {
+        "cost_usd": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cost Usd"
+        },
+        "input_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Tokens"
+        },
+        "output_tokens": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Output Tokens"
+        },
+        "price_catalog_revision": {
+          "anyOf": [
+            {
+              "pattern": "^[a-z][a-z0-9_-]{1,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Price Catalog Revision"
+        },
+        "provider_usage_digest": {
+          "anyOf": [
+            {
+              "pattern": "^sha256:[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Provider Usage Digest"
+        },
+        "state": {
+          "enum": [
+            "observed",
+            "unknown"
+          ],
+          "title": "State",
+          "type": "string"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "UsageObservation",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/counterfactual-replay-v1-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allocation": {
+      "$ref": "#/$defs/CohortAllocation"
+    },
+    "analysis_plan": {
+      "$ref": "#/$defs/ReplayAnalysisPlan"
+    },
+    "binding": {
+      "$ref": "#/$defs/ReplayBinding"
+    },
+    "intervention": {
+      "$ref": "#/$defs/MechanismIntervention"
+    },
+    "live_authorization": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/LiveAuthorization"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "mode": {
+      "default": "fixture",
+      "enum": [
+        "fixture",
+        "recorded",
+        "live"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "pairs": {
+      "items": {
+        "$ref": "#/$defs/ReplayPair"
+      },
+      "maxItems": 512,
+      "minItems": 1,
+      "title": "Pairs",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "scaffold-arena.counterfactual-replay/1",
+      "default": "scaffold-arena.counterfactual-replay/1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "semantic_diff": {
+      "$ref": "#/$defs/SemanticMechanismDiff"
+    }
+  },
+  "required": [
+    "binding",
+    "intervention",
+    "semantic_diff",
+    "allocation",
+    "analysis_plan",
+    "pairs"
+  ],
+  "title": "CounterfactualReplayRequest",
+  "type": "object"
+}

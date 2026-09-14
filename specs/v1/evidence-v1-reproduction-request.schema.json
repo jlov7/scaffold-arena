@@ -1,0 +1,182 @@
+{
+  "$defs": {
+    "ExternalIndependenceAttestation": {
+      "additionalProperties": false,
+      "description": "External attestation reference; this code records it but cannot verify real-world identity.",
+      "properties": {
+        "attestation_evidence_ref": {
+          "minLength": 1,
+          "title": "Attestation Evidence Ref",
+          "type": "string"
+        },
+        "attester_authority_id": {
+          "minLength": 1,
+          "title": "Attester Authority Id",
+          "type": "string"
+        },
+        "externally_attested": {
+          "const": true,
+          "default": true,
+          "title": "Externally Attested",
+          "type": "boolean"
+        },
+        "original_authority_id": {
+          "minLength": 1,
+          "title": "Original Authority Id",
+          "type": "string"
+        },
+        "original_operator_id": {
+          "minLength": 1,
+          "title": "Original Operator Id",
+          "type": "string"
+        },
+        "reproducer_authority_id": {
+          "minLength": 1,
+          "title": "Reproducer Authority Id",
+          "type": "string"
+        },
+        "reproducer_operator_id": {
+          "minLength": 1,
+          "title": "Reproducer Operator Id",
+          "type": "string"
+        },
+        "reproduction_receipt_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Reproduction Receipt Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reproduction_receipt_hash",
+        "original_operator_id",
+        "original_authority_id",
+        "reproducer_operator_id",
+        "reproducer_authority_id",
+        "attester_authority_id",
+        "attestation_evidence_ref"
+      ],
+      "title": "ExternalIndependenceAttestation",
+      "type": "object"
+    },
+    "ReproductionReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "deviations": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "title": "Deviations",
+          "type": "array"
+        },
+        "independent": {
+          "const": false,
+          "default": false,
+          "title": "Independent",
+          "type": "boolean"
+        },
+        "integrity_not_truth": {
+          "const": true,
+          "default": true,
+          "title": "Integrity Not Truth",
+          "type": "boolean"
+        },
+        "original_authority_id": {
+          "minLength": 1,
+          "title": "Original Authority Id",
+          "type": "string"
+        },
+        "original_environment_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Original Environment Hash",
+          "type": "string"
+        },
+        "original_manifest_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Original Manifest Hash",
+          "type": "string"
+        },
+        "original_operator_id": {
+          "minLength": 1,
+          "title": "Original Operator Id",
+          "type": "string"
+        },
+        "receipt_id": {
+          "minLength": 1,
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "reproduced_manifest_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Reproduced Manifest Hash",
+          "type": "string"
+        },
+        "reproducer_authority_id": {
+          "minLength": 1,
+          "title": "Reproducer Authority Id",
+          "type": "string"
+        },
+        "reproducer_environment_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Reproducer Environment Hash",
+          "type": "string"
+        },
+        "reproducer_operator_id": {
+          "minLength": 1,
+          "title": "Reproducer Operator Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "original_operator_id",
+        "original_authority_id",
+        "reproducer_operator_id",
+        "reproducer_authority_id",
+        "original_environment_hash",
+        "reproducer_environment_hash",
+        "original_manifest_hash",
+        "reproduced_manifest_hash"
+      ],
+      "title": "ReproductionReceipt",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/evidence-v1-reproduction-request.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Public request contract for a reproduction custody record.",
+  "properties": {
+    "external_attestation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ExternalIndependenceAttestation"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "original_evidence_receipt_id": {
+      "minLength": 1,
+      "title": "Original Evidence Receipt Id",
+      "type": "string"
+    },
+    "receipt": {
+      "$ref": "#/$defs/ReproductionReceipt"
+    },
+    "reproduced_evidence_receipt_id": {
+      "minLength": 1,
+      "title": "Reproduced Evidence Receipt Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "receipt",
+    "original_evidence_receipt_id",
+    "reproduced_evidence_receipt_id",
+    "external_attestation"
+  ],
+  "title": "ReproductionRequest",
+  "type": "object"
+}

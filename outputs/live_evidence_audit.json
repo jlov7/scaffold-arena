@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1",
+  "generated_at": "2026-05-23T00:00:00Z",
+  "status": "blocked_no_live_artifacts",
+  "ready_for_frontier_claims": false,
+  "expected_run_count": 72,
+  "live_run_count": 0,
+  "live_summary_exists": false,
+  "model_id": "claude-haiku-4-5",
+  "task_ids": [
+    "extraction",
+    "risk",
+    "research",
+    "tool_use",
+    "privacy",
+    "strategy"
+  ],
+  "scaffold_ids": [
+    "bare",
+    "plan_execute_verify",
+    "tool_error_recovery",
+    "memory_critique"
+  ],
+  "repeat_count": 3,
+  "missing_cell_count": 72,
+  "unexpected_cell_count": 0,
+  "validation_error_count": 0,
+  "validation_errors": [],
+  "blockers_before_95": [
+    "Generate the planned live provider artifacts with scripts/run-benchmark-pack.py --mode live.",
+    "Commit outputs/live_benchmark_runs/*.json and outputs/live_benchmark_summary.json after validation.",
+    "Calibrate deterministic metrics against independent human annotations.",
+    "Record independent reproduction, public critique, or adoption in outputs/external_validation.json."
+  ],
+  "claim_boundary": "This audit validates the presence and shape of live benchmark artifacts when they exist. With zero live artifacts it is a blocker ledger, not live benchmark evidence. Valid live artifacts are still not human calibration or external validation evidence."
+}

@@ -1,0 +1,342 @@
+{
+  "$defs": {
+    "AnnotationItem": {
+      "additionalProperties": false,
+      "properties": {
+        "attempt_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Attempt Id",
+          "type": "string"
+        },
+        "item_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Item Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "item_id",
+        "attempt_id"
+      ],
+      "title": "AnnotationItem",
+      "type": "object"
+    },
+    "EvaluatorIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "evaluator_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Evaluator Id",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evaluator_id",
+        "version",
+        "digest"
+      ],
+      "title": "EvaluatorIdentity",
+      "type": "object"
+    },
+    "GraderBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "installation": {
+          "$ref": "#/$defs/GraderInstallation"
+        },
+        "kind": {
+          "enum": [
+            "deterministic",
+            "qualitative"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "metric_id": {
+          "minLength": 1,
+          "title": "Metric Id",
+          "type": "string"
+        },
+        "weight": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Weight",
+          "type": "number"
+        }
+      },
+      "required": [
+        "metric_id",
+        "weight",
+        "kind",
+        "installation"
+      ],
+      "title": "GraderBinding",
+      "type": "object"
+    },
+    "GraderInstallation": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "grader_id": {
+          "minLength": 1,
+          "title": "Grader Id",
+          "type": "string"
+        },
+        "trusted": {
+          "const": true,
+          "default": true,
+          "title": "Trusted",
+          "type": "boolean"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "grader_id",
+        "version",
+        "digest"
+      ],
+      "title": "GraderInstallation",
+      "type": "object"
+    },
+    "GraderPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "bindings": {
+          "items": {
+            "$ref": "#/$defs/GraderBinding"
+          },
+          "title": "Bindings",
+          "type": "array"
+        },
+        "human_calibration_receipt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/HumanCalibrationReceipt"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "bindings"
+      ],
+      "title": "GraderPlan",
+      "type": "object"
+    },
+    "HumanCalibrationReceipt": {
+      "additionalProperties": false,
+      "properties": {
+        "annotator_count": {
+          "minimum": 3,
+          "title": "Annotator Count",
+          "type": "integer"
+        },
+        "attestation_ref": {
+          "minLength": 1,
+          "title": "Attestation Ref",
+          "type": "string"
+        },
+        "authority_id": {
+          "minLength": 1,
+          "title": "Authority Id",
+          "type": "string"
+        },
+        "batch_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Batch Hash",
+          "type": "string"
+        },
+        "identity_state": {
+          "const": "verified",
+          "default": "verified",
+          "title": "Identity State",
+          "type": "string"
+        },
+        "protocol_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Protocol Hash",
+          "type": "string"
+        },
+        "receipt_id": {
+          "minLength": 1,
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "resolved_conflicts": {
+          "const": true,
+          "default": true,
+          "title": "Resolved Conflicts",
+          "type": "boolean"
+        },
+        "review_completion_digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Review Completion Digest",
+          "type": "string"
+        }
+      },
+      "required": [
+        "receipt_id",
+        "batch_hash",
+        "protocol_hash",
+        "review_completion_digest",
+        "annotator_count",
+        "authority_id",
+        "attestation_ref"
+      ],
+      "title": "HumanCalibrationReceipt",
+      "type": "object"
+    },
+    "HumanRubric": {
+      "additionalProperties": false,
+      "properties": {
+        "digest": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Digest",
+          "type": "string"
+        },
+        "dimensions": {
+          "items": {
+            "$ref": "#/$defs/RubricDimension"
+          },
+          "minItems": 1,
+          "title": "Dimensions",
+          "type": "array"
+        },
+        "rubric_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Rubric Id",
+          "type": "string"
+        },
+        "version": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "rubric_id",
+        "version",
+        "digest",
+        "dimensions"
+      ],
+      "title": "HumanRubric",
+      "type": "object"
+    },
+    "RubricDimension": {
+      "additionalProperties": false,
+      "properties": {
+        "anchor_0": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Anchor 0",
+          "type": "string"
+        },
+        "anchor_1": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Anchor 1",
+          "type": "string"
+        },
+        "instruction": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Instruction",
+          "type": "string"
+        },
+        "metric_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Metric Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric_id",
+        "instruction",
+        "anchor_0",
+        "anchor_1"
+      ],
+      "title": "RubricDimension",
+      "type": "object"
+    }
+  },
+  "$id": "https://scaffold-arena.local/specs/v1/review-v1-annotation-batch.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "annotator_pseudonyms": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 3,
+      "title": "Annotator Pseudonyms",
+      "type": "array"
+    },
+    "batch_id": {
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Batch Id",
+      "type": "string"
+    },
+    "evaluator": {
+      "$ref": "#/$defs/EvaluatorIdentity"
+    },
+    "grader_plan": {
+      "$ref": "#/$defs/GraderPlan"
+    },
+    "items": {
+      "items": {
+        "$ref": "#/$defs/AnnotationItem"
+      },
+      "minItems": 1,
+      "title": "Items",
+      "type": "array"
+    },
+    "protocol_hash": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Protocol Hash",
+      "type": "string"
+    },
+    "rubric": {
+      "$ref": "#/$defs/HumanRubric"
+    }
+  },
+  "required": [
+    "batch_id",
+    "protocol_hash",
+    "evaluator",
+    "grader_plan",
+    "rubric",
+    "annotator_pseudonyms",
+    "items"
+  ],
+  "title": "AnnotationBatch",
+  "type": "object"
+}
