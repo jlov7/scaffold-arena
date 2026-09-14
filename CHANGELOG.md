@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Replaced the CI image-build action with equivalent direct Buildx commands, retaining the existing Dockerfiles, production targets, contexts, and no-push behavior while avoiding action-generated event metadata in build logs.
 - Reframed scaffold, telemetry, release, accessibility, UX, and lifecycle documentation around the current evidence boundary. Removed unsupported scaffold scores and causal claims, clarified that the current candidate is undeployed, and replaced provider-specific operations guidance with portable procedures.
 - Replaced the retired self-hosted workflow badge with a repository-relative CI candidate-verification link. This is a workflow entry point, not a claim that the candidate is published or released.
 - Removed the unavailable self-hosted verification workflow from the public candidate configuration. The remaining CI configuration is not evidence of a newly tested, published, or deployed candidate.
